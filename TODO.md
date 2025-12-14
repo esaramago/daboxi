@@ -13,3 +13,4 @@
 [ ] Obter apenas movimenntos do user logado
 [ ] Integrar API EnableBanking
 [ ] Adicionar cache para as tabelas 'types', 'categories' e 'subCategories'
+[ ] Offline first: https://appwrite.io/integrations/replication-rxdb

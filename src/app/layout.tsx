@@ -1,5 +1,3 @@
-'use client'
-
 import '@/css/main.css'
 import { Montserrat } from 'next/font/google'
 
