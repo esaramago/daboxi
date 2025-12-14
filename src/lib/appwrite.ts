@@ -27,7 +27,7 @@ export async function fetchAppwriteDB(tableId: string, queries?: any[], limit = 
       databaseId: DATABASE_ID,
       tableId: tableId,
       queries: [
-        ...(queries?.map(query => query.toString()) || []),
+        ...queries?.map(query => query.toString()),
         Query.limit(limit),
       ],
     })

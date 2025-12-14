@@ -11,13 +11,16 @@ export default async function fetchExpenseTransactions(size?: number) {
       '*',
       'subCategory.*',
       'subCategory.category',
+      'subCategory.category.type.code',
     ]),
     Query.lessThan('value', 0),
-    Query.isNull('refundsIds'),
+    Query.or([
+      Query.equal('refundsIds', ''),
+      Query.isNull('refundsIds'),
+    ]),
     Query.orderDesc('date'),
     Query.orderAsc('description'),
-    Query.limit(size || 1000),
-  ])
+  ], size)
 
   if (error) {
     return {

@@ -25,7 +25,7 @@ export default function Transactions() {
   const [transactionsByDate, setTransactionsByDate] = useState(null)
 
   const getTransactions = async () => {
-    const { data, error } = await fetchTransactions()
+    const { data, error } = await fetchTransactions(300)
     if (error) {
       console.error(error)
       return null
