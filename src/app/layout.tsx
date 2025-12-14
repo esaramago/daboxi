@@ -1,7 +1,6 @@
 'use client'
 
 import '@/css/main.css'
-import { Analytics } from '@vercel/analytics/react'
 import { Montserrat } from 'next/font/google'
 
 const montserrat = Montserrat({
@@ -22,9 +21,6 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${montserrat.className}`}>
         {children}
-
-        <Analytics />
-
       </body>
     </html>
   )
