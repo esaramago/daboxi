@@ -12,3 +12,4 @@
 [ ] Permitir mudar valor de positivo para negativo ou vice-versa
 [ ] Obter apenas movimenntos do user logado
 [ ] Integrar API EnableBanking
+[ ] Adicionar cache para as tabelas 'types', 'categories' e 'subCategories'
