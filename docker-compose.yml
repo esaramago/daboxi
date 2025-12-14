@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: daboxi-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_APPWRITE_ENDPOINT=${NEXT_PUBLIC_APPWRITE_ENDPOINT}
+      - NEXT_PUBLIC_APPWRITE_PROJECT_ID=${NEXT_PUBLIC_APPWRITE_PROJECT_ID}
+      - APPWRITE_DATABASE_ID=${APPWRITE_DATABASE_ID}
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - daboxi-network
+
+networks:
+  daboxi-network:
+    driver: bridge
