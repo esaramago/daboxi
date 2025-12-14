@@ -1,0 +1,15 @@
+.c-value {
+  display: inline-block;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.c-value--large {
+  font-size: var(--sl-font-size-x-large);
+}
+.c-value--x-large {
+  font-size: var(--sl-font-size-2x-large);
+}
+.c-value--small {
+  font-size: var(--sl-font-size-small);
+  color: var(--sl-color-neutral-500);
+}

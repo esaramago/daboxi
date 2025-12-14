@@ -1,0 +1,18 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "javascript.preferences.quoteStyle": "single",
+  "typescript.preferences.quoteStyle": "single",
+  "search.exclude": {
+    "node_modules": true,
+    ".next": true,
+    "dist": true,
+    "build": true,
+    "out": true,
+    "package-lock.json": true,
+    ".xata": true,
+    ".vscode": true,
+    "public/assets/icons": true,
+  }
+}

@@ -1,0 +1,34 @@
+.c-ghost-input::part(base) {
+  background-color: transparent;
+  border: none;
+  height: auto;
+}
+.c-ghost-input::part(input) {
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  height: auto;
+  padding-block: var(--sl-spacing-2x-small);
+  field-sizing: content;
+  flex: none;
+  -moz-appearance: textfield;
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+.c-ghost-input--large::part(input) {
+  font-size: var(--sl-font-size-large);
+  font-weight: 600;
+}
+.c-ghost-input--x-large::part(input) {
+  font-size: var(--sl-font-size-2x-large);
+  font-weight: 600;
+}
+
+.c-ghost-input::part(input)::placeholder,
+.c-ghost-input::part(input)::-webkit-input-placeholder {
+  color: inherit;
+  opacity: .8;
+}

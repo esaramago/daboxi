@@ -1,0 +1,13 @@
+
+.c-date--sticky {
+  position: sticky;
+  top: -1px;
+  display: block;
+  padding-block: var(--sl-spacing-x-small);
+  background-color: var(--background-color);
+  font-weight: 500;
+}
+.c-date--small {
+  font-size: var(--sl-font-size-small);
+  color: var(--sl-color-neutral-700);
+}

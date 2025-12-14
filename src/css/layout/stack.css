@@ -1,0 +1,17 @@
+.l-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sl-spacing-medium);
+}
+.l-stack--small {
+  gap: var(--sl-spacing-small);
+}
+.l-stack--large {
+  gap: var(--sl-spacing-large);
+}
+.l-stack--x-small {
+  gap: var(--sl-spacing-x-small);
+}
+.l-stack--2x-small {
+  gap: var(--sl-spacing-2x-small);
+}

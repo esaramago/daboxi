@@ -1,0 +1,19 @@
+.c-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+.c-loading sl-spinner {
+  --track-width: 10px;
+  font-size: 50px;
+}
+
+
+.c-loading--small {
+  min-height: 80px;
+}
+.c-loading--small sl-spinner {
+  --track-width: 5px;
+  font-size: 25px;
+}

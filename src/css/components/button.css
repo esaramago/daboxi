@@ -1,0 +1,17 @@
+.c-button {
+  width: 100%;
+  min-height: var(--sl-input-height-medium);
+  gap: var(--sl-spacing-medium);
+  font-weight: 500;
+  text-align: center;
+  padding: var(--sl-spacing-x-small) var(--sl-spacing-medium);
+  border-radius: var(--sl-input-border-radius-medium);
+  background-color: var(--sl-color-primary-600);
+  border-color: var(--sl-color-primary-600);
+  color: var(--sl-color-neutral-0);
+
+  &[disabled] {
+    opacity: .6;
+    cursor: not-allowed;
+  }
+}

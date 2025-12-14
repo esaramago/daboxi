@@ -1,0 +1,47 @@
+.c-card-button {
+  width: 100%;
+  min-height: 4rem;
+  margin-block-end: -1px;
+  padding: var(--sl-spacing-x-small) 0;
+  border-block-start: 1px solid var(--sl-color-neutral-100);
+  border-block-end: 1px solid var(--sl-color-neutral-100);
+  text-align: left;
+  text-decoration: none;
+  gap: var(--sl-spacing-medium);
+  font-weight: 600;
+}
+
+button[disabled] > .c-card-button {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.c-card-button,
+.c-card-button__left {
+  display: flex;
+  align-items: center;
+}
+.c-card-button.small {
+  min-height: 3.6rem;
+  font-size: var(--sl-font-size-small);
+}
+.c-card-button__left {
+  flex-grow: 1;
+  gap: var(--sl-spacing-small);
+}
+.c-card-button__sub-description {
+  font-size: .9em;
+  color: var(--sl-color-neutral-400);
+  font-weight: 400;
+}
+.c-card-button__right {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .c-card-button.small {
+    min-height: auto;
+  }
+}

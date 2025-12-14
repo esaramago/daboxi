@@ -1,0 +1,9 @@
+.c-input {
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: var(--sl-input-border-radius-medium);
+  height: var(--sl-input-height-medium);
+  background-color: var(--sl-input-background-color);
+  border: solid var(--sl-input-border-width) var(--sl-input-border-color);
+  padding: 0 var(--sl-input-spacing-medium);
+}

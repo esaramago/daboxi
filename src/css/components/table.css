@@ -1,0 +1,12 @@
+.c-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.c-table th {
+  font-weight: 500;
+  text-align: left;
+}
+.c-table :where(td, th) {
+  padding: var(--sl-spacing-2x-small) var(--sl-spacing-x-small);
+  border: 1px solid var(--sl-color-neutral-300);
+}

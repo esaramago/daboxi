@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js debug",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "env": {
+        "NODE_OPTIONS": "--inspect"
+      },
+      "serverReadyAction": {
+        "pattern": "(https?://localhost:\\d+|https?://127\\.0\\.0\\.1:\\d+|https?://\\[::1\\]:\\d+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
+  ]
+}

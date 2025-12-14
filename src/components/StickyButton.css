@@ -1,0 +1,15 @@
+.c-sticky-button {
+  position: fixed;
+  right: var(--sl-spacing-medium);
+  bottom: var(--sl-spacing-medium);
+  box-shadow: 0 2px 12px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+}
+
+.c-sticky-button sl-button::part(base) {
+  line-height: 30px;
+}
+.c-sticky-button sl-icon {
+  position: relative;
+  top: 4px;
+}

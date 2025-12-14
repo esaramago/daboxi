@@ -1,0 +1,19 @@
+.c-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+}
+.c-icon sl-icon {
+  --icon-size: 2.2rem;
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+.c-icon--small {
+  width: 3.4rem;
+}
+.c-icon--small sl-icon {
+  --icon-size: 1.8rem;
+}

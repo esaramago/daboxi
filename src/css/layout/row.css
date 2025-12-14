@@ -1,0 +1,14 @@
+.l-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sl-spacing-medium);
+}
+.l-row--small {
+  gap: var(--sl-spacing-small);
+}
+.l-row--x-small {
+  gap: var(--sl-spacing-x-small);
+}
+.l-row__fill {
+  flex-grow: 1;
+}

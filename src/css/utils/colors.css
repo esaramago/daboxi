@@ -1,0 +1,12 @@
+.u-bg-primary-500 {
+  background-color: var(--sl-color-primary-500);
+}
+.u-color-neutral-50 {
+  color: var(--sl-color-neutral-50);
+}
+.u-color-primary {
+  color: var(--sl-color-primary-500);
+}
+.u-color-danger {
+  color: var(--sl-color-danger-500);
+}

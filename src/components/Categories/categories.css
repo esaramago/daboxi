@@ -1,0 +1,6 @@
+sl-drawer::part(panel) {
+  min-width: 360px;
+}
+sl-drawer button {
+  width: 100%;
+}
