@@ -1,12 +1,20 @@
 'use server'
 
 import { createAppwriteRow } from '@/lib/appwrite'
-import { requireAuth } from '@/lib/appwriteServer'
+import { requireAuth, getAuthenticatedUserId } from '@/lib/appwriteServer'
+import { Permission, Role } from '@node_modules/appwrite'
 
 export default async function submitTransaction(data) {
   await requireAuth()
+  const userId = await getAuthenticatedUserId()
   
-  const { data: response, error } = await createAppwriteRow('transactions', data)
+  const permissions = [
+    Permission.read(Role.user(userId)),
+    Permission.update(Role.user(userId)),
+    Permission.delete(Role.user(userId))
+  ]
+  
+  const { data: response, error } = await createAppwriteRow('transactions', data, permissions)
 
   if (error) {
     return {

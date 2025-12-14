@@ -9,7 +9,7 @@
 [X] Ordenar sub-categorias: "Sem categoria" em último lugar
 [X] Permitir editar data
 [X] Permitir editar valor
+[ ] Obter apenas movimentos do user logado
 [ ] Permitir mudar valor de positivo para negativo ou vice-versa
-[ ] Obter apenas movimenntos do user logado
 [ ] Integrar API EnableBanking
 [ ] Offline first: https://appwrite.io/integrations/replication-rxdb

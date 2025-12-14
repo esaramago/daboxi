@@ -65,7 +65,7 @@ export async function getAppwriteRow(tableId: string, rowId: string, queries?: a
   }
 }
 
-export async function createAppwriteRow(tableId: string, data: any) {
+export async function createAppwriteRow(tableId: string, data: any, permissions?: string[]) {
   try {
     const client = await getClient()
     const tablesDB = new TablesDB(client)
@@ -74,7 +74,8 @@ export async function createAppwriteRow(tableId: string, data: any) {
       databaseId: DATABASE_ID,
       tableId: tableId,
       rowId: ID.unique(),
-      data
+      data,
+      permissions: permissions
     })
     return {
       error: false,
@@ -88,15 +89,16 @@ export async function createAppwriteRow(tableId: string, data: any) {
   }
 }
 
-export async function updateAppwriteRow(tableId: string, rowId: string, data: any) {
+export async function updateAppwriteRow(tableId: string, rowId: string, data: any, permissions?: string[]) {
   try {
     const client = await getClient()
     const tablesDB = new TablesDB(client)
     const result = await tablesDB.updateRow({
       databaseId: DATABASE_ID,
-      tableId: tableId,
-      rowId: rowId,
-      data: data,
+      tableId,
+      rowId,
+      data,
+      permissions
     })
     return {
       error: false,
@@ -116,8 +118,8 @@ export async function deleteAppwriteRow(tableId: string, rowId: string) {
     const tablesDB = new TablesDB(client)
     await tablesDB.deleteRow({
       databaseId: DATABASE_ID,
-      tableId: tableId,
-      rowId: rowId,
+      tableId,
+      rowId,
     })
     return {
       error: false,

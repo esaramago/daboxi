@@ -68,6 +68,18 @@ export async function getAuthenticatedUser() {
 }
 
 /**
+ * Gets the authenticated user ID from the session
+ * Throws error if not authenticated
+ */
+export async function getAuthenticatedUserId() {
+  const { user } = await getAuthenticatedUser()
+  if (!user) {
+    throw new Error('User not authenticated')
+  }
+  return user.$id
+}
+
+/**
  * Checks if the user is authenticated
  * Redirects to login page if not authenticated
  */
