@@ -62,7 +62,11 @@ export default function Home() {
   useEffect(() => {
 
     const getUser = async () => {
-      const user = await getAuthenticatedUser()
+      const { user, error } = await getAuthenticatedUser()
+      if (error) {
+        router.push('/login')
+        return
+      }
       setUser(user)
     }
     getUser()

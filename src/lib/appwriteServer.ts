@@ -55,9 +55,15 @@ export async function getAuthenticatedUser() {
     const client = await getAuthenticatedClient()
     const account = new Account(client)
     const user = await account.get()
-    return user
-  } catch (error) {
-    throw new Error('Failed to get authenticated user: ' + error.message)
+    return {
+      user,
+      error: null
+    }
+  } catch (error: any) {
+    return {
+      user: null,
+      error
+    }
   }
 }
 
@@ -66,9 +72,8 @@ export async function getAuthenticatedUser() {
  * Redirects to login page if not authenticated
  */
 export async function requireAuth() {
-  const user = await getAuthenticatedUser()
-
-  if (!user) {
+  const { user, error } = await getAuthenticatedUser()
+  if (error) {
     redirect('/login')
   }
   return user
