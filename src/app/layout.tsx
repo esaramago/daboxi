@@ -1,5 +1,6 @@
 import '@/css/main.css'
 import { Montserrat } from 'next/font/google'
+import Script from 'next/script'
 
 const montserrat = Montserrat({
   weight: ['400', '500', '600', '700'],
@@ -18,6 +19,20 @@ export default function RootLayout({ children }) {
         <title>Daboxi</title>
       </head>
       <body className={`${montserrat.className}`}>
+        <Script
+          src="https://plausible.emanuelsaramago.com/js/script.js"
+          data-domain="daboxi"
+          strategy="beforeInteractive"
+        />
+        <Script
+          id="plausible-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+            `,
+          }}
+        />
         {children}
       </body>
     </html>
