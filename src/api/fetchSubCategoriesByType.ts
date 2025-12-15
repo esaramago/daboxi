@@ -1,26 +1,38 @@
 'use server'
 
-import { fetchAppwriteDB, Query } from '@/lib/appwrite'
-import { requireAuth } from '@/lib/appwriteServer'
+import { fetchAppwriteDBWithSession, Query } from '@/lib/appwrite'
+import { requireAuth, getSessionToken } from '@/lib/appwriteServer'
+import { getCachedDataWithSession } from '@/lib/cache'
 
 export default async function fetchSubCategories(categoryType: string) {
   await requireAuth()
 
-  const { data, error } = await fetchAppwriteDB('subCategories', [
-    Query.select(['*', 'category.*', 'category.type.code']),
-    Query.equal('category.type.code', categoryType),
-    Query.orderAsc('description'),
-  ])
+  const cacheKey = `subCategories-by-type-${categoryType}`
+  
+  const response = await getCachedDataWithSession(
+    cacheKey,
+    async (sessionToken: string) => {
+      const result = await fetchAppwriteDBWithSession(sessionToken, 'subCategories', [
+        Query.select(['*', 'category.*', 'category.type.code']),
+        Query.equal('category.type.code', categoryType),
+        Query.orderAsc('description'),
+      ])
 
-  if (error) {
-    return {
-      error: error,
-      data: null,
-    }
-  } else {
-    return {
-      error: false,
-      data: data.rows,
-    }
-  }
+      if (result.error) {
+        return {
+          error: result.error,
+          data: null,
+        }
+      } else {
+        return {
+          error: false,
+          data: result.data.rows,
+        }
+      }
+    },
+    getSessionToken,
+    ['subCategories', 'subCategories-by-type', cacheKey]
+  )
+
+  return response
 }

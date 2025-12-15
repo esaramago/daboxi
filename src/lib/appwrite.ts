@@ -1,6 +1,6 @@
 'use server'
 
-import { TablesDB, Query, ID, Account } from '@node_modules/appwrite'
+import { Client, TablesDB, Query, ID, Account } from '@node_modules/appwrite'
 import { getAuthenticatedClient } from './appwriteServer'
 import { ENDPOINT, PROJECT_ID, DATABASE_ID, SESSION_COOKIE } from './config'
 import { cookies } from 'next/headers'
@@ -17,6 +17,27 @@ async function getClient() {
   } catch (error) {
     throw new Error('Failed to get client: ' + error.message)
   }
+}
+
+/**
+ * Cria um cliente Appwrite sem autenticação (para dados públicos)
+ */
+function getPublicClient() {
+  const client = new Client()
+    .setEndpoint(ENDPOINT)
+    .setProject(PROJECT_ID)
+  return client
+}
+
+/**
+ * Cria um cliente Appwrite com session token (para uso em cache)
+ */
+function getClientWithSession(sessionToken: string) {
+  const client = new Client()
+    .setEndpoint(ENDPOINT)
+    .setProject(PROJECT_ID)
+    .setSession(sessionToken)
+  return client
 }
 
 export async function fetchAppwriteDB(tableId: string, queries?: any[], limit = 100) {
@@ -40,6 +61,66 @@ export async function fetchAppwriteDB(tableId: string, queries?: any[], limit = 
       data: null,
       error
     }
+  }
+}
+
+/**
+ * Busca dados do Appwrite sem autenticação (para dados públicos)
+ * Usado dentro de funções cacheadas
+ */
+export async function fetchAppwriteDBPublic(tableId: string, queries?: any[], limit = 100) {
+  try {
+    const client = getPublicClient()
+    const tablesDB = new TablesDB(client)
+    return tablesDB.listRows({
+      databaseId: DATABASE_ID,
+      tableId: tableId,
+      queries: [
+        ...queries?.map(query => query.toString()),
+        Query.limit(limit),
+      ],
+    }).then(data => ({
+      error: false,
+      data
+    })).catch(error => ({
+      data: null,
+      error
+    }))
+  } catch (error) {
+    return Promise.resolve({
+      data: null,
+      error
+    })
+  }
+}
+
+/**
+ * Busca dados do Appwrite com session token (para uso em cache)
+ * Usado dentro de funções cacheadas que precisam de autenticação
+ */
+export async function fetchAppwriteDBWithSession(sessionToken: string, tableId: string, queries?: any[], limit = 100) {
+  try {
+    const client = getClientWithSession(sessionToken)
+    const tablesDB = new TablesDB(client)
+    return tablesDB.listRows({
+      databaseId: DATABASE_ID,
+      tableId: tableId,
+      queries: [
+        ...queries?.map(query => query.toString()),
+        Query.limit(limit),
+      ],
+    }).then(data => ({
+      error: false,
+      data
+    })).catch(error => ({
+      data: null,
+      error
+    }))
+  } catch (error) {
+    return Promise.resolve({
+      data: null,
+      error
+    })
   }
 }
 

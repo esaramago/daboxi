@@ -1,22 +1,31 @@
 'use server'
 
-import { fetchAppwriteDB, Query } from '@/lib/appwrite'
+import { fetchAppwriteDBPublic, Query } from '@/lib/appwrite'
+import { getCachedData } from '@/lib/cache'
 
 export default async function fetchTypes() {
 
-  const { data, error } = await fetchAppwriteDB('types', [
-    Query.select(['*']),
-  ])
+  const response = await getCachedData(
+    'types-all',
+    async () => {
+      const result = await fetchAppwriteDBPublic('types', [
+        Query.select(['*']),
+      ])
 
-  if (error) {
-    return {
-      error: error,
-      data: null,
-    }
-  } else {
-    return {
-      error: false,
-      data: data.rows,
-    }
-  }
+      if (result.error) {
+        return {
+          error: result.error,
+          data: null,
+        }
+      } else {
+        return {
+          error: false,
+          data: result.data.rows,
+        }
+      }
+    },
+    ['types', 'types-all']
+  )
+
+  return response
 }

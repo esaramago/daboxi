@@ -90,3 +90,28 @@ export async function requireAuth() {
   }
   return user
 }
+
+/**
+ * Gets the session token from cookies
+ * Used to pass session token to cached functions
+ */
+export async function getSessionToken(): Promise<string> {
+  const cookieStore = await cookies()
+  
+  let sessionCookie = cookieStore.get(`a_session_${PROJECT_ID}`)
+  
+  if (!sessionCookie) {
+    sessionCookie = cookieStore.get('a_session')
+  }
+  
+  if (!sessionCookie) {
+    const allCookies = cookieStore.getAll()
+    sessionCookie = allCookies.find(cookie => cookie.name.startsWith('a_session'))
+  }
+  
+  if (!sessionCookie) {
+    throw new Error('No session found')
+  }
+  
+  return sessionCookie.value
+}
