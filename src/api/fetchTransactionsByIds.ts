@@ -18,7 +18,8 @@ export default async function fetchTransactionsByIds(ids: string[]) {
       'niceDescription',
       'subCategory.*',
       'subCategory.category',
-      'subCategory.category.code',
+      'subCategory.category.code'
+
     ]),
     Query.equal('$id', ids),
   ])

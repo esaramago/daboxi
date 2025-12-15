@@ -74,7 +74,7 @@ export default function CreateTransaction() {
     setSelectedRefund(refund)
     setFormFields({
       ...formFields,
-      refund: refund.id
+      refund: refund.$id
     })
     closeRefundsDrawer()
   }
