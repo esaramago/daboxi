@@ -267,7 +267,7 @@ export default function CreateTransaction() {
                     {
                       selectedRefund ? (
                         <CardButton
-                          key={selectedRefund.id}
+                          key={selectedRefund.$id}
                           variant={selectedRefund.subCategory?.category?.type?.code}
                           icon={selectedRefund.subCategory?.icon}
                           description={selectedRefund.niceDescription || selectedRefund.description}

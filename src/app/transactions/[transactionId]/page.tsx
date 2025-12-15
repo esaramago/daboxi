@@ -82,7 +82,7 @@ export default function Transaction() {
         if (refunds && refunds.length) {
           // update transaction net value
           const refund = refunds[0]
-          await updateTransaction(refund.id, {
+          await updateTransaction(refund.$id, {
             refundsIds: null,
             netValue: null
           })
@@ -127,12 +127,12 @@ export default function Transaction() {
     try {
       // update current refund
       await updateTransaction(transactionId, {
-        refundsIds: refund.id,
+        refundsIds: refund.$id,
         netValue: calcNetValue(transaction.value, refund.value)
       })
 
       // update expense
-      await updateTransaction(refund.id, {
+      await updateTransaction(refund.$id, {
         refundsIds: transactionId,
         netValue: Number((transaction.value + refund.value).toFixed(2))
       })
@@ -159,7 +159,7 @@ export default function Transaction() {
         })
 
         // update other transaction
-        const otherTransactionsIds = refunds.map(x => x.id)
+        const otherTransactionsIds = refunds.map(x => x.$id)
         const otherTransactions = otherTransactionsIds.map(id => {
           return {
             id: id,
@@ -274,7 +274,8 @@ export default function Transaction() {
       const wasRefund = transaction.subCategory?.code === 'refund'
       if (wasRefund) {
         // reset refunds
-        const refundsIds = refunds?.map(refund => refund.id) || []
+        debugger
+        const refundsIds = refunds?.map(refund => refund.$id) || []
         const data = [...refundsIds, transactionId].map(refundId => {
           return {
             id: refundId,
