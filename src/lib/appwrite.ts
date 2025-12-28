@@ -40,7 +40,7 @@ function getClientWithSession(sessionToken: string) {
   return client
 }
 
-export async function fetchAppwriteDB(tableId: string, queries?: any[], limit = 100) {
+export async function fetchAppwriteDB(tableId: string, queries?: any[], limit = 999) {
   try {
     const client = await getClient()
     const tablesDB = new TablesDB(client)
