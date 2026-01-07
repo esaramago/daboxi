@@ -15,6 +15,14 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'      # Limita a 1 CPU core
+          memory: 2G       # Limita a 2GB de RAM
+        reservations:
+          cpus: '0.5'      # Reserva mínima de 0.5 CPU
+          memory: 512M     # Reserva mínima de 512MB
     networks:
       - daboxi-network
 
