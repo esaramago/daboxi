@@ -146,6 +146,7 @@ function StatsContent() {
           max={currentMonth}
           onSlInput={handleDateChange}
           value={month}
+          className="is-hidden-print"
         />
         {
           loading ? <Loading /> :
@@ -156,7 +157,7 @@ function StatsContent() {
 
             <section className="l-stack">
               <div className="l-row">
-                <h2 className="l-row__fill">Gastos por categoria (<SlFormatDate date={date || new Date} month="long" />)</h2>
+                <h2 className="l-row__fill">Gastos por categoria<span className="is-hidden-print"> (<SlFormatDate date={date || new Date} month="long" />)</span></h2>
                 <div>
                   <SlButton variant="primary" onClick={handleExport}>Exportar</SlButton>
                 </div>

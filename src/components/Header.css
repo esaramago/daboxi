@@ -32,6 +32,11 @@
   flex-grow: 1;
   font-size: var(--sl-font-size-large);
   font-weight: 500;
+  @media print {
+    color: var(--sl-color-neutral-900);
+    font-weight: 600;
+    font-size: var(--sl-font-size-x-large);
+  }
 }
 .c-header sl-icon,
 .c-header sl-icon-button {

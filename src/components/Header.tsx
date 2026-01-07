@@ -40,7 +40,7 @@ export default function Header(props: Props) {
             ) : (
               <div className="c-header__title">
                 <button onClick={goBack}>
-                  <SlIcon name="arrow-left"></SlIcon>
+                  <SlIcon name="arrow-left" className="is-hidden-print"></SlIcon>
                   <h1>{children}</h1>
                 </button>
               </div>

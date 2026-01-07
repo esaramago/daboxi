@@ -27,6 +27,9 @@ sl-drawer {
 }
 
 sl-button {
+  @media print {
+    display: none;
+  }
   --sl-spacing-small: var(--sl-spacing-x-small);
 }
 
@@ -39,6 +42,7 @@ sl-textarea::part(base) {
 }
 
 sl-card {
+  break-inside: avoid;
   --padding: var(--sl-spacing-medium);
 }
 
@@ -48,4 +52,12 @@ sl-tab::part(base) {
 
 sl-avatar::part(base) {
   background-color: var(--sl-color-primary-500);
+}
+
+sl-progress-bar {
+  &::part(base),
+  &::part(indicator) {
+    -webkit-print-color-adjust: exact !important;   /* Chrome, Safari 6 – 15.3, Edge */
+    print-color-adjust: exact !important;           /* Firefox 97+, Safari 15.4+ */
+  }
 }
