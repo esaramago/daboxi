@@ -57,8 +57,10 @@ export default function CategoryResume(props: Props) {
   const [budgetPercentage, setBudgetPercentage] = useState<number>()
 
   useEffect(() => {
-    const total = sum(props.transactions, 'value')
-    setTotal(total)
+    const total = props.transactions.reduce((acc: number, obj: Transactions) => {
+      return acc + (obj.netValue !== null ? obj.netValue : obj.value)
+    }, 0)
+    setTotal(total as number)
 
     if (subCategories) {
       const totalBudget = sum(subCategories, 'budget')
