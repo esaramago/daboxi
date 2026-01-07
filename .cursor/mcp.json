@@ -2,6 +2,13 @@
   "mcpServers": {
     "Sentry": {
       "url": "https://mcp.sentry.dev/mcp/dante-studio/daboxi-ct"
+    },
+    "appwrite-docs": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://mcp-for-docs.appwrite.io"
+      ]
     }
   }
 }
