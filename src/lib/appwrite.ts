@@ -41,9 +41,12 @@ function getClientWithSession(sessionToken: string) {
 }
 
 export async function fetchAppwriteDB(tableId: string, queries?: any[], limit = 999) {
+  console.log(`[Appwrite] Fetching from table: ${tableId}, limit: ${limit}`)
   try {
     const client = await getClient()
     const tablesDB = new TablesDB(client)
+    
+    const startTime = Date.now()
     const data = await tablesDB.listRows({
       databaseId: DATABASE_ID,
       tableId: tableId,
@@ -52,11 +55,14 @@ export async function fetchAppwriteDB(tableId: string, queries?: any[], limit = 
         Query.limit(limit),
       ],
     })
+    console.log(`[Appwrite] Fetch from ${tableId} took ${Date.now() - startTime}ms`)
+    
     return {
       error: false,
       data
     }
   } catch (error) {
+    console.error(`[Appwrite] Error fetching from ${tableId}:`, error)
     return {
       data: null,
       error

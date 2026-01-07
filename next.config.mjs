@@ -2,6 +2,12 @@ import { withSentryConfig } from '@sentry/nextjs'
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  transpilePackages: ['@shoelace-style/shoelace'],
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
 }
 
 export default withSentryConfig(nextConfig, {

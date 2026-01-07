@@ -12,6 +12,16 @@ RUN npm ci --only=production=false
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# Adicionar ARGs para variáveis de ambiente necessárias no build
+ARG NEXT_PUBLIC_APPWRITE_ENDPOINT
+ARG NEXT_PUBLIC_APPWRITE_PROJECT_ID
+ARG APPWRITE_DATABASE_ID
+
+# Passar ARGs para ENVs para que o 'next build' as utilize
+ENV NEXT_PUBLIC_APPWRITE_ENDPOINT=$NEXT_PUBLIC_APPWRITE_ENDPOINT
+ENV NEXT_PUBLIC_APPWRITE_PROJECT_ID=$NEXT_PUBLIC_APPWRITE_PROJECT_ID
+ENV APPWRITE_DATABASE_ID=$APPWRITE_DATABASE_ID
+
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 

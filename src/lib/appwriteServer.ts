@@ -9,7 +9,7 @@ import { ENDPOINT, PROJECT_ID } from './config'
  * Creates an authenticated Appwrite client using session cookies
  */
 export async function getAuthenticatedClient() {
-
+  console.log('[AppwriteServer] Getting authenticated client...')
   try {
     const cookieStore = await cookies()
     
@@ -29,9 +29,11 @@ export async function getAuthenticatedClient() {
     }
     
     if (!sessionCookie) {
+      console.log('[AppwriteServer] No session cookie found')
       throw new Error('No session found')
     }
 
+    console.log(`[AppwriteServer] Session found, initializing client with endpoint: ${ENDPOINT}`)
     const client = new Client()
       .setEndpoint(ENDPOINT)
       .setProject(PROJECT_ID)
@@ -42,6 +44,7 @@ export async function getAuthenticatedClient() {
 
     return client
   } catch (error) {
+    console.error('[AppwriteServer] Error getting authenticated client:', error.message)
     throw new Error('Failed to get authenticated client: ' + error.message)
   }
 }

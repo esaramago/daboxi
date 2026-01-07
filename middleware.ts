@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
+  console.log(`[Middleware] Request: ${request.method} ${request.nextUrl.pathname}`)
   // O layout.tsx já gerencia a autenticação no cliente
   // As server actions também estão protegidas
   // Este middleware pode ser usado para proteção adicional se necessário
