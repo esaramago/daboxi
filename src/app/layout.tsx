@@ -17,22 +17,9 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
         <link rel="manifest" href="/manifest.json" />
         <title>Daboxi</title>
+        <Script defer src="https://analytics.emanuelsaramago.com/script.js" data-website-id="3bb64fca-1327-48ed-81bb-c809ea244b10"></Script>
       </head>
       <body className={`${montserrat.className}`}>
-        <Script
-          src="https://plausible.emanuelsaramago.com/js/script.js"
-          data-domain="daboxi"
-          strategy="beforeInteractive"
-        />
-        <Script
-          id="plausible-init"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
-            `,
-          }}
-        />
         {children}
       </body>
     </html>
