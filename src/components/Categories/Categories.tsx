@@ -45,7 +45,7 @@ export default function Categories(props: Props) {
     setSubCategories(data)
 
     // If category has only one subcategory, select it
-    if (data.length === 1) {
+    if (data && data.length === 1) {
       handleChangeSubCategory(data[0])
     }
 

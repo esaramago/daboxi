@@ -158,30 +158,38 @@ export default function CreateTransaction() {
     }
   }
 
-  const [csvContent, setCsvContent] = useState('date,niceDescription,value,subCategory,description')
+  const [csvContent, setCsvContent] = useState('date,niceDescription,value,subCategory,description\n2026-01-01,"Descrição",-10,,')
   const handleTextareaChange = (event) => {
     const csv = event.target.value
     setCsvContent(csv)
   }
-  const handleSubmitImport = async (event) => {
+  const handleSubmitImport = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     // convert csv to json
     const result = Papa.parse(csvContent, {header: true})
 
     const json:Array<Transactions> = result.data.map((transaction: Transactions) => {
+      const undefinedCategoryId = '693358aa38f7be9fcaa5'
       return {
         date: new Date(transaction.date),
         value: Number(transaction.value),
         description: transaction.description,
         niceDescription: transaction.niceDescription,
-        subCategory: transaction.subCategory,
+        subCategory: transaction.subCategory || undefinedCategoryId,
       }
     })
 
     try {
-      await submitTransactions(json)
+      const results = await submitTransactions(json)
+
+      const hasErrors = results.some((result) => result.error)
+      if (hasErrors) {
+        alert(`Erro ao importar os movimentos: ${results.map((result) => result.error.message).join(', ')}`)
+        return
+      }
       router.push('/')
+
     } catch (error) {
       alert(`Erro ao importar o movimento: ${error.message}`)
     }

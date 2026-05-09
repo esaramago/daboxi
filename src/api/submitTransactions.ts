@@ -3,8 +3,9 @@
 import { createAppwriteRow } from '@/lib/appwrite'
 import { requireAuth, getAuthenticatedUserId } from '@/lib/appwriteServer'
 import { Permission, Role } from '@node_modules/appwrite'
+import type { Transactions } from '@/appwrite.d'
 
-export default async function submitTransactions(data) {
+export default async function submitTransactions(data: Array<Transactions>) {
   await requireAuth()
 
   if (!data) return
@@ -17,5 +18,14 @@ export default async function submitTransactions(data) {
     Permission.delete(Role.user(userId))
   ]
 
-  await createAppwriteRow('transactions', data, permissions)
+  const results = []
+  for (const transaction of data) {
+    const { data: newTransaction, error: newTransactionError } = await createAppwriteRow('transactions', transaction, permissions)
+    results.push({
+      data: newTransaction,
+      error: newTransactionError
+    })
+  }
+
+  return results
 }

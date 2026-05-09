@@ -32,7 +32,7 @@ export default async function fetchTransaction(id: string) {
       data: null,
     }
   }
-  const type = types.find((type: Types) => type.$id === data.subCategory.category.type)
+  const type = types.find((type: Types) => type.$id === data.subCategory.category?.type)
   
   data.subCategory.category.type = {
     code: type?.code,
