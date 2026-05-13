@@ -10,6 +10,10 @@ export default function GlobalError({
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
+    if (error.message?.includes("Failed to find Server Action")) {
+      window.location.reload();
+      return;
+    }
     Sentry.captureException(error);
   }, [error]);
 
