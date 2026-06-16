@@ -2,11 +2,14 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  console.log(`[Middleware] Request: ${request.method} ${request.nextUrl.pathname}`)
-  // O layout.tsx já gerencia a autenticação no cliente
-  // As server actions também estão protegidas
-  // Este middleware pode ser usado para proteção adicional se necessário
-  // Por enquanto, deixamos passar - a proteção está no layout.tsx e nas server actions
+  
+  const pathname = request.nextUrl.pathname;
+
+  // Bloqueia tentativas de acesso a ficheiros PHP ou caminhos ocultos comuns
+  if (pathname.endsWith('.php') || pathname.startsWith('/.git')) {
+    return new NextResponse(null, { status: 404 });
+  }
+
   return NextResponse.next()
 }
 
