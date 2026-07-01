@@ -170,13 +170,13 @@ export default function CreateTransaction() {
     const result = Papa.parse(csvContent, {header: true})
 
     const json:Array<Transactions> = result.data.map((transaction: Transactions) => {
-      const undefinedCategoryId = '693358aa38f7be9fcaa5'
+      const undefinedSubCategoryId = '693358aa38f7be9fcaa5'
       return {
         date: new Date(transaction.date),
         value: Number(transaction.value),
         description: transaction.description,
         niceDescription: transaction.niceDescription,
-        subCategory: transaction.subCategory || undefinedCategoryId,
+        subCategory: transaction.subCategory || undefinedSubCategoryId,
       }
     })
 
