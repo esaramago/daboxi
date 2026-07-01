@@ -158,7 +158,7 @@ export default function CreateTransaction() {
     }
   }
 
-  const [csvContent, setCsvContent] = useState('date,niceDescription,value,subCategory,description\n2026-01-01,"Descrição",-10,,')
+  const [csvContent, setCsvContent] = useState('date,niceDescription,value,subCategory,description\n2026-01-01,"Descrição",-10.01,,')
   const handleTextareaChange = (event) => {
     const csv = event.target.value
     setCsvContent(csv)
