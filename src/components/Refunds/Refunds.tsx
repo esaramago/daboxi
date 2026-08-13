@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import fetchExpenseTransactions from '@/api/fetchExpenseTransactions'
 import fetchSuggestedRefundTransactions from '@/api/fetchSuggestedRefundTransactions'
 import Loading from '@/components/Loading'
@@ -28,6 +28,12 @@ export default function Refunds(props: Props) {
   const [numberOfSuggestedRefundTransactions, setNumberOfSuggestedRefundTransactions] = useState(0)
   const [suggestedRefundTransactions, setSuggestedRefundTransactions] = useState([])
   //#endregion
+
+  useEffect(() => {
+    if (props.open) {
+      getSuggestions()
+    }
+  }, [props.open, props.transactionValue])
 
   const handleClickRefund = (refund: Transactions) => {
     props.onSelect(refund)

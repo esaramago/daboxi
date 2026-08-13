@@ -5,3 +5,7 @@
   margin: 0 auto;
   padding-inline: var(--sl-spacing-medium);
 }
+
+.l-container--wide {
+  max-width: 1400px;
+}

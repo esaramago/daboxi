@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import fetchSubCategoriesByCategory from '@/api/fetchSubCategoriesByCategory'
 import fetchCategories from '@/api/fetchCategories'
 import CardButton from '@/components/CardButton'
@@ -25,6 +25,13 @@ export default function Categories(props: Props) {
   const [subCategories, setSubCategories] = useState([])
 
   const [view, setView] = useState('categories')
+
+  useEffect(() => {
+    if (props.open) {
+      setView('categories')
+      handleOpenDrawer()
+    }
+  }, [props.open, props.transactionValue])
 
   const getSubCategories = async (categoryCode: string) => {
     const { data, error } = await fetchSubCategoriesByCategory(categoryCode)

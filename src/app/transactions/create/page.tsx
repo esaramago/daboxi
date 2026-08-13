@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Papa from 'papaparse'
 import { isDate } from '@/utils/isDate'
 import submitTransaction from '@/api/submitTransaction'
 import submitTransactions from '@/api/submitTransactions'
@@ -11,17 +12,17 @@ import CardButton from '@/components/CardButton'
 import Value from '@/components/Value'
 import Categories from '@/components/Categories'
 import Refunds from '@/components/Refunds'
-import Papa from 'papaparse'
-import type { Transactions, SubCategories} from 'appwrite.d'
+import CreateMultiple from '@/components/_pages/transactions/create/CreateMultiple'
+import type { Transactions, SubCategories } from 'appwrite.d'
 
 import dynamic from 'next/dynamic'
 import calcNetValue from '@/utils/calcNetValue'
-const SlButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/button'), {ssr: false})
-const SlInput = dynamic(() => import('@shoelace-style/shoelace/dist/react/input'), {ssr: false})
-const SlTextarea = dynamic(() => import('@shoelace-style/shoelace/dist/react/textarea'), {ssr: false})
-const SlTabGroup = dynamic(() => import('@shoelace-style/shoelace/dist/react/tab-group'), {ssr: false})
-const SlTabPanel = dynamic(() => import('@shoelace-style/shoelace/dist/react/tab-panel'), {ssr: false})
-const SlTab = dynamic(() => import('@shoelace-style/shoelace/dist/react/tab'), {ssr: false})
+const SlButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/button'), { ssr: false })
+const SlInput = dynamic(() => import('@shoelace-style/shoelace/dist/react/input'), { ssr: false })
+const SlTextarea = dynamic(() => import('@shoelace-style/shoelace/dist/react/textarea'), { ssr: false })
+const SlTabGroup = dynamic(() => import('@shoelace-style/shoelace/dist/react/tab-group'), { ssr: false })
+const SlTabPanel = dynamic(() => import('@shoelace-style/shoelace/dist/react/tab-panel'), { ssr: false })
+const SlTab = dynamic(() => import('@shoelace-style/shoelace/dist/react/tab'), { ssr: false })
 
 export default function CreateTransaction() {
 
@@ -167,9 +168,9 @@ export default function CreateTransaction() {
     event.preventDefault()
 
     // convert csv to json
-    const result = Papa.parse(csvContent, {header: true})
+    const result = Papa.parse(csvContent, { header: true })
 
-    const json:Array<Transactions> = result.data.map((transaction: Transactions) => {
+    const json: Array<Transactions> = result.data.map((transaction: Transactions) => {
       const undefinedSubCategoryId = '693358aa38f7be9fcaa5'
       return {
         date: new Date(transaction.date),
@@ -199,11 +200,12 @@ export default function CreateTransaction() {
     <>
       <Header>Adicionar movimentos</Header>
 
-      <main className="l-container u-padding-block">
+      <main className="l-container l-container--wide u-padding-block">
 
         <SlTabGroup>
           <SlTab slot="nav" panel="add-single">Criar</SlTab>
-          <SlTab slot="nav" panel="add-multiple">Importar vários</SlTab>
+          <SlTab slot="nav" panel="add-multiple">Criar em lote</SlTab>
+          <SlTab slot="nav" panel="add-csv">Importar via csv</SlTab>
 
           <SlTabPanel name="add-single">
             <form onSubmit={handleSubmitForm} className="l-stack">
@@ -213,7 +215,7 @@ export default function CreateTransaction() {
                 type="date"
                 onSlInput={handleInputChange}
                 required
-                style={{ maxWidth: '180px'}}
+                style={{ maxWidth: '180px' }}
               ></SlInput>
               <SlInput
                 name="value"
@@ -223,7 +225,7 @@ export default function CreateTransaction() {
                 step={.01}
                 onSlInput={handleInputChange}
                 required
-                style={{ maxWidth: '180px'}}
+                style={{ maxWidth: '180px' }}
               ></SlInput>
               <SlInput
                 name="niceDescription"
@@ -300,6 +302,9 @@ export default function CreateTransaction() {
             </form>
           </SlTabPanel>
           <SlTabPanel name="add-multiple">
+            <CreateMultiple />
+          </SlTabPanel>
+          <SlTabPanel name="add-csv">
             <form className="l-stack l-stack--small" onSubmit={handleSubmitImport}>
               <SlTextarea
                 onSlInput={handleTextareaChange}
@@ -317,21 +322,21 @@ export default function CreateTransaction() {
 
       {
         formFields.value &&
-          <Categories
-            transactionValue={Number(formFields.value)}
-            open={isCategoriesOpen}
-            onClose={closeCategoriesDrawer}
-            onSelect={handleChangeSubCategory}
-          />
+        <Categories
+          transactionValue={Number(formFields.value)}
+          open={isCategoriesOpen}
+          onClose={closeCategoriesDrawer}
+          onSelect={handleChangeSubCategory}
+        />
       }
       {
         selectedSubCategory && selectedSubCategory.code === 'refund' &&
-          <Refunds
-            transactionValue={Number(formFields.value)}
-            open={isRefundsOpen}
-            onClose={closeRefundsDrawer}
-            onSelect={handleChangeRefund}
-          />
+        <Refunds
+          transactionValue={Number(formFields.value)}
+          open={isRefundsOpen}
+          onClose={closeRefundsDrawer}
+          onSelect={handleChangeRefund}
+        />
       }
 
     </>
