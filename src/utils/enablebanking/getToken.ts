@@ -14,11 +14,16 @@ export default function getEnableBankingToken(): string | null {
     return null
   }
 
-  // Remove aspas envolventes se existirem e substitui \n literais por quebras de linha reais
-  const privateKey = rawPrivateKey
+  // Remove aspas envolventes e substitui \n literais por quebras de linha reais
+  let privateKey = rawPrivateKey
     .trim()
     .replace(/^["']|["']$/g, '')
     .replace(/\\n/g, '\n')
+
+  // Se não contiver os cabeçalhos PEM, adiciona-os automaticamente
+  if (!privateKey.includes('BEGIN')) {
+    privateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`
+  }
 
   const iat = Math.floor(Date.now() / 1000)
   const payload = {
