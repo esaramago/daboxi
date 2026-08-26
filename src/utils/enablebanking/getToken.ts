@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
 
 export default function getEnableBankingToken(): string | null {
   const applicationId = process.env.ENABLEBANKING_APP_ID || process.env.APPLICATION_ID
@@ -14,15 +15,16 @@ export default function getEnableBankingToken(): string | null {
     return null
   }
 
-  // Remove aspas envolventes e substitui \n literais por quebras de linha reais
-  let privateKey = rawPrivateKey
+  // Remove aspas envolventes e substitui quebras de linha literais por reais
+  let formattedKey = rawPrivateKey
     .trim()
     .replace(/^["']|["']$/g, '')
+    .replace(/\\r\\n/g, '\n')
     .replace(/\\n/g, '\n')
 
   // Se não contiver os cabeçalhos PEM, adiciona-os automaticamente
-  if (!privateKey.includes('BEGIN')) {
-    privateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`
+  if (!formattedKey.includes('BEGIN')) {
+    formattedKey = `-----BEGIN PRIVATE KEY-----\n${formattedKey}\n-----END PRIVATE KEY-----`
   }
 
   const iat = Math.floor(Date.now() / 1000)
@@ -34,6 +36,7 @@ export default function getEnableBankingToken(): string | null {
   }
 
   try {
+    const privateKey = crypto.createPrivateKey(formattedKey)
     const token = jwt.sign(payload, privateKey, {
       algorithm: 'RS256',
       keyid: applicationId
