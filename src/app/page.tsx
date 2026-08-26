@@ -53,7 +53,7 @@ export default function Home() {
   const handleLogout = async () => {
     const { error } = await logout()
     if (error) {
-      alert('Erro ao sair: ' + error.message)
+      alert('Erro ao sair: ' + ((error as any)?.message || 'Erro desconhecido'))
     } else {
       router.push('/login')
     }

@@ -293,9 +293,10 @@ export async function login(email: string, password: string) {
 
 export async function logout() {
   const cookieStore = await cookies()
-  const sessionCookie = cookieStore.get(SESSION_COOKIE)
+  const allCookies = cookieStore.getAll()
+  const sessionCookies = allCookies.filter(cookie => cookie.name.startsWith('a_session'))
 
-  if (!sessionCookie) {
+  if (sessionCookies.length === 0 && !cookieStore.get(SESSION_COOKIE)) {
     return {
       error: false,
       data: 'No session cookie found'
@@ -309,22 +310,18 @@ export async function logout() {
     
     // Deletar a sessão no Appwrite
     await account.deleteSession('current')
-
-    // Deletar o cookie localmente
-    cookieStore.delete(SESSION_COOKIE)
-
-    return {
-      error: false,
-      data: 'Logged out successfully'
-    }
-
   } catch (error: any) {
-    // Mesmo se houver erro ao deletar no servidor, deletar o cookie localmente
+    console.error('[Appwrite] Error deleting session on server:', error)
+  } finally {
+    // Deletar os cookies localmente
     cookieStore.delete(SESSION_COOKIE)
-    
-    return {
-      error: error,
-      data: null
-    }
+    sessionCookies.forEach(cookie => {
+      cookieStore.delete(cookie.name)
+    })
+  }
+
+  return {
+    error: false,
+    data: 'Logged out successfully'
   }
 }

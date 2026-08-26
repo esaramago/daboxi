@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { login } from '@/lib/appwrite'
 
 export default function Login() {
-
+  const router = useRouter()
   const [formFields, setFormFields] = useState({
     email: '',
     password: ''
@@ -31,7 +31,8 @@ export default function Login() {
       alert(error.message)
     } else {
       // Redirect to home
-      redirect('/')
+      router.push('/')
+      router.refresh()
     }
   }
 
