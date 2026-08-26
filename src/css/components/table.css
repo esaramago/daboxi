@@ -4,7 +4,7 @@
 }
 .c-table th {
   font-weight: 500;
-  text-align: left;
+  text-align: start;
 }
 .c-table :where(td, th) {
   padding: var(--sl-spacing-2x-small) var(--sl-spacing-x-small);

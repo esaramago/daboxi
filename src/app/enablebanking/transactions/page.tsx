@@ -57,14 +57,14 @@ export default async function EnableBankingTransactions({
       <main className="l-container l-container--wide u-padding-block">
         {transactions && transactions.length > 0 ? (
           <>
-            <table>
+            <table className="c-table">
               <thead>
                 <tr>
-                  <th className="u-text-start" style={{ width: '100px' }}>Data</th>
+                  <th style={{ width: '100px' }}>Data</th>
                   <th className="u-text-end">Valor</th>
-                  <th className="u-text-start">Descrição</th>
-                  <th className="u-text-start">Notas</th>
-                  <th className="u-text-start">Type</th>
+                  <th>Descrição</th>
+                  <th>Notas</th>
+                  <th>Type</th>
                 </tr>
               </thead>
               <tbody>
