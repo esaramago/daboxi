@@ -1,6 +1,6 @@
 const sessionEndpoint = 'https://api.enablebanking.com/sessions'
 
-export default async function createEnableBankingSession(authCode: string, token: string) {
+export default async function createEnableBankingSession(authCode: string, token: string): Promise<string | null> {
   if (!authCode) {
     console.error('Código de autorização não informado')
     return null
@@ -9,31 +9,29 @@ export default async function createEnableBankingSession(authCode: string, token
     console.error('Token não informado')
     return null
   }
-  const response = await fetch(sessionEndpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` // O seu JWT válido
-    },
-    body: JSON.stringify({ code: authCode })
-  });
 
-  const sessionData = await response.json()
+  try {
+    const response = await fetch(sessionEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ code: authCode })
+    })
 
-  if (sessionData.error) {
+    const sessionData = await response.json()
 
-    if (sessionData.error === 'ALREADY_AUTHORIZED') {
-      return {
-        error: 'A conta já foi autorizada anteriormente',
-        data: null
-      }
+    if (!response.ok || sessionData.error || !sessionData.session_id) {
+      console.error('Erro ao criar sessão EnableBanking:', sessionData)
+      return null
     }
-    return {
-      error: sessionData.message,
-      data: null
-    }
+
+    return sessionData.session_id
+  } catch (error) {
+    console.error('Falha ao efetuar o pedido à EnableBanking:', error)
+    return null
   }
-
-  return sessionData.session_id
 }
+
 
