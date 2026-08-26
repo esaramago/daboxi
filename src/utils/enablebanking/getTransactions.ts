@@ -1,7 +1,7 @@
 import getEnableBankingSession from './getSession'
 
 // Pedir os dados
-export default async function getEnableBankingTransactions(sessionId: string, token: string) {
+export default async function getEnableBankingTransactions(sessionId: string, token: string | null) {
 
   if (!sessionId) {
     console.error('ID da sessão não informada')

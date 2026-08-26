@@ -1,13 +1,13 @@
 const endpoint = 'https://api.enablebanking.com/auth'
 
-export default async function getEnableBankingAuthLink(redirectUrl: string, token: string) {
+export default async function getEnableBankingAuthLink(redirectUrl: string, token: string | null) {
   if (!redirectUrl) {
     console.error('URL de redirecionamento não informada')
     return null
   }
 
   if (!token) {
-    console.error('Token não gerado')  
+    console.error('Token não informado')
     return null
   }
       

@@ -1,12 +1,11 @@
 const sessionEndpoint = 'https://api.enablebanking.com/sessions'
 
-export default async function createEnableBankingSession(authCode: string, token: string): Promise<string | null> {
+export default async function createEnableBankingSession(authCode: string, token: string | null): Promise<string | null> {
   if (!authCode) {
     console.error('Código de autorização não informado')
     return null
   }
   if (!token) {
-    console.error('Token não informado')
     return null
   }
 
