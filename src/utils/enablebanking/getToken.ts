@@ -14,8 +14,11 @@ export default function getEnableBankingToken(): string | null {
     return null
   }
 
-  // Substitui eventuais \n literais por quebras de linha reais
-  const privateKey = rawPrivateKey.replace(/\\n/g, '\n')
+  // Remove aspas envolventes se existirem e substitui \n literais por quebras de linha reais
+  const privateKey = rawPrivateKey
+    .trim()
+    .replace(/^["']|["']$/g, '')
+    .replace(/\\n/g, '\n')
 
   const iat = Math.floor(Date.now() / 1000)
   const payload = {
