@@ -1,10 +1,14 @@
-import dotenv from 'dotenv'
-dotenv.config()
-const token = process.env.TOKEN
-
 const sessionEndpoint = 'https://api.enablebanking.com/sessions'
 
-export default async function createEnableBankingSession(authCode: string) {
+export default async function createEnableBankingSession(authCode: string, token: string) {
+  if (!authCode) {
+    console.error('Código de autorização não informado')
+    return null
+  }
+  if (!token) {
+    console.error('Token não informado')
+    return null
+  }
   const response = await fetch(sessionEndpoint, {
     method: 'POST',
     headers: {
@@ -16,11 +20,20 @@ export default async function createEnableBankingSession(authCode: string) {
 
   const sessionData = await response.json()
 
-  if (!sessionData.accounts) {
-    console.log("A API devolveu um erro:", sessionData)
-    return null
+  if (sessionData.error) {
+
+    if (sessionData.error === 'ALREADY_AUTHORIZED') {
+      return {
+        error: 'A conta já foi autorizada anteriormente',
+        data: null
+      }
+    }
+    return {
+      error: sessionData.message,
+      data: null
+    }
   }
 
-  console.log("Copia o id da sessão para o .env em SESSION_ID", sessionData.session_id)
+  return sessionData.session_id
 }
 

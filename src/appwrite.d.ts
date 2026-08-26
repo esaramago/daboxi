@@ -32,3 +32,13 @@ export type Transactions = Models.Row & {
     niceDescription: string;
     subCategory: SubCategories;
 }
+
+export type BankSessions = Models.Row & {
+    sessionId: string;
+    bankName: string | null;
+    country: string | null;
+    accounts: string[] | null;
+    validUntil: string | null;
+    status: string | null;
+}
+

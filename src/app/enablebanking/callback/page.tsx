@@ -1,4 +1,5 @@
 import Header from '@/components/Header'
+import { redirect } from 'next/navigation'
 
 interface CallbackProps {
   searchParams: Promise<{ code?: string; state?: string; error?: string }>
@@ -6,10 +7,13 @@ interface CallbackProps {
 
 export default async function Callback({ searchParams }: CallbackProps) {
 
-  debugger
   const params = await searchParams
   const code = params?.code
   const error = params?.error
+
+  if (code) {
+    redirect(`/enablebanking/transactions?code=${code}`)
+  }
 
   return (
     <>
@@ -17,7 +21,7 @@ export default async function Callback({ searchParams }: CallbackProps) {
 
       <main className="l-container l-stack u-padding-block">
         {error && <p>Erro na autorização: {error}</p>}
-        {code && <p>Código de autorização recebido: {code}</p>}
+        {code && <p>Código de autorização recebido. A redirecionar...</p>}
         {!code && !error && <p>Nenhum código recebido.</p>}
       </main>
     </>
