@@ -54,37 +54,44 @@ export default async function EnableBankingTransactions({
     <>
       <Header>Transações EnableBanking</Header>
 
-      <main className="l-container l-stack u-padding-block">
+      <main className="l-container l-container--wide u-padding-block">
         {transactions && transactions.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th style={{ width: '100px' }}>Data</th>
-                <th>Valor</th>
-                <th>Descrição</th>
-                <th>Notas</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((transaction: any, index: number) => (
-                <tr key={transaction.entry_reference || transaction.transaction_id || index}>
-                  <td>{transaction.booking_date}</td>
-                  <td>
-                    {transaction.bank_transaction_code?.code === 'TOPUP' ? '' : '-'}
-                    {transaction.transaction_amount?.amount} €
-                  </td>
-                  <td>{transaction.creditor?.name || transaction.debtor?.name || '-'}</td>
-                  <td>
-                    {transaction.remittance_information
-                      ?.map((info: any) => info.description)
-                      .join(', ') || '-'}
-                  </td>
-                  <td>{transaction.bank_transaction_code?.code || '-'}</td>
+          <>
+            <table>
+              <thead>
+                <tr>
+                  <th className="u-text-start" style={{ width: '100px' }}>Data</th>
+                  <th className="u-text-end">Valor</th>
+                  <th className="u-text-start">Descrição</th>
+                  <th className="u-text-start">Notas</th>
+                  <th className="u-text-start">Type</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {transactions.map((transaction: any, index: number) => (
+                  <tr key={transaction.entry_reference || transaction.transaction_id || index}>
+                    <td>{transaction.booking_date}</td>
+                    <td className="u-text-end">
+                      {transaction.bank_transaction_code?.code === 'TOPUP' ? '' : '-'}
+                      {transaction.transaction_amount?.amount}
+                    </td>
+                    <td>{transaction.creditor?.name || transaction.debtor?.name || '-'}</td>
+                    <td>
+                      {transaction.remittance_information
+                        ?.map((info: any) => info.description)
+                        .join(', ') || '-'}
+                    </td>
+                    <td>{transaction.bank_transaction_code?.code || '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <textarea
+              className="c-textarea"
+              value={JSON.stringify(transactions, null, 2)}
+              readOnly
+            ></textarea>
+          </>
         ) : (
           <div className="l-stack">
             <p>Não foram encontradas transações ou a sessão bancária não está ativa.</p>

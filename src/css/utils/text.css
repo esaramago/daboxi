@@ -4,6 +4,9 @@
 .u-text-center {
   text-align: center;
 }
+.u-text-end {
+  text-align: end !important;
+}
 
 .u-nowrap {
   white-space: nowrap;
