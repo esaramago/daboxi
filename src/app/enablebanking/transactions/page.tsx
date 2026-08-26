@@ -78,8 +78,10 @@ export default async function EnableBankingTransactions({
                     <td>{transaction.creditor?.name || transaction.debtor?.name || '-'}</td>
                     <td>
                       {transaction.remittance_information
-                        ?.map((info: any) => info.description)
-                        .join(', ') || '-'}
+                        ?.map((info: any) => (
+                          <div key={info}>{info}</div>
+                        ))
+                      }
                     </td>
                     <td>{transaction.bank_transaction_code?.code || '-'}</td>
                   </tr>
