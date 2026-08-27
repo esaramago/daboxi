@@ -75,15 +75,9 @@ export default async function EnableBankingTransactions({
                       {transaction.bank_transaction_code?.code === 'TOPUP' ? '' : '-'}
                       {transaction.transaction_amount?.amount}
                     </td>
-                    <td>{transaction.creditor?.name || transaction.debtor?.name || '-'}</td>
-                    <td>
-                      {transaction.remittance_information
-                        ?.map((info: any) => (
-                          <div key={info}>{info}</div>
-                        ))
-                      }
-                    </td>
-                    <td>{transaction.bank_transaction_code?.code || '-'}</td>
+                    <td>{transaction.remittance_information[0]}</td>
+                    <td>{transaction.creditor?.name || transaction.debtor?.name}</td>
+                    <td>{transaction.bank_transaction_code?.code}</td>
                   </tr>
                 ))}
               </tbody>
