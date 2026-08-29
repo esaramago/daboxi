@@ -5,6 +5,8 @@ import getEnableBankingTransactions from '@/utils/enablebanking/getTransactions'
 import getEnableBankingToken from '@/utils/enablebanking/getToken'
 import fetchActiveBankSession from '@/api/fetchActiveBankSession'
 import saveBankSession from '@/api/saveBankSession'
+import Date from '@/components/Date'
+import EnableBankingTransaction from '@/components/_pages/enablebanking/transactions/EnableBankingTransaction'
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL
 
@@ -47,47 +49,57 @@ export default async function EnableBankingTransactions({
   // 4. Só gerar link de autenticação se não houver sessão ativa
   let authUrl: string | null = null
   if (!sessionId) {
-    authUrl = await getEnableBankingAuthLink(`${baseUrl}/enablebanking/callback`, token)
+    authUrl = await getEnableBankingAuthLink(baseUrl + '/enablebanking/callback', token)
   }
+
+  // 5. Group transactions by date
+  interface TransactionGroup {
+    date: string
+    transactions: any[]
+  }
+
+  const transactionsByDate = transactions.reduce<Record<string, TransactionGroup>>((acc, transaction) => {
+    const date = transaction.booking_date
+    if (!acc[date]) {
+      acc[date] = {
+        date,
+        transactions: [],
+      }
+    }
+    acc[date].transactions.push(transaction)
+    return acc
+  }, {})
 
   return (
     <>
       <Header>Transações EnableBanking</Header>
 
-      <main className="l-container l-container--wide u-padding-block">
+
+      <main className="l-container u-padding-block">
         {transactions && transactions.length > 0 ? (
-          <>
-            <table className="c-table">
-              <thead>
-                <tr>
-                  <th style={{ width: '100px' }}>Data</th>
-                  <th className="u-text-end">Valor</th>
-                  <th>Descrição</th>
-                  <th>Notas</th>
-                  <th>Type</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.map((transaction: any, index: number) => (
-                  <tr key={transaction.entry_reference || transaction.transaction_id || index}>
-                    <td>{transaction.booking_date}</td>
-                    <td className="u-text-end">
-                      {transaction.bank_transaction_code?.code === 'TOPUP' ? '' : '-'}
-                      {transaction.transaction_amount?.amount}
-                    </td>
-                    <td>{transaction.remittance_information[0]}</td>
-                    <td>{transaction.creditor?.name || transaction.debtor?.name}</td>
-                    <td>{transaction.bank_transaction_code?.code}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <textarea
-              className="c-textarea"
-              value={JSON.stringify(transactions, null, 2)}
-              readOnly
-            ></textarea>
-          </>
+          <div className="l-stack">
+            {
+              transactionsByDate && Object.values(transactionsByDate).map((group) => (
+                <div
+                  key={group.date}
+                >
+                  <Date date={group.date} sticky={true}></Date>
+                  {
+                    group.transactions.map((transaction) => (
+                      <EnableBankingTransaction
+                        key={transaction.transaction_id}
+                        id={transaction.transaction_id}
+                        description={transaction.remittance_information?.[0] || ''}
+                        subDescription={transaction.creditor?.name || transaction.debtor?.name}
+                        code={transaction.bank_transaction_code?.code || ''}
+                        value={Number(transaction.transaction_amount?.amount) || 0}
+                      ></EnableBankingTransaction>
+                    ))
+                  }
+                </div>
+              ))
+            }
+          </div>
         ) : (
           <div className="l-stack">
             <p>Não foram encontradas transações ou a sessão bancária não está ativa.</p>

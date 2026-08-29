@@ -4,19 +4,20 @@ import Link from 'next/link'
 import CardButton from '@/components/CardButton'
 import Value from '@/components/Value'
 import getNetValue from '@/utils/getNetValue'
+import { type Types } from '@/types/types'
 
-interface Props {
+export interface ButtonTransaction {
   id: string
   value: number
   netValue?: number
   icon?: string
-  variant: string
+  variant?: Types
   description?: string
   niceDescription?: string
   subCategoryDescription?: string
 }
 
-export default function ButtonTransaction(props: Props) {
+export default function ButtonTransaction(props: ButtonTransaction) {
 
   const netValue = getNetValue(props.netValue, props.variant)
 

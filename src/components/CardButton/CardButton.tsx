@@ -1,18 +1,18 @@
 'use client'
 
 import Icon from '@/components/Icon'
+import { type Types } from '@/types/types'
 
-interface Props {
+export interface CardButton {
   icon?: string
-  variant?: string
+  variant?: Types
   size?: 'small'
-
   description?: string
   subDescription?: string
   right?: any
 }
 
-export default function Button(props: Props) {
+export default function Button(props: CardButton) {
 
   return (
     <>
