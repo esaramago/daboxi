@@ -1,8 +1,9 @@
 'use client'
 
 import './StickyButton.css'
-import SlButton from '@shoelace-style/shoelace/dist/react/button'
-import SlIcon from '@shoelace-style/shoelace/dist/react/icon'
+import dynamic from 'next/dynamic'
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
+const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), { ssr: false })
 
 interface Props {
   icon: string
@@ -13,9 +14,9 @@ export default function StickyButton(props: Props) {
 
   return (
     <div className="c-sticky-button">
-      <SlButton variant="primary" circle size="large">
-        <SlIcon name={props.icon} label={props.label} style={{fontSize: 'var(--sl-font-size-2x-large)'}}></SlIcon>
-      </SlButton>
+      <WaButton variant="brand" size="large">
+        <WaIcon name={props.icon} label={props.label} style={{fontSize: 'var(--wa-font-size-2xl)'}}></WaIcon>
+      </WaButton>
     </div>
   )
 }

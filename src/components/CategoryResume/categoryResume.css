@@ -1,8 +1,8 @@
 .c-category-resume::part(body) {
   display: flex;
   flex-direction: column;
-  gap: var(--sl-spacing-medium);
+  gap: var(--wa-space-m);
 }
 .c-category-resume h3 {
-  font-size: var(--sl-font-size-large);
+  font-size: var(--wa-font-size-l);
 }

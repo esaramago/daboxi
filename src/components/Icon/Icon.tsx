@@ -3,7 +3,7 @@
 import getColorByVariant from '@/utils/getColorByVariant'
 import type { Variant } from '@/utils/getColorByVariant'
 import dynamic from 'next/dynamic'
-const SlIcon = dynamic(() => import('@shoelace-style/shoelace/dist/react/icon'), {ssr: false})
+const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
 
 interface Props {
   name?: string
@@ -14,14 +14,14 @@ interface Props {
 export default function Button(props: Props) {
 
   const color = getColorByVariant(props.variant as Variant)
-  const bgColor = color.replace('-500', '-100').replace('-600', '-200')
+  const bgColor = color.replace('-50', '-10').replace('-60', '-20')
 
   return (
     <div
       className={`c-icon ${props.size ? `c-icon--${props.size}` : ''}`}
-      style={{backgroundColor: bgColor || 'var(--sl-color-neutral-100)', color: color || 'var(--sl-color-neutral-500)'}}
+      style={{backgroundColor: bgColor || 'var(--wa-color-neutral-10)', color: color || 'var(--wa-color-neutral-50)'}}
     >
-      <SlIcon name={props.name || 'question-lg'}></SlIcon>
+      <WaIcon name={props.name || 'question-lg'}></WaIcon>
     </div>
   )
 }

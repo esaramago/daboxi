@@ -7,8 +7,9 @@ import CardButton from '@/components/CardButton'
 import Loading from '@/components/Loading'
 import type { SubCategories } from '@/appwrite.d'
 import dynamic from 'next/dynamic'
-const SlDrawer = dynamic(() => import('@shoelace-style/shoelace/dist/react/drawer'), {ssr: false})
-const SlIconButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/icon-button'), {ssr: false})
+const WaDrawer = dynamic(() => import('@awesome.me/webawesome/dist/react/drawer/index.js'), {ssr: false})
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
+const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
 
 interface Props {
   open: boolean
@@ -84,11 +85,11 @@ export default function Categories(props: Props) {
   //#region Render
   return (
 
-    <SlDrawer
+    <WaDrawer
       label="Categoria"
       ref={drawer}
-      onSlShow={handleOpenDrawer}
-      onSlHide={handleCloseDrawer}
+      onWaShow={handleOpenDrawer}
+      onWaHide={handleCloseDrawer}
       open={props.open}
     >
       <div className="l-stack l-stack--small u-padding-block-end">
@@ -120,7 +121,9 @@ export default function Categories(props: Props) {
           </> :
           <>
             <div className="l-row l-row--x-small">
-              <SlIconButton name="arrow-left" onClick={() => setView('categories')}></SlIconButton>
+              <WaButton variant="brand" appearance="plain" onClick={() => setView('categories')}>
+                <WaIcon name="arrow-left" label="Voltar"></WaIcon>
+              </WaButton>
               <p>Seleciona a categoria:</p>
             </div>
 
@@ -150,7 +153,7 @@ export default function Categories(props: Props) {
           </>
         }
       </div>
-    </SlDrawer>
+    </WaDrawer>
   )
   //#endregion
 }

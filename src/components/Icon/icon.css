@@ -6,14 +6,14 @@
   aspect-ratio: 1/1;
   border-radius: 50%;
 }
-.c-icon sl-icon {
-  --icon-size: 2.2rem;
+.c-icon wa-icon {
+  font-size: 2.2rem;
   width: var(--icon-size);
   height: var(--icon-size);
 }
 .c-icon--small {
   width: 3.4rem;
 }
-.c-icon--small sl-icon {
+.c-icon--small wa-icon {
   --icon-size: 1.8rem;
 }

@@ -17,12 +17,12 @@ import type { Transactions, SubCategories } from 'appwrite.d'
 
 import dynamic from 'next/dynamic'
 import calcNetValue from '@/utils/calcNetValue'
-const SlButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/button'), { ssr: false })
-const SlInput = dynamic(() => import('@shoelace-style/shoelace/dist/react/input'), { ssr: false })
-const SlTextarea = dynamic(() => import('@shoelace-style/shoelace/dist/react/textarea'), { ssr: false })
-const SlTabGroup = dynamic(() => import('@shoelace-style/shoelace/dist/react/tab-group'), { ssr: false })
-const SlTabPanel = dynamic(() => import('@shoelace-style/shoelace/dist/react/tab-panel'), { ssr: false })
-const SlTab = dynamic(() => import('@shoelace-style/shoelace/dist/react/tab'), { ssr: false })
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
+const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), { ssr: false })
+const WaTextarea = dynamic(() => import('@awesome.me/webawesome/dist/react/textarea/index.js'), { ssr: false })
+const WaTabGroup = dynamic(() => import('@awesome.me/webawesome/dist/react/tab-group/index.js'), { ssr: false })
+const WaTabPanel = dynamic(() => import('@awesome.me/webawesome/dist/react/tab-panel/index.js'), { ssr: false })
+const WaTab = dynamic(() => import('@awesome.me/webawesome/dist/react/tab/index.js'), { ssr: false })
 
 export default function CreateTransaction() {
 
@@ -58,12 +58,12 @@ export default function CreateTransaction() {
     })
     closeCategoriesDrawer()
   }
+
   //#endregion Categories
 
   //#region Refunds
   const [isRefundsOpen, setIsRefundsOpen] = useState(false)
-  const [selectedRefund, setSelectedRefund] = useState<Transactions>()
-
+  const [selectedRefund, setSelectedRefund] = useState<Transactions>(null)
   const openRefundsDrawer = () => {
     setIsRefundsOpen(true)
   }
@@ -71,7 +71,6 @@ export default function CreateTransaction() {
     setIsRefundsOpen(false)
   }
   const handleChangeRefund = (refund: Transactions) => {
-
     setSelectedRefund(refund)
     setFormFields({
       ...formFields,
@@ -79,9 +78,11 @@ export default function CreateTransaction() {
     })
     closeRefundsDrawer()
   }
-  //#endregion
+  //#endregion Refunds
 
   const validateFormFields = () => {
+
+    const { date, niceDescription, value, subCategory, refund } = formFields
 
     const fieldsWithError = []
 
@@ -153,7 +154,7 @@ export default function CreateTransaction() {
 
         router.push('/')
       }
-    } catch (error) {
+    } catch (error: any) {
       alert(`Não foi possível gravar transação`)
       console.error(error.message)
     }
@@ -191,7 +192,7 @@ export default function CreateTransaction() {
       }
       router.push('/')
 
-    } catch (error) {
+    } catch (error: any) {
       alert(`Erro ao importar o movimento: ${error.message}`)
     }
   }
@@ -202,42 +203,42 @@ export default function CreateTransaction() {
 
       <main className="l-container l-container--wide u-padding-block">
 
-        <SlTabGroup>
-          <SlTab slot="nav" panel="add-single">Criar</SlTab>
-          <SlTab slot="nav" panel="add-multiple">Criar em lote</SlTab>
-          <SlTab slot="nav" panel="add-csv">Importar via csv</SlTab>
+        <WaTabGroup>
+          <WaTab slot="nav" panel="add-single">Criar</WaTab>
+          <WaTab slot="nav" panel="add-multiple">Criar em lote</WaTab>
+          <WaTab slot="nav" panel="add-csv">Importar via csv</WaTab>
 
-          <SlTabPanel name="add-single">
+          <WaTabPanel name="add-single">
             <form onSubmit={handleSubmitForm} className="l-stack">
-              <SlInput
+              <WaInput
                 name="date"
                 label="Data"
                 type="date"
-                onSlInput={handleInputChange}
+                onInput={handleInputChange}
                 required
                 style={{ maxWidth: '180px' }}
-              ></SlInput>
-              <SlInput
+              ></WaInput>
+              <WaInput
                 name="value"
                 label="Valor"
                 type="number"
                 inputmode="decimal"
                 step={.01}
-                onSlInput={handleInputChange}
+                onInput={handleInputChange}
                 required
                 style={{ maxWidth: '180px' }}
-              ></SlInput>
-              <SlInput
+              ></WaInput>
+              <WaInput
                 name="niceDescription"
                 label="Descrição"
-                onSlInput={handleInputChange}
+                onInput={handleInputChange}
                 required
-              ></SlInput>
-              <SlInput
+              ></WaInput>
+              <WaInput
                 name="description"
                 label="Entidade (opcional)"
-                onSlInput={handleInputChange}
-              ></SlInput>
+                onInput={handleInputChange}
+              ></WaInput>
 
               <div>
                 <label htmlFor="subCategory" className="c-label">Categoria <span className="u-color-danger">*</span></label>
@@ -297,27 +298,27 @@ export default function CreateTransaction() {
               }
 
               <div>
-                <SlButton type="submit" variant="primary">Criar</SlButton>
+                <WaButton type="submit" variant="brand">Criar</WaButton>
               </div>
             </form>
-          </SlTabPanel>
-          <SlTabPanel name="add-multiple">
+          </WaTabPanel>
+          <WaTabPanel name="add-multiple">
             <CreateMultiple />
-          </SlTabPanel>
-          <SlTabPanel name="add-csv">
+          </WaTabPanel>
+          <WaTabPanel name="add-csv">
             <form className="l-stack l-stack--small" onSubmit={handleSubmitImport}>
-              <SlTextarea
-                onSlInput={handleTextareaChange}
+              <WaTextarea
+                onInput={handleTextareaChange}
                 rows={10}
                 value={csvContent}
-                help-text="Fields: date,niceDescription,value,subCategory,description"
-              ></SlTextarea>
+                hint="Fields: date,niceDescription,value,subCategory,description"
+              ></WaTextarea>
               <div>
-                <SlButton type="submit" variant="primary">Importar movimentos (CSV)</SlButton>
+                <WaButton type="submit" variant="brand">Importar movimentos (CSV)</WaButton>
               </div>
             </form>
-          </SlTabPanel>
-        </SlTabGroup>
+          </WaTabPanel>
+        </WaTabGroup>
       </main>
 
       {

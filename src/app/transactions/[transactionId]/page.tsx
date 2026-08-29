@@ -20,8 +20,9 @@ import calcNetValue from '@/utils/calcNetValue'
 import type { SubCategories, Transactions } from 'appwrite.d'
 
 import dynamic from 'next/dynamic'
-const SlIconButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/icon-button'), {ssr: false})
-const SlInput = dynamic(() => import('@shoelace-style/shoelace/dist/react/input'), {ssr: false})
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
+const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
+const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), {ssr: false})
 
 export default function Transaction() {
 
@@ -307,7 +308,7 @@ export default function Transaction() {
 
   //#region Render
   const variant = transaction?.subCategory?.category?.type?.code
-  const backgroundColor = getColorByVariant(variant) || 'var(--sl-color-neutral-500)'
+  const backgroundColor = getColorByVariant(variant) || 'var(--wa-color-neutral-50)'
 
   return (
 
@@ -315,7 +316,9 @@ export default function Transaction() {
       <Header
         backgroundColor={backgroundColor}
         actions={
-          <SlIconButton name="trash3" label="Apagar movimento" onClick={handleDeleteTransaction}></SlIconButton>
+          <WaButton appearance="plain" onClick={handleDeleteTransaction}>
+            <WaIcon name="trash3" label="Apagar movimento"></WaIcon>
+          </WaButton>
         }
       >Movimento</Header>
       <main>
@@ -325,7 +328,7 @@ export default function Transaction() {
             <div className="u-color-neutral-50 u-padding-block" style={{backgroundColor: backgroundColor}}>
               <div className="l-container">
                 <div className="l-stack l-stack--small">
-                  <button type="button" onClick={handleOpenDatePicker} className="u-text-start">
+                  <button type="button" onClick={handleOpenDatePicker} className="u-text-start u-justify-start">
                     <Date date={transaction.date.split('T')[0]}></Date>
                   </button>
                   <div className="is-visually-hidden">
@@ -333,33 +336,33 @@ export default function Transaction() {
                     <input id="date" type="date" value={transaction.date} onChange={handleChangeDate} />
                   </div>
                   <div>
-                    <SlInput
+                    <WaInput
                       size="large"
                       className="c-ghost-input c-ghost-input--large"
-                      onSlChange={handleChangeNiceDescription}
+                      onChange={handleChangeNiceDescription}
                       value={transaction.niceDescription}
                       placeholder="Descrição"
                     />
-                    <SlInput
+                    <WaInput
                       className="c-ghost-input"
-                      onSlChange={handleChangeDescription}
+                      onChange={handleChangeDescription}
                       value={transaction.description}
                       placeholder="Sem entidade"
                     />
                   </div>
                   <div>
-                    <SlInput
+                    <WaInput
                       size="large"
                       className="c-ghost-input c-ghost-input--x-large"
-                      onSlChange={handleChangeValue}
+                      onChange={handleChangeValue}
                       value={transaction.value.toFixed(2)}
                       placeholder="Valor"
                       inputmode="decimal"
                       step={.01}
                       type="number"
                     >
-                      <span slot="suffix" className="u-font-size-2x-large u-font-semibold">&nbsp;€</span>
-                    </SlInput>
+                      <span slot="end" className="u-font-size-2x-large u-font-semibold">&nbsp;€</span>
+                    </WaInput>
                   </div>
                   {
                     netValue != null ? (
@@ -396,10 +399,12 @@ export default function Transaction() {
                       <h3>Reembolso</h3>
                       {
                         transaction.refundsIds &&
-                        <SlIconButton
+                        <WaButton
+                          appearance="plain"
                           onClick={handleDeleteRefunds}
-                          name="trash3"
-                        ></SlIconButton>
+                        >
+                          <WaIcon name="trash3" label="Apagar reembolsos" />
+                        </WaButton>
                       }
                     </div>
                     {

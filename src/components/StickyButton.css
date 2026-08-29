@@ -1,15 +1,15 @@
 .c-sticky-button {
   position: fixed;
-  right: var(--sl-spacing-medium);
-  bottom: var(--sl-spacing-medium);
+  right: var(--wa-space-m);
+  bottom: var(--wa-space-m);
   box-shadow: 0 2px 12px 4px rgba(0, 0, 0, 0.2);
   border-radius: 50%;
 }
 
-.c-sticky-button sl-button::part(base) {
+:where(.c-sticky-button wa-button)::part(base) {
   line-height: 30px;
 }
-.c-sticky-button sl-icon {
+:where(.c-sticky-button wa-icon) {
   position: relative;
   top: 4px;
 }

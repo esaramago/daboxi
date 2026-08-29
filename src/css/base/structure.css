@@ -1,12 +1,16 @@
+html {
+  font-size: 62.5%;
+  --background-color: var(--wa-color-neutral-5);
+  background-color: var(--background-color);
+}
 body {
-  --background-color: var(--sl-color-neutral-50);
   display: flex;
   flex-direction: column;
-  font-family: var(--sl-font-sans);
-  color: var(--sl-color-neutral-900);
+  font-family: var(--wa-font-sans);
+  color: var(--wa-color-neutral-90);
   background-color: var(--background-color);
 }
 main {
   flex: 1;
-  padding-block-end: var(--sl-spacing-medium);
+  padding-block-end: var(--wa-space-m);
 }

@@ -1,12 +1,12 @@
 .u-padding-block {
-  padding-block: var(--sl-spacing-medium);
+  padding-block: var(--wa-space-m);
 }
 .u-padding-block--small {
-  padding-block: var(--sl-spacing-small);
+  padding-block: var(--wa-space-s);
 }
 .u-padding-block-end {
-  padding-block-end: var(--sl-spacing-medium);
+  padding-block-end: var(--wa-space-m);
 }
 .u-padding-block-end--x-small {
-  padding-block-end: var(--sl-spacing-x-small);
+  padding-block-end: var(--wa-space-xs);
 }

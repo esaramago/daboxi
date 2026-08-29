@@ -7,6 +7,8 @@ const montserrat = Montserrat({
   subsets: ['latin'],
 })
 
+import WebAwesomeProvider from '@/components/WebAwesomeProvider'
+
 export default function RootLayout({ children }) {
 
   return (
@@ -20,6 +22,7 @@ export default function RootLayout({ children }) {
         <Script defer src="https://analytics.emanuelsaramago.com/script.js" data-website-id="3bb64fca-1327-48ed-81bb-c809ea244b10"></Script>
       </head>
       <body className={`${montserrat.className}`}>
+        <WebAwesomeProvider />
         {children}
       </body>
     </html>

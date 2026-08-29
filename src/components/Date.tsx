@@ -8,7 +8,7 @@ interface Props {
 
 import './Date.css'
 import dynamic from 'next/dynamic'
-const SlFormatDate = dynamic(() => import('@shoelace-style/shoelace/dist/react/format-date'), {ssr: false})
+const WaFormatDate = dynamic(() => import('@awesome.me/webawesome/dist/react/format-date/index.js'), {ssr: false})
 
 export default function Value(props: Props) {
 
@@ -23,7 +23,7 @@ export default function Value(props: Props) {
         isToday ? (
           <time dateTime={props.date}>Hoje</time>
         ) : (
-          <SlFormatDate month="short" day="numeric" {...(showYear ? {year: 'numeric'} : {})} date={props.date}></SlFormatDate>
+          <WaFormatDate month="short" day="numeric" {...(showYear ? {year: 'numeric'} : {})} date={props.date}></WaFormatDate>
         )
       }
 

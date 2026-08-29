@@ -2,13 +2,13 @@
   background-color: transparent;
   border: none;
   height: auto;
-}
-.c-ghost-input::part(input) {
   padding: 0;
   margin: 0;
   color: inherit;
   height: auto;
-  padding-block: var(--sl-spacing-2x-small);
+  padding-block: var(--wa-space-2xs);
+}
+.c-ghost-input::part(input) {
   field-sizing: content;
   flex: none;
   -moz-appearance: textfield;
@@ -18,17 +18,20 @@
     margin: 0;
   }
 }
-.c-ghost-input--large::part(input) {
-  font-size: var(--sl-font-size-large);
+.c-ghost-input::part(end) {
+  margin: 0;
+}
+.c-ghost-input--large::part(base) {
+  font-size: var(--wa-font-size-l);
   font-weight: 600;
 }
-.c-ghost-input--x-large::part(input) {
-  font-size: var(--sl-font-size-2x-large);
+.c-ghost-input--x-large::part(base) {
+  font-size: var(--wa-font-size-2xl);
   font-weight: 600;
 }
 
-.c-ghost-input::part(input)::placeholder,
-.c-ghost-input::part(input)::-webkit-input-placeholder {
+.c-ghost-input::part(base)::placeholder,
+.c-ghost-input::part(base)::-webkit-input-placeholder {
   color: inherit;
   opacity: .8;
 }

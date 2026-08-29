@@ -13,9 +13,9 @@ import Categories from '@/components/Categories'
 import Refunds from '@/components/Refunds'
 import type { Transactions, SubCategories } from '@/appwrite.d'
 
-const SlButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/button'), { ssr: false })
-const SlInput = dynamic(() => import('@shoelace-style/shoelace/dist/react/input'), { ssr: false })
-const SlCard = dynamic(() => import('@shoelace-style/shoelace/dist/react/card'), { ssr: false })
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
+const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), { ssr: false })
+const WaCard = dynamic(() => import('@awesome.me/webawesome/dist/react/card/index.js'), { ssr: false })
 
 interface TransactionItem {
   id: string
@@ -58,16 +58,14 @@ export default function CreateMultiple() {
     setActiveCategoryIndex(index)
     setIsCategoriesOpen(true)
   }
-
   const closeCategoriesDrawer = () => {
     setIsCategoriesOpen(false)
     setActiveCategoryIndex(null)
   }
-
   const handleChangeSubCategory = (subCategory: SubCategories) => {
     if (activeCategoryIndex !== null) {
-      setItems((prev) => {
-        const updated = [...prev]
+      setItems((prevItems) => {
+        const updated = [...prevItems]
         updated[activeCategoryIndex] = {
           ...updated[activeCategoryIndex],
           subCategory: subCategory.$id,
@@ -90,16 +88,14 @@ export default function CreateMultiple() {
     setActiveRefundIndex(index)
     setIsRefundsOpen(true)
   }
-
   const closeRefundsDrawer = () => {
     setIsRefundsOpen(false)
     setActiveRefundIndex(null)
   }
-
   const handleChangeRefund = (refund: Transactions) => {
     if (activeRefundIndex !== null) {
-      setItems((prev) => {
-        const updated = [...prev]
+      setItems((prevItems) => {
+        const updated = [...prevItems]
         updated[activeRefundIndex] = {
           ...updated[activeRefundIndex],
           refund: refund.$id,
@@ -115,7 +111,7 @@ export default function CreateMultiple() {
   const handleAddItem = () => {
     const lastItem = items[items.length - 1]
     const newItem = createEmptyItem()
-    if (lastItem?.date) {
+    if (lastItem && lastItem.date) {
       newItem.date = lastItem.date
     }
     setItems((prev) => [...prev, newItem])
@@ -225,58 +221,58 @@ export default function CreateMultiple() {
     <>
       <form onSubmit={handleSubmitForm} className="l-stack l-stack--small">
         {items.map((item, index) => (
-          <SlCard
+          <WaCard
             key={item.id}
           >
             <div className="l-stack l-stack--small">
               <div className="l-row l-row--space-between">
                 <h3>Movimento {index + 1}</h3>
                 {items.length > 1 && (
-                  <SlButton
-                    variant="text"
+                  <WaButton
+                    appearance="plain"
                     onClick={() => handleRemoveItem(index)}
                   >
                     Remover
-                  </SlButton>
+                  </WaButton>
                 )}
               </div>
 
               <div className="l-row l-row--small">
-                <SlInput
+                <WaInput
                   name="date"
                   label="Data"
                   type="date"
                   value={item.date}
-                  onSlInput={(e: any) => handleInputChange(index, e)}
+                  onInput={(e: any) => handleInputChange(index, e)}
                   required
-                ></SlInput>
+                ></WaInput>
 
-                <SlInput
+                <WaInput
                   name="value"
                   label="Valor"
                   type="number"
                   inputmode="decimal"
                   step={0.01}
                   value={item.value}
-                  onSlInput={(e: any) => handleInputChange(index, e)}
+                  onInput={(e: any) => handleInputChange(index, e)}
                   required
                   style={{ width: '140px' }}
-                ></SlInput>
-                <SlInput
+                ></WaInput>
+                <WaInput
                   name="niceDescription"
                   label="Descrição"
                   value={item.niceDescription}
-                  onSlInput={(e: any) => handleInputChange(index, e)}
+                  onInput={(e: any) => handleInputChange(index, e)}
                   required
                   className="l-row__fill"
-                ></SlInput>
+                ></WaInput>
 
-                <SlInput
+                <WaInput
                   name="description"
                   label="Entidade (opcional)"
                   value={item.description}
-                  onSlInput={(e: any) => handleInputChange(index, e)}
-                ></SlInput>
+                  onInput={(e: any) => handleInputChange(index, e)}
+                ></WaInput>
 
                 <div>
                   <label htmlFor={`subCategory-${item.id}`} className="c-label">
@@ -329,16 +325,16 @@ export default function CreateMultiple() {
                 </div>
               )}
             </div>
-          </SlCard>
+          </WaCard>
         ))}
 
         <div className="l-row" style={{ justifyContent: 'space-between', marginTop: '0.5rem' }}>
-          <SlButton type="button" variant="default" onClick={handleAddItem}>
+          <WaButton type="button" variant="neutral" onClick={handleAddItem}>
             + Adicionar movimento
-          </SlButton>
-          <SlButton type="submit" variant="primary" loading={isSubmitting}>
+          </WaButton>
+          <WaButton type="submit" variant="brand" loading={isSubmitting}>
             Criar movimentos
-          </SlButton>
+          </WaButton>
         </div>
       </form>
 

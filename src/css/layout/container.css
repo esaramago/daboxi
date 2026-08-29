@@ -3,7 +3,7 @@
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  padding-inline: var(--sl-spacing-medium);
+  padding-inline: var(--wa-space-m);
 }
 
 .l-container--wide {

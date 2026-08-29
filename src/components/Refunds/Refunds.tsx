@@ -10,8 +10,8 @@ import CardButton from '@/components/CardButton'
 import type { Transactions } from 'appwrite.d'
 
 import dynamic from 'next/dynamic'
-const SlButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/button'), {ssr: false})
-const SlDrawer = dynamic(() => import('@shoelace-style/shoelace/dist/react/drawer'), {ssr: false})
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
+const WaDrawer = dynamic(() => import('@awesome.me/webawesome/dist/react/drawer/index.js'), {ssr: false})
 
 interface Props {
   open: boolean
@@ -90,11 +90,11 @@ export default function Refunds(props: Props) {
 
   //#region Render
   return (
-    <SlDrawer
+    <WaDrawer
       label="Reembolso"
       ref={drawer}
-      onSlShow={handleOpenDrawer}
-      onSlHide={handleCloseDrawer}
+      onWaShow={handleOpenDrawer}
+      onWaHide={handleCloseDrawer}
       open={props.open}
     >
       <div className="l-stack l-stack--small u-padding-block-end">
@@ -136,12 +136,12 @@ export default function Refunds(props: Props) {
                   })
                 }
               </div>
-              <SlButton variant="default" onClick={handleClickShowMoreRefunds}>Mostrar mais</SlButton>
+              <WaButton variant="neutral" onClick={handleClickShowMoreRefunds}>Mostrar mais</WaButton>
             </>
           }
         </>
       </div>
-    </SlDrawer>
+    </WaDrawer>
   )
   //#endregion
 }

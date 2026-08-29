@@ -2,12 +2,12 @@
   width: 100%;
   min-height: 4rem;
   margin-block-end: -1px;
-  padding: var(--sl-spacing-x-small) 0;
-  border-block-start: 1px solid var(--sl-color-neutral-100);
-  border-block-end: 1px solid var(--sl-color-neutral-100);
+  padding: var(--wa-space-xs) 0;
+  border-block-start: 1px solid var(--wa-color-neutral-10);
+  border-block-end: 1px solid var(--wa-color-neutral-10);
   text-align: left;
   text-decoration: none;
-  gap: var(--sl-spacing-medium);
+  gap: var(--wa-space-m);
   font-weight: 600;
 }
 
@@ -23,15 +23,15 @@ button[disabled] > .c-card-button {
 }
 .c-card-button.small {
   min-height: 3.6rem;
-  font-size: var(--sl-font-size-small);
+  font-size: var(--wa-font-size-s);
 }
 .c-card-button__left {
   flex-grow: 1;
-  gap: var(--sl-spacing-small);
+  gap: var(--wa-space-s);
 }
 .c-card-button__sub-description {
   font-size: .9em;
-  color: var(--sl-color-neutral-400);
+  color: var(--wa-color-neutral-40);
   font-weight: 400;
 }
 .c-card-button__right {

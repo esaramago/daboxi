@@ -1,8 +1,8 @@
 h2 {
-  font-size: var(--sl-font-size-large);
+  font-size: var(--wa-font-size-l);
   font-weight: 600;
 }
 h3 {
-  font-size: var(--sl-font-size-medium);
+  font-size: var(--wa-font-size-m);
   font-weight: 600;
 }

@@ -2,7 +2,7 @@ import { withSentryConfig } from '@sentry/nextjs'
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
-  transpilePackages: ['@shoelace-style/shoelace'],
+  transpilePackages: ['@awesome.me/webawesome'],
   logging: {
     fetches: {
       fullUrl: true,

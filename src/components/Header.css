@@ -1,20 +1,20 @@
 .c-header {
-  background-color: var(--sl-color-primary-500);
-  color: var(--sl-color-neutral-50);
+  background-color: var(--wa-color-brand-50);
+  color: var(--wa-color-neutral-5);
 }
 .c-header--no-background {
   background-color: transparent !important;
-  color: var(--sl-color-neutral-900);
+  color: var(--wa-color-neutral-90);
 }
 .c-header__container {
   display: flex;
   height: 6rem;
   align-items: center;
-  gap: var(--sl-spacing-x-small);
+  gap: var(--wa-space-xs);
 }
 .c-header--no-background .c-header__container {
   height: auto;
-  padding-block-start: var(--sl-spacing-medium);
+  padding-block-start: var(--wa-space-m);
 }
 .c-header__title,
 .c-header h1 {
@@ -24,24 +24,20 @@
 .c-header__title button {
   display: inline-flex;
   align-items: center;
-  gap: var(--sl-spacing-x-small);
+  gap: var(--wa-space-xs);
   text-decoration: none;
   cursor: pointer;
 }
 .c-header h1 {
   flex-grow: 1;
-  font-size: var(--sl-font-size-large);
+  font-size: var(--wa-font-size-l);
   font-weight: 500;
   @media print {
-    color: var(--sl-color-neutral-900);
+    color: var(--wa-color-neutral-90);
     font-weight: 600;
-    font-size: var(--sl-font-size-x-large);
+    font-size: var(--wa-font-size-xl);
   }
 }
-.c-header sl-icon,
-.c-header sl-icon-button {
-  font-size: var(--sl-font-size-large);
-}
-.c-header sl-icon-button {
-  color: var(--sl-color-neutral-50);
+.c-header wa-icon {
+  font-size: var(--wa-font-size-l);
 }

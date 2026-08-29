@@ -1,6 +1,7 @@
-sl-drawer::part(panel) {
+:where(wa-drawer)::part(panel),
+:where(wa-drawer)::part(dialog) {
   min-width: 360px;
 }
-sl-drawer button {
+:where(wa-drawer) button {
   width: 100%;
 }

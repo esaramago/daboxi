@@ -1,7 +1,7 @@
 .l-row {
   display: flex;
   align-items: center;
-  gap: var(--sl-spacing-medium);
+  gap: var(--wa-space-m);
 }
 
 .l-row--space-between {
@@ -9,11 +9,11 @@
 }
 
 .l-row--small {
-  gap: var(--sl-spacing-small);
+  gap: var(--wa-space-s);
 }
 
 .l-row--x-small {
-  gap: var(--sl-spacing-x-small);
+  gap: var(--wa-space-xs);
 }
 
 .l-row__fill {

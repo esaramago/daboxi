@@ -6,7 +6,7 @@ import Value from '@/components/Value'
 import Loading from '@/components/Loading'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-const SlFormatDate = dynamic(() => import('@shoelace-style/shoelace/dist/react/format-date'), {ssr: false})
+const WaFormatDate = dynamic(() => import('@awesome.me/webawesome/dist/react/format-date/index.js'), {ssr: false})
 
 interface Props {
   date?: Date
@@ -48,7 +48,7 @@ export default function Resume(props: Props) {
         loading ? <Loading size="small"></Loading> :
         <div className="l-stack l-stack--small">
           <div className="l-row">
-            <h2 className="l-row__fill">Balanço de <SlFormatDate date={props.date || new Date} month="long"></SlFormatDate></h2>
+            <h2 className="l-row__fill">Balanço de <WaFormatDate date={props.date || new Date} month="long"></WaFormatDate></h2>
             {
               props.showDetailsButton ? <Link href="/stats" className="c-link">Detalhes</Link> : ''
             }
@@ -58,10 +58,10 @@ export default function Resume(props: Props) {
           </div>
           <ul className="l-row">
             <li>
-              Gasto: <Value value={totalExpense} sign={false} style={{color: 'var(--sl-color-primary-500)'}}></Value>
+              Gasto: <Value value={totalExpense} sign={false} style={{color: 'var(--wa-color-brand-50)'}}></Value>
             </li>
             <li>
-              Ganho: <Value value={totalIncome} sign={false} style={{color: 'var(--sl-color-success-500)'}}></Value><br />
+              Ganho: <Value value={totalIncome} sign={false} style={{color: 'var(--wa-color-success-50)'}}></Value><br />
             </li>
           </ul>
         </div>

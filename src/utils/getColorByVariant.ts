@@ -6,16 +6,16 @@ export default function getColorByVariant(variant: Variant) {
 
   switch (variant) {
     case 'expense':
-      color = 'var(--sl-color-primary-500)'
+      color = 'var(--wa-color-brand-50)'
       break
     case 'income':
-      color = 'var(--sl-color-success-500)'
+      color = 'var(--wa-color-success-50)'
       break
     case 'refund':
-      color = 'var(--sl-color-warning-600)'
+      color = 'var(--wa-color-warning-60)'
       break
     case !variant || 'undefined':
-      color = 'var(--sl-color-neutral-500)'
+      color = 'var(--wa-color-neutral-50)'
       break
   }
 

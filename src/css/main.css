@@ -1,11 +1,12 @@
-@import "base/shoelace-theme.css";
+@import "@awesome.me/webawesome/dist/styles/webawesome.css";
+@import "base/webawesome-theme.css";
 @import "base/reset.css";
 @import "base/structure.css";
+@import "base/webawesome.css";
 
 @import "components/headings.css";
 @import "components/label.css";
 @import "components/link.css";
-@import "components/shoelace.css";
 @import "components/ghost-input.css";
 @import "components/table.css";
 @import "components/input.css";
@@ -22,3 +23,4 @@
 @import "utils/sizes.css";
 @import "utils/spacing.css";
 @import "utils/text.css";
+@import "utils/others.css";

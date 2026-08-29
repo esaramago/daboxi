@@ -7,6 +7,6 @@
   text-align: start;
 }
 .c-table :where(td, th) {
-  padding: var(--sl-spacing-2x-small) var(--sl-spacing-x-small);
-  border: 1px solid var(--sl-color-neutral-300);
+  padding: var(--wa-space-2xs) var(--wa-space-xs);
+  border: 1px solid var(--wa-color-neutral-30);
 }

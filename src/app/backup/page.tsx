@@ -2,7 +2,7 @@
 
 import Header from '@/components/Header'
 import dynamic from 'next/dynamic'
-const SlButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/button'), {ssr: false})
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
 import fetchTransactions from '@/api/fetchTransactions'
 import fetchSubCategories from '@/api/fetchSubCategories'
 import fetchCategories from '@/api/fetchCategories'
@@ -106,10 +106,10 @@ export default function Home() {
       <Header>Backup</Header>
 
       <main className="l-container l-stack u-padding-block">
-        <SlButton variant="primary" onClick={exportTransactions}>Exportar transações</SlButton>
-        <SlButton variant="primary" onClick={exportSubCategories}>Exportar sub-categorias</SlButton>
-        <SlButton variant="primary" onClick={exportCategories}>Exportar categorias</SlButton>
-        <SlButton variant="primary" onClick={exportTypes}>Exportar tipos</SlButton>
+        <WaButton variant="brand" onClick={exportTransactions}>Exportar transações</WaButton>
+        <WaButton variant="brand" onClick={exportSubCategories}>Exportar sub-categorias</WaButton>
+        <WaButton variant="brand" onClick={exportCategories}>Exportar categorias</WaButton>
+        <WaButton variant="brand" onClick={exportTypes}>Exportar tipos</WaButton>
       </main>
     </>
   )

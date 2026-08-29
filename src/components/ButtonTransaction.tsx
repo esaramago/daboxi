@@ -35,7 +35,7 @@ export default function ButtonTransaction(props: ButtonTransaction) {
         subDescription={props.subCategoryDescription}
         right={
           <>
-            <Value value={props.value} style={{color: props.value > 0 ? 'var(--sl-color-success-500)' : ''}}></Value>
+            <Value value={props.value} style={{color: props.value > 0 ? 'var(--wa-color-success-50)' : ''}}></Value>
             {
               (netValue != null) && <Value value={netValue} size="small"></Value>
             }

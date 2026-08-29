@@ -13,7 +13,7 @@ interface Props {
 export default async function EnableBankingTransaction(props: Props) {
 
   const isTopup = props.code === 'TOPUP'
-  const color = isTopup ? 'var(--sl-color-success-500)' : ''
+  const color = isTopup ? 'var(--wa-color-success-50)' : ''
   const value = isTopup ? props.value : props.value*-1
   return (
     <button type="button" className="u-width-100">

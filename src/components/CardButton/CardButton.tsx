@@ -28,7 +28,7 @@ export default function Button(props: CardButton) {
             <span className="c-card-button__sub-description">{props.subDescription}</span>
           </span>
         </div>
-        <div className="c-card-button__right" style={{color: props.variant === 'income' ? 'var(--sl-color-success-500)' : ''}}>{props.right}</div>
+        <div className="c-card-button__right" style={{color: props.variant === 'income' ? 'var(--wa-color-success-50)' : ''}}>{props.right}</div>
       </div>
     </>
   )

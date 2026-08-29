@@ -1,0 +1,63 @@
+:root {
+  color-scheme: light;
+
+  --wa-space-scale: 1.6;
+  --wa-font-size-scale: 1.6;
+
+  --wa-color-neutral-0: #131316;
+  --wa-color-neutral-5: #18181b;
+  --wa-color-neutral-10: #27272a;
+  --wa-color-neutral-20: #3f3f46;
+  --wa-color-neutral-30: #52525b;
+  --wa-color-neutral-40: #71717a;
+  --wa-color-neutral-50: #a1a1aa;
+  --wa-color-neutral-60: #d4d4d8;
+  --wa-color-neutral-70: #e4e4e7;
+  --wa-color-neutral-80: #ededed;
+  --wa-color-neutral-90: #f9f9f9;
+  --wa-color-neutral-95: #f9f9f9;
+
+  /* Brand */
+  --wa-color-brand-5: #001a38;
+  --wa-color-brand-10: #002e5f;
+  --wa-color-brand-20: #024286;
+  --wa-color-brand-30: #0458b1;
+  --wa-color-brand-40: #036bda;
+  --wa-color-brand-50: #1A87FE;
+  --wa-color-brand-60: #3597ff;
+  --wa-color-brand-70: #7ebdff;
+  --wa-color-brand-80: #b2d5ff;
+  --wa-color-brand-90: #E2EFFF;
+  --wa-color-brand-95: #f2f8ff;
+  --wa-color-brand: var(--wa-color-brand-50);
+
+  --wa-color-success-5: #0c311b;
+  --wa-color-success-10: #14532d;
+  --wa-color-success-20: #166534;
+  --wa-color-success-30: #008364;
+  --wa-color-success-40: #01b68b;
+  --wa-color-success-50: #03cb9c;
+  --wa-color-success-60: #07e3af;
+  --wa-color-success-70: #86efac;
+  --wa-color-success-80: #bbf7d0;
+  --wa-color-success-90: #e0f6f4;
+  --wa-color-success-95: #f0fdf4;
+
+  --wa-color-warning-5: #4a230b;
+  --wa-color-warning-10: #78350f;
+  --wa-color-warning-20: #92400e;
+  --wa-color-warning-30: #b45309;
+  --wa-color-warning-40: #d97706;
+  --wa-color-warning-50: #f59e0b;
+  --wa-color-warning-60: #fbbf24;
+  --wa-color-warning-70: #fcd34d;
+  --wa-color-warning-80: #fde68a;
+  --wa-color-warning-90: #fef3c7;
+  --wa-color-warning-95: #fffbeb;
+
+  --wa-color-surface-default: var(--wa-color-neutral-20);
+  --wa-color-surface-raised: var(--wa-color-neutral-10);
+  --wa-color-surface-border: var(--wa-color-neutral-40);
+
+  --wa-color-text-normal: var(--wa-color-neutral-90);
+}

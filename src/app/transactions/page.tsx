@@ -12,11 +12,10 @@ import dynamic from 'next/dynamic'
 import fetchCategories from '@/api/fetchCategories'
 import getColorByVariant from '@/utils/getColorByVariant'
 import fetchSubCategoriesByCategory from '@/api/fetchSubCategoriesByCategory'
-const SlDropdown = dynamic(() => import('@shoelace-style/shoelace/dist/react/dropdown'), {ssr: false})
-const SlButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/button'), {ssr: false})
-const SlIcon = dynamic(() => import('@shoelace-style/shoelace/dist/react/icon'), {ssr: false})
-const SlMenu = dynamic(() => import('@shoelace-style/shoelace/dist/react/menu'), {ssr: false})
-const SlMenuItem = dynamic(() => import('@shoelace-style/shoelace/dist/react/menu-item'), {ssr: false})
+const WaDropdown = dynamic(() => import('@awesome.me/webawesome/dist/react/dropdown/index.js'), {ssr: false})
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
+const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
+const WaDropdownItem = dynamic(() => import('@awesome.me/webawesome/dist/react/dropdown-item/index.js'), {ssr: false})
 import type { Transactions, Categories, SubCategories } from '@/appwrite.d'
 
 export default function Transactions() {
@@ -120,69 +119,65 @@ export default function Transactions() {
           {
             categories && (
 
-              <SlDropdown>
-                <SlButton slot="trigger">
+              <WaDropdown>
+                <WaButton slot="trigger">
                   {
                     category ? (
                       <span style={{color: getColorByVariant(category.type.code)}} className="l-row l-row--x-small u-semibold">
-                        <SlIcon name={category.icon} slot="prefix" />
+                        <WaIcon name={category.icon} slot="start" />
                         <strong style={{color: category.type.color}}>{category.description}</strong>
                       </span>
                     ) : 'Categoria'
                   }
-                  <SlIcon name="chevron-down" slot="suffix" />
-                </SlButton>
-                <SlMenu>
-                  {
-                    categories.map((category) => (
-                      <SlMenuItem
-                        key={category.code}
-                        onClick={handleSelectCategory}
-                        data-category={category.code}
-                      >
-                        <div className="l-row l-row--x-small">
-                          <SlIcon name={category.icon} style={{color: category.type.color}} />
-                          {category.description}
-                        </div>
-                      </SlMenuItem>
-                    ))
-                  }
-                </SlMenu>
-              </SlDropdown>
+                  <WaIcon name="chevron-down" slot="end" />
+                </WaButton>
+                {
+                  categories.map((category) => (
+                    <WaDropdownItem
+                      key={category.code}
+                      onClick={handleSelectCategory}
+                      data-category={category.code}
+                    >
+                      <div className="l-row l-row--x-small">
+                        <WaIcon name={category.icon} style={{color: category.type.color}} />
+                        {category.description}
+                      </div>
+                    </WaDropdownItem>
+                  ))
+                }
+              </WaDropdown>
             )
           }
           {
             category && subCategories && (
 
-              <SlDropdown>
-                <SlButton slot="trigger">
+              <WaDropdown>
+                <WaButton slot="trigger">
                   {
                     subCategory ? (
                       <span style={{color: getColorByVariant(category.type.code)}} className="l-row l-row--x-small u-semibold">
-                        <SlIcon name={subCategory.icon} slot="prefix" />
+                        <WaIcon name={subCategory.icon} slot="start" />
                         <strong className="u-semibold">{subCategory.description}</strong>
                       </span>
                     ) : 'Sub categoria'
                   }
-                  <SlIcon name="chevron-down" slot="suffix" />
-                </SlButton>
-                <SlMenu>
-                  {
-                    subCategories.map((subCategory) => (
-                      <SlMenuItem
-                        key={subCategory.code}
-                        onClick={handleSelectSubCategory}
-                        data-subcategory={subCategory.code}
-                      >
-                        <div className="l-row l-row--x-small">
-                          <SlIcon name={subCategory.icon} style={{color: subCategory.color}} />
-                          {subCategory.description}
-                        </div>
-                      </SlMenuItem>
-                    ))
-                  }
-                </SlMenu>
-              </SlDropdown>
+                  <WaIcon name="chevron-down" slot="end" />
+                </WaButton>
+                {
+                  subCategories.map((subCategory) => (
+                    <WaDropdownItem
+                      key={subCategory.code}
+                      onClick={handleSelectSubCategory}
+                      data-subcategory={subCategory.code}
+                    >
+                      <div className="l-row l-row--x-small">
+                        <WaIcon name={subCategory.icon} style={{color: subCategory.color}} />
+                        {subCategory.description}
+                      </div>
+                    </WaDropdownItem>
+                  ))
+                }
+              </WaDropdown>
             )
           }
 

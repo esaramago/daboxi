@@ -9,9 +9,9 @@ import Value from '@/components/Value'
 import Loading from '@/components/Loading'
 import type { Categories, SubCategories, Transactions } from 'appwrite.d'
 import dynamic from 'next/dynamic'
-const SlIcon = dynamic(() => import('@shoelace-style/shoelace/dist/react/icon'), {ssr: false})
-const SlCard = dynamic(() => import('@shoelace-style/shoelace/dist/react/card'), {ssr: false})
-const SlProgressBar = dynamic(() => import('@shoelace-style/shoelace/dist/react/progress-bar'), {ssr: false})
+const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
+const WaCard = dynamic(() => import('@awesome.me/webawesome/dist/react/card/index.js'), {ssr: false})
+const WaProgressBar = dynamic(() => import('@awesome.me/webawesome/dist/react/progress-bar/index.js'), {ssr: false})
 
 interface Props {
   category: Categories
@@ -73,7 +73,7 @@ export default function CategoryResume(props: Props) {
 
   return (
     <>
-      <SlCard className="c-category-resume">
+      <WaCard className="c-category-resume">
         <div className="l-stack l-stack--small">
           <div className="l-row l-row--small l-row--end">
             <div className="l-row l-row--x-small l-row__fill">
@@ -96,11 +96,11 @@ export default function CategoryResume(props: Props) {
 
           {
             props.category.code !== 'income' &&
-            <SlProgressBar
+            <WaProgressBar
               value={budgetPercentage}
               style={{
-                '--track-color': 'var(--sl-color-primary-200)',
-                '--indicator-color': 'var(--sl-color-primary-500)',
+                '--track-color': 'var(--wa-color-brand-20)',
+                '--indicator-color': 'var(--wa-color-brand-50)',
                 '--height': '12px',
               } as React.CSSProperties}
             />
@@ -115,7 +115,7 @@ export default function CategoryResume(props: Props) {
                 const total = getTotalBySubcategory(subCategory.code)
                 return (
                   <div key={subCategory.code} className="l-row l-row--x-small">
-                    <SlIcon name={subCategory.icon} style={{color: color}} />
+                    <WaIcon name={subCategory.icon} style={{color: color}} />
                     <span className="l-row__fill">{subCategory.description}</span>
                     {
                       props.category.code === 'income' ? (
@@ -129,7 +129,7 @@ export default function CategoryResume(props: Props) {
                             value={total}
                             sign={false}
                             style={{
-                              color: Math.abs(total) > subCategory.budget ? 'var(--sl-color-danger-500)': ''
+                              color: Math.abs(total) > subCategory.budget ? 'var(--wa-color-danger-50)': ''
                             }}
                           />
                           /
@@ -146,7 +146,7 @@ export default function CategoryResume(props: Props) {
             }
           </div>
         }
-      </SlCard>
+      </WaCard>
     </>
   )
 }

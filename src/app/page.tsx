@@ -15,10 +15,10 @@ import StickyButton from '@/components/StickyButton'
 import Resume from '@/components/Resume/Resume'
 import Loading from '@/components/Loading'
 import dynamic from 'next/dynamic'
-const SlButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/button'), {ssr: false})
-const SlCard = dynamic(() => import('@shoelace-style/shoelace/dist/react/card'), {ssr: false})
-const SlAvatar = dynamic(() => import('@shoelace-style/shoelace/dist/react/avatar'), {ssr: false})
-const SlDropdown = dynamic(() => import('@shoelace-style/shoelace/dist/react/dropdown'), {ssr: false})
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
+const WaCard = dynamic(() => import('@awesome.me/webawesome/dist/react/card/index.js'), {ssr: false})
+const WaAvatar = dynamic(() => import('@awesome.me/webawesome/dist/react/avatar/index.js'), {ssr: false})
+const WaDropdown = dynamic(() => import('@awesome.me/webawesome/dist/react/dropdown/index.js'), {ssr: false})
 
 type User = {
   name?: string
@@ -89,15 +89,15 @@ export default function Home() {
         backgroundColor="transparent"
         actions={
           <div className="l-row l-row--small">
-            <SlDropdown>
+            <WaDropdown>
               <button type="button" slot="trigger">
-                <SlAvatar label={user.name || user.email} />
+                <WaAvatar label={user.name || user.email} />
               </button>
               <div className="c-dropdown">
                 <span className="u-nowrap">Olá, {user.name || user.email}</span>
                 <button type="button" className="c-link" onClick={handleLogout}>Sair</button>
               </div>
-            </SlDropdown>
+            </WaDropdown>
           </div>
         }
       >
@@ -114,9 +114,9 @@ export default function Home() {
 
       <main className="l-container l-stack u-padding-block">
 
-        <SlCard>
+        <WaCard>
           <Resume transactions={monthTransactions} showDetailsButton={true} />
-        </SlCard>
+        </WaCard>
 
         <section className="l-stack">
           <div className="l-row l-row--small">
@@ -156,7 +156,7 @@ export default function Home() {
 
         <div className="u-text-center">
           <Link href="/transactions">
-            <SlButton>Ver todos os movimentos</SlButton>
+            <WaButton>Ver todos os movimentos</WaButton>
           </Link>
         </div>
 

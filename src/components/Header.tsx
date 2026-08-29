@@ -4,7 +4,7 @@ import './Header.css'
 import { useRouter } from 'next/navigation'
 import { usePathname  } from 'next/navigation'
 import dynamic from 'next/dynamic'
-const SlIcon = dynamic(() => import('@shoelace-style/shoelace/dist/react/icon'), {ssr: false})
+const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
 
 interface Props {
   children: any
@@ -40,7 +40,7 @@ export default function Header(props: Props) {
             ) : (
               <div className="c-header__title">
                 <button onClick={goBack}>
-                  <SlIcon name="arrow-left" className="is-hidden-print"></SlIcon>
+                  <WaIcon name="arrow-left" className="is-hidden-print"></WaIcon>
                   <h1>{children}</h1>
                 </button>
               </div>

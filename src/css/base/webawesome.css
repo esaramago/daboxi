@@ -1,0 +1,69 @@
+:where(.wa-toast-stack) {
+  position: fixed;
+  top: 0;
+  inset-inline-end: 0;
+  z-index: var(--wa-z-index-toast);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+}
+
+:where(.wa-toast-stack) :where(wa-alert) {
+  --wa-space-l: var(--wa-space-s);
+  margin: var(--wa-space-m);
+}
+
+:where(.wa-toast-stack) :where(wa-alert)::part(base) {
+  box-shadow: var(--wa-shadow-l);
+}
+
+/* Overrides */
+
+:where(wa-drawer) {
+  --size: auto;
+  --spacing: var(--wa-space-m);
+  --header-spacing: var(--wa-space-m);
+  --body-spacing: 0 var(--wa-space-m);
+  --footer-spacing: 0 var(--wa-space-m);
+}
+
+:where(wa-button) {
+  @media print {
+    display: none;
+  }
+  --wa-space-s: var(--wa-space-xs);
+}
+
+:where(wa-textarea)::part(base) {
+  font-size: var(--wa-font-size-s);
+}
+
+:where(wa-input, wa-textarea, wa-select)::part(form-control-label)::after {
+  color: var(--wa-color-danger-50);
+}
+
+:where(wa-card) {
+  break-inside: avoid;
+  --padding: var(--wa-space-m);
+}
+
+:where(wa-tab)::part(base) {
+  padding: var(--wa-space-s);
+}
+
+:where(wa-avatar)::part(base) {
+  background-color: var(--wa-color-brand-50);
+}
+
+:where(wa-progress-bar) {
+  &::part(base),
+  &::part(indicator) {
+    -webkit-print-color-adjust: exact !important;   /* Chrome, Safari 6 – 15.3, Edge */
+    print-color-adjust: exact !important;           /* Firefox 97+, Safari 15.4+ */
+  }
+}
+
+
+:is(button, input[type="button"], input[type="reset"], input[type="submit"], input[type="file"], a.wa-button):not(input[type="file"]) {
+  height: auto;
+}

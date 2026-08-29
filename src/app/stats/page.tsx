@@ -11,10 +11,10 @@ import fetchCategories from '@/api/fetchCategories'
 import type { Transactions, Categories} from 'appwrite.d'
 import dynamic from 'next/dynamic'
 import exportStats from '@/utils/exportStats'
-const SlInput = dynamic(() => import('@shoelace-style/shoelace/dist/react/input'), {ssr: false})
-const SlFormatDate = dynamic(() => import('@shoelace-style/shoelace/dist/react/format-date'), {ssr: false})
-const SlCard = dynamic(() => import('@shoelace-style/shoelace/dist/react/card'), {ssr: false})
-const SlButton = dynamic(() => import('@shoelace-style/shoelace/dist/react/button'), {ssr: false})
+const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), {ssr: false})
+const WaFormatDate = dynamic(() => import('@awesome.me/webawesome/dist/react/format-date/index.js'), {ssr: false})
+const WaCard = dynamic(() => import('@awesome.me/webawesome/dist/react/card/index.js'), {ssr: false})
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
 
 function StatsContent() {
 
@@ -136,30 +136,29 @@ function StatsContent() {
 
   return (
     <>
-      <Header route="/">Estatísticas de <SlFormatDate date={date || new Date} month="long"></SlFormatDate></Header>
+      <Header route="/">Estatísticas de <WaFormatDate date={date || new Date} month="long"></WaFormatDate></Header>
       <main className="l-container l-stack u-padding-block">
 
-        <SlInput
+        <WaInput
           name="date"
           label="Mês"
           type={'month' as 'date'}
           max={currentMonth}
-          onSlInput={handleDateChange}
+          onInput={handleDateChange}
           value={month}
           className="is-hidden-print"
         />
         {
           loading ? <Loading /> :
           <>
-            <SlCard>
+            <WaCard>
               <Resume date={date} transactions={transactions} />
-            </SlCard>
+            </WaCard>
 
             <section className="l-stack">
               <div className="l-row">
-                <h2 className="l-row__fill">Gastos por categoria<span className="is-hidden-print"> (<SlFormatDate date={date || new Date} month="long" />)</span></h2>
+                <h2 className="l-row__fill">Gastos por categoria<span className="is-hidden-print"> (<WaFormatDate date={date || new Date} month="long" />)</span></h2>
                 <div>
-                  <SlButton variant="primary" onClick={handleExport}>Exportar</SlButton>
                 </div>
               </div>
               {

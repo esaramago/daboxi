@@ -1,4 +1,4 @@
 .c-label {
   display: block;
-  margin-block-end: var(--sl-spacing-x-small);
+  margin-block-end: var(--wa-space-xs);
 }
