@@ -1,3 +1,5 @@
+'use client'
+
 import './Loading.css'
 import dynamic from 'next/dynamic'
 const WaSpinner = dynamic(() => import('@awesome.me/webawesome/dist/react/spinner/index.js'), {ssr: false})

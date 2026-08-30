@@ -1,0 +1,24 @@
+.c-navigation-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--wa-color-brand-50, #1a87fe);
+  z-index: 99999;
+  pointer-events: none;
+  transition: width 200ms ease, opacity 250ms ease;
+  box-shadow: 0 0 10px var(--wa-color-brand-50, #1a87fe), 0 0 5px var(--wa-color-brand-50, #1a87fe);
+}
+
+.c-navigation-progress-bar__peg {
+  display: block;
+  position: absolute;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  box-shadow: 0 0 10px var(--wa-color-brand-50, #1a87fe), 0 0 5px var(--wa-color-brand-50, #1a87fe);
+  opacity: 1;
+  transform: rotate(3deg) translate(0px, -4px);
+}
+

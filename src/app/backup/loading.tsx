@@ -1,0 +1,15 @@
+import Header from '@/components/Header'
+import Loading from '@/components/Loading'
+
+export default function BackupLoading() {
+  return (
+    <>
+      <Header>Backup</Header>
+
+      <main className="l-container l-stack u-padding-block">
+        <Loading />
+      </main>
+    </>
+  )
+}
+
