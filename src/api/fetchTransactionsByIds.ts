@@ -16,6 +16,7 @@ export default async function fetchTransactionsByIds(ids: string[]) {
       'netValue',
       'description',
       'niceDescription',
+      'notes',
       'subCategory.*',
       'subCategory.category',
       'subCategory.category.code'

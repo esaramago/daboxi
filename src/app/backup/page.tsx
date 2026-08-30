@@ -26,10 +26,11 @@ export default function Home() {
       'netValue',
       'description',
       'niceDescription',
+      'notes',
       'subCategory',
     ]
     const csv = transactions.map((transaction) => {
-      return `${transaction.$id},${transaction.date},${transaction.refundsIds ?? ''},${transaction.value ?? ''},${transaction.netValue ?? ''},${transaction.description},${transaction.niceDescription},${transaction.subCategory.$id}`
+      return `${transaction.$id},${transaction.date},${transaction.refundsIds ?? ''},${transaction.value ?? ''},${transaction.netValue ?? ''},${transaction.description ?? ''},${transaction.niceDescription ?? ''},${transaction.notes ?? ''},${transaction.subCategory?.$id ?? ''}`
     }).join('\n')
 
     exportToCSV(headers, csv, 'transactions')

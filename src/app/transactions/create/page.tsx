@@ -20,7 +20,7 @@ export default function CreateTransaction() {
   const router = useRouter()
 
   const [csvContent, setCsvContent] = useState(
-    'date,niceDescription,value,subCategory,description\n2026-01-01,"Descrição",-10.01,,'
+    'date,niceDescription,value,subCategory,description,notes\n2026-01-01,"Descrição",-10.01,,,'
   )
 
   const handleTextareaChange = (event: any) => {
@@ -38,8 +38,9 @@ export default function CreateTransaction() {
       return {
         date: new Date(transaction.date),
         value: Number(transaction.value),
-        description: transaction.description,
+        description: transaction.description || null,
         niceDescription: transaction.niceDescription,
+        notes: transaction.notes || null,
         subCategory: transaction.subCategory || undefinedSubCategoryId,
       } as unknown as Transactions
     })
@@ -91,7 +92,7 @@ export default function CreateTransaction() {
                 onInput={handleTextareaChange}
                 rows={10}
                 value={csvContent}
-                hint="Fields: date,niceDescription,value,subCategory,description"
+                hint="Fields: date,niceDescription,value,subCategory,description,notes"
               ></WaTextarea>
               <div>
                 <WaButton type="submit" variant="brand">

@@ -30,6 +30,7 @@ export type Transactions = Models.Row & {
     netValue: number | null;
     description: string | null;
     niceDescription: string;
+    notes?: string | null;
     subCategory: SubCategories;
     enableBankingId?: string | null;
 }

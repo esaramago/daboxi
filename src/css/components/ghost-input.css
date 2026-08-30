@@ -8,7 +8,8 @@
   height: auto;
   padding-block: var(--wa-space-2xs);
 }
-.c-ghost-input::part(input) {
+.c-ghost-input::part(input),
+.c-ghost-input::part(textarea) {
   field-sizing: content;
   flex: none;
   -moz-appearance: textfield;
@@ -31,7 +32,9 @@
 }
 
 .c-ghost-input::part(input)::placeholder,
-.c-ghost-input::part(input)::-webkit-input-placeholder {
+.c-ghost-input::part(input)::-webkit-input-placeholder,
+.c-ghost-input::part(textarea)::placeholder,
+.c-ghost-input::part(textarea)::-webkit-input-placeholder {
   color: var(--wa-color-neutral-80);
   opacity: .8;
 }

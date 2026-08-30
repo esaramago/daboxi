@@ -23,6 +23,7 @@ import dynamic from 'next/dynamic'
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
 const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
 const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), {ssr: false})
+const WaTextarea = dynamic(() => import('@awesome.me/webawesome/dist/react/textarea/index.js'), {ssr: false})
 
 export default function Transaction() {
 
@@ -225,6 +226,18 @@ export default function Transaction() {
       console.error(error.message)
     }
   }
+  const handleChangeNotes = async (event) => {
+    const notes = event.currentTarget.value
+
+    try {
+      await updateTransaction(transactionId, {
+        notes: notes || null
+      })
+    } catch (error) {
+      alert(`Não foi possível gravar as notas`)
+      console.error(error.message)
+    }
+  }
   //#endregion Edit descriptions
 
   //#region Edit value
@@ -348,6 +361,12 @@ export default function Transaction() {
                       onChange={handleChangeDescription}
                       value={transaction.description}
                       placeholder="Sem entidade"
+                    />
+                    <WaTextarea
+                      className="c-ghost-input"
+                      onChange={handleChangeNotes}
+                      value={transaction.notes}
+                      placeholder="Sem notas"
                     />
                   </div>
                   <div>

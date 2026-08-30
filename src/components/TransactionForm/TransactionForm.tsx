@@ -15,11 +15,13 @@ import type { Transactions, SubCategories } from '@/appwrite.d'
 import dynamic from 'next/dynamic'
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
 const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), { ssr: false })
+const WaTextarea = dynamic(() => import('@awesome.me/webawesome/dist/react/textarea/index.js'), { ssr: false })
 
 export interface TransactionFormValues {
   date?: string
   niceDescription?: string
   description?: string
+  notes?: string
   value?: string | number
   subCategory?: string
   refund?: string
@@ -38,6 +40,7 @@ export default function TransactionForm({ initialValues, redirectTo = '/' }: Tra
     date: initialValues?.date || '',
     niceDescription: initialValues?.niceDescription || '',
     description: initialValues?.description || '',
+    notes: initialValues?.notes || '',
     value: initialValues?.value !== undefined ? String(initialValues.value) : '',
     subCategory: initialValues?.subCategory || '',
     refund: initialValues?.refund || '',
@@ -51,6 +54,7 @@ export default function TransactionForm({ initialValues, redirectTo = '/' }: Tra
         date: initialValues.date ?? prev.date,
         niceDescription: initialValues.niceDescription ?? prev.niceDescription,
         description: initialValues.description ?? prev.description,
+        notes: initialValues.notes ?? prev.notes,
         value: initialValues.value !== undefined ? String(initialValues.value) : prev.value,
         subCategory: initialValues.subCategory ?? prev.subCategory,
         refund: initialValues.refund ?? prev.refund,
@@ -147,6 +151,7 @@ export default function TransactionForm({ initialValues, redirectTo = '/' }: Tra
           date: new Date(formFields.date),
           niceDescription: formFields.niceDescription,
           description: formFields.description || null,
+          notes: formFields.notes || null,
           value: _value,
           subCategory: formFields.subCategory,
           refundsIds: formFields.refund ? formFields.refund : null,
@@ -240,6 +245,13 @@ export default function TransactionForm({ initialValues, redirectTo = '/' }: Tra
           </button>
           <input id="subCategory" type="hidden" value={formFields.subCategory} />
         </div>
+
+        <WaTextarea
+          name="notes"
+          label="Notas"
+          value={formFields.notes}
+          onInput={handleInputChange}
+        ></WaTextarea>
 
         {selectedSubCategory && selectedSubCategory.code === 'refund' && (
           <div>

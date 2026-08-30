@@ -16,6 +16,7 @@ export default async function fetchTransactions(size?: number) {
       'netValue',
       'description',
       'niceDescription',
+      'notes',
       'subCategory.$id',
       'subCategory.code',
       'subCategory.description',

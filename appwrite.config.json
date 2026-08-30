@@ -220,6 +220,15 @@
                     "encrypt": false
                 },
                 {
+                    "key": "notes",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 1000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
                     "key": "subCategory",
                     "type": "relationship",
                     "required": false,
