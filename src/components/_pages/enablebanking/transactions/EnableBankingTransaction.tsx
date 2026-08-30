@@ -1,4 +1,4 @@
-
+import Link from 'next/link'
 import CardButton from '@/components/CardButton'
 import Value from '@/components/Value'
 
@@ -11,20 +11,18 @@ interface Props {
 }
 
 export default async function EnableBankingTransaction(props: Props) {
-
   const isTopup = props.code === 'TOPUP'
   const color = isTopup ? 'var(--wa-color-success-50)' : ''
-  const value = isTopup ? props.value : props.value*-1
+  const value = isTopup ? props.value : props.value * -1
+
   return (
-    <button type="button" className="u-width-100">
+    <Link href={`/enablebanking/transactions/${encodeURIComponent(props.id)}`}>
       <CardButton
         key={props.id}
         description={props.description}
         subDescription={props.subDescription}
-        right={
-          <Value value={value} style={{color: color}}></Value>
-        }
+        right={<Value value={value} style={{ color: color }}></Value>}
       ></CardButton>
-    </button>
+    </Link>
   )
 }

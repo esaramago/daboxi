@@ -21,6 +21,7 @@ export default async function fetchTransactions(size?: number) {
       'subCategory.description',
       'subCategory.icon',
       'subCategory.category.code',
+      'enableBankingId',
     ]),
     Query.orderDesc('date'),
     Query.orderDesc('$createdAt')

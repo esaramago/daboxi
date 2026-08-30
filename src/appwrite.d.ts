@@ -31,6 +31,7 @@ export type Transactions = Models.Row & {
     description: string | null;
     niceDescription: string;
     subCategory: SubCategories;
+    enableBankingId?: string | null;
 }
 
 export type BankSessions = Models.Row & {

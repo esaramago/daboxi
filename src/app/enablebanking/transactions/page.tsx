@@ -4,6 +4,7 @@ import createEnableBankingSession from '@/utils/enablebanking/createSession'
 import getEnableBankingTransactions from '@/utils/enablebanking/getTransactions'
 import getEnableBankingToken from '@/utils/enablebanking/getToken'
 import fetchActiveBankSession from '@/api/fetchActiveBankSession'
+import fetchExistingEnableBankingIds from '@/api/fetchExistingEnableBankingIds'
 import saveBankSession from '@/api/saveBankSession'
 import Date from '@/components/Date'
 import EnableBankingTransaction from '@/components/_pages/enablebanking/transactions/EnableBankingTransaction'
@@ -46,19 +47,29 @@ export default async function EnableBankingTransactions({
     transactions = transactionsData || []
   }
 
-  // 4. Só gerar link de autenticação se não houver sessão ativa
+  // 4. Filtrar transações que já foram importadas para a base de dados
+  const existingIdsResult = await fetchExistingEnableBankingIds()
+  const existingIds = new Set(existingIdsResult.data || [])
+
+  const filteredTransactions = transactions.filter(
+    (transaction: any) =>
+      !existingIds.has(transaction.transaction_id) &&
+      (!transaction.entry_reference || !existingIds.has(transaction.entry_reference))
+  )
+
+  // 5. Só gerar link de autenticação se não houver sessão ativa
   let authUrl: string | null = null
   if (!sessionId) {
     authUrl = await getEnableBankingAuthLink(baseUrl + '/enablebanking/callback', token)
   }
 
-  // 5. Group transactions by date
+  // 6. Agrupar transações por data
   interface TransactionGroup {
     date: string
     transactions: any[]
   }
 
-  const transactionsByDate = transactions.reduce<Record<string, TransactionGroup>>((acc, transaction) => {
+  const transactionsByDate = filteredTransactions.reduce<Record<string, TransactionGroup>>((acc, transaction) => {
     const date = transaction.booking_date
     if (!acc[date]) {
       acc[date] = {
@@ -72,37 +83,31 @@ export default async function EnableBankingTransactions({
 
   return (
     <>
-      <Header>Transações EnableBanking</Header>
-
+      <Header route="/">Transações EnableBanking</Header>
 
       <main className="l-container u-padding-block">
-        {transactions && transactions.length > 0 ? (
+        {filteredTransactions && filteredTransactions.length > 0 ? (
           <div className="l-stack">
-            {
-              transactionsByDate && Object.values(transactionsByDate).map((group) => (
-                <div
-                  key={group.date}
-                >
+            {transactionsByDate &&
+              Object.values(transactionsByDate).map((group) => (
+                <div key={group.date}>
                   <Date date={group.date} sticky={true}></Date>
-                  {
-                    group.transactions.map((transaction) => (
-                      <EnableBankingTransaction
-                        key={transaction.transaction_id}
-                        id={transaction.transaction_id}
-                        description={transaction.remittance_information?.[0] || ''}
-                        subDescription={transaction.creditor?.name || transaction.debtor?.name}
-                        code={transaction.bank_transaction_code?.code || ''}
-                        value={Number(transaction.transaction_amount?.amount) || 0}
-                      ></EnableBankingTransaction>
-                    ))
-                  }
+                  {group.transactions.map((transaction) => (
+                    <EnableBankingTransaction
+                      key={transaction.entry_reference}
+                      id={transaction.entry_reference}
+                      description={transaction.remittance_information?.[0] || ''}
+                      subDescription={transaction.creditor?.name || transaction.debtor?.name}
+                      code={transaction.bank_transaction_code?.code || ''}
+                      value={Number(transaction.transaction_amount?.amount) || 0}
+                    ></EnableBankingTransaction>
+                  ))}
                 </div>
-              ))
-            }
+              ))}
           </div>
         ) : (
           <div className="l-stack">
-            <p>Não foram encontradas transações ou a sessão bancária não está ativa.</p>
+            <p>Não foram encontradas novas transações ou a sessão bancária não está ativa.</p>
             {authUrl && (
               <div>
                 <a href={authUrl} className="c-button">
@@ -116,4 +121,3 @@ export default async function EnableBankingTransactions({
     </>
   )
 }
-

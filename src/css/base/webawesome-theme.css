@@ -59,5 +59,7 @@
   --wa-color-surface-raised: var(--wa-color-neutral-10);
   --wa-color-surface-border: var(--wa-color-neutral-30);
 
+  --wa-color-neutral-on-quiet: var(--wa-color-neutral-80);
+  --wa-color-neutral-fill-quiet: var(--wa-color-neutral-50);
   --wa-color-text-normal: var(--wa-color-neutral-90);
 }

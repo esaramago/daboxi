@@ -230,6 +230,15 @@
                     "twoWayKey": "69334be0001592370a2a",
                     "onDelete": "setNull",
                     "side": "parent"
+                },
+                {
+                    "key": "enableBankingId",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 256,
+                    "default": null,
+                    "encrypt": false
                 }
             ],
             "indexes": []
