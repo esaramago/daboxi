@@ -41,16 +41,24 @@ export default async function EnableBankingTransactions({
     }
   }
 
-  // 3. Buscar transações se tivermos uma sessão válida
+  // 3. Buscar transações e IDs existentes em paralelo se tivermos uma sessão válida
+  let existingIds = new Set<string>()
+
   if (sessionId) {
-    const transactionsData = await getEnableBankingTransactions(sessionId, token)
+    const knownAccountId = session.data?.accounts?.[0] || null
+    const [transactionsData, existingIdsResult] = await Promise.all([
+      getEnableBankingTransactions(sessionId, token, knownAccountId),
+      fetchExistingEnableBankingIds(),
+    ])
+
     transactions = transactionsData || []
+    existingIds = new Set(existingIdsResult.data || [])
+  } else {
+    const existingIdsResult = await fetchExistingEnableBankingIds()
+    existingIds = new Set(existingIdsResult.data || [])
   }
 
-  // 4. Filtrar transações que já foram importadas para a base de dados
-  const existingIdsResult = await fetchExistingEnableBankingIds()
-  const existingIds = new Set(existingIdsResult.data || [])
-
+  // 4. Filtrar transações que já foram importadas ou descartadas
   const filteredTransactions = transactions.filter(
     (transaction: any) =>
       !existingIds.has(transaction.transaction_id) &&

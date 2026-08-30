@@ -11,6 +11,7 @@ import Categories from '@/components/Categories'
 import Refunds from '@/components/Refunds'
 import calcNetValue from '@/utils/calcNetValue'
 import type { Transactions, SubCategories } from '@/appwrite.d'
+import DiscardTransactionButton from '@/components/_pages/enablebanking/transactions/DiscardTransactionButton'
 
 import dynamic from 'next/dynamic'
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
@@ -246,13 +247,6 @@ export default function TransactionForm({ initialValues, redirectTo = '/' }: Tra
           <input id="subCategory" type="hidden" value={formFields.subCategory} />
         </div>
 
-        <WaTextarea
-          name="notes"
-          label="Notas"
-          value={formFields.notes}
-          onInput={handleInputChange}
-        ></WaTextarea>
-
         {selectedSubCategory && selectedSubCategory.code === 'refund' && (
           <div>
             <label htmlFor="refund" className="c-label">
@@ -279,10 +273,20 @@ export default function TransactionForm({ initialValues, redirectTo = '/' }: Tra
           </div>
         )}
 
-        <div>
+        <WaTextarea
+          name="notes"
+          label="Notas"
+          value={formFields.notes}
+          onInput={handleInputChange}
+        ></WaTextarea>
+
+        <div className="l-row l-row--small">
           <WaButton type="submit" variant="brand">
             Criar
           </WaButton>
+          {formFields.enableBankingId && (
+            <DiscardTransactionButton enableBankingId={formFields.enableBankingId} />
+          )}
         </div>
       </form>
 

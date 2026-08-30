@@ -24,7 +24,8 @@ export default async function fetchEnableBankingTransaction(transactionId: strin
   }
 
   const token = getEnableBankingToken()
-  const transactions = await getEnableBankingTransactions(session.data.sessionId, token)
+  const knownAccountId = session.data.accounts?.[0] || null
+  const transactions = await getEnableBankingTransactions(session.data.sessionId, token, knownAccountId)
 
   if (!transactions || !Array.isArray(transactions)) {
     return {

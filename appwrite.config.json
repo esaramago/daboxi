@@ -320,6 +320,40 @@
                 }
             ],
             "indexes": []
+        },
+        {
+            "$id": "enablebanking_transactions",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "693347b20038c67958ec",
+            "name": "enablebanking_transactions",
+            "enabled": true,
+            "rowSecurity": true,
+            "columns": [
+                {
+                    "key": "enableBankingId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 256,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "status",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
         }
     ]
 }

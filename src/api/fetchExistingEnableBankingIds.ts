@@ -6,24 +6,36 @@ import { requireAuth } from '@/lib/appwriteServer'
 export default async function fetchExistingEnableBankingIds() {
   await requireAuth()
 
-  const { data, error } = await fetchAppwriteDB('transactions', [
-    Query.select(['$id', 'enableBankingId']),
-  ], 5000)
+  const [ebResult, txResult] = await Promise.all([
+    fetchAppwriteDB('enablebanking_transactions', [
+      Query.select(['$id', 'enableBankingId']),
+    ], 5000),
+    fetchAppwriteDB('transactions', [
+      Query.select(['$id', 'enableBankingId']),
+    ], 5000),
+  ])
 
-  if (error || !data) {
-    return {
-      error: error || 'Não foi possível obter os identificadores EnableBanking existentes',
-      data: []
+  const ids = new Set<string>()
+
+  if (ebResult.data?.rows) {
+    for (const row of ebResult.data.rows) {
+      if (typeof row.enableBankingId === 'string' && row.enableBankingId.length > 0) {
+        ids.add(row.enableBankingId)
+      }
     }
   }
 
-  const ids: string[] = data.rows
-    .map((row: any) => row.enableBankingId)
-    .filter((id): id is string => typeof id === 'string' && id.length > 0)
+  if (txResult.data?.rows) {
+    for (const row of txResult.data.rows) {
+      if (typeof row.enableBankingId === 'string' && row.enableBankingId.length > 0) {
+        ids.add(row.enableBankingId)
+      }
+    }
+  }
 
   return {
     error: null,
-    data: ids
+    data: Array.from(ids)
   }
 }
 

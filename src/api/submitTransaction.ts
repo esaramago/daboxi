@@ -21,10 +21,19 @@ export default async function submitTransaction(data) {
       error,
       data: null
     }
-  } else {
-    return {
-      error: null,
-      data: response
-    }
+  }
+
+  if (data.enableBankingId) {
+    await createAppwriteRow('enablebanking_transactions', {
+      enableBankingId: data.enableBankingId,
+      status: 'imported'
+    }, permissions).catch(err => {
+      console.error('[submitTransaction] Error saving to enablebanking_transactions:', err)
+    })
+  }
+
+  return {
+    error: null,
+    data: response
   }
 }

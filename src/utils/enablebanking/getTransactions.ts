@@ -1,7 +1,11 @@
 import getEnableBankingSession from './getSession'
 
 // Pedir os dados
-export default async function getEnableBankingTransactions(sessionId: string, token: string | null) {
+export default async function getEnableBankingTransactions(
+  sessionId: string,
+  token: string | null,
+  knownAccountId?: string | null
+) {
 
   if (!sessionId) {
     console.error('ID da sessão não informada')
@@ -19,7 +23,7 @@ export default async function getEnableBankingTransactions(sessionId: string, to
       Authorization: `Bearer ${token}`, // O seu JWT válido
     },
   }
-  const accountId = await getEnableBankingSession(sessionId, token)
+  const accountId = knownAccountId || (await getEnableBankingSession(sessionId, token))
 
   if (!accountId) {
     console.error('Não foi possível obter o ID da conta EnableBanking')

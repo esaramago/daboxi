@@ -45,12 +45,14 @@ export default async function EnableBankingCreateTransaction({ params }: EnableB
   const niceDescription = remittanceInfo || partyName || ''
   const description = partyName || remittanceInfo || ''
 
+  const enableBankingId = transaction.transaction_id || decodedTransactionId
+
   const initialValues = {
     date: formattedDate,
     value: value,
     niceDescription: niceDescription,
     description: description,
-    enableBankingId: transaction.transaction_id || decodedTransactionId,
+    enableBankingId: enableBankingId,
   }
 
   return (

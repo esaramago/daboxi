@@ -44,3 +44,8 @@ export type BankSessions = Models.Row & {
     status: string | null;
 }
 
+export type EnableBankingTransactions = Models.Row & {
+    enableBankingId: string;
+    status?: 'imported' | 'discarded' | string | null;
+}
+
