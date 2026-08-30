@@ -121,7 +121,7 @@ export default function Home() {
         <section className="l-stack">
           <div className="l-row l-row--small">
             <h2 className="l-row__fill">Últimos movimentos</h2>
-            <Link href="/enablebanking/transactions" className="c-link">API</Link>
+            <Link href="/enablebanking/transactions" className="c-link">Importar</Link>
             <Link href="/transactions" className="c-link">Ver todos</Link>
             <Link href="/transactions/create" className="c-link is-hidden-mobile">Adicionar</Link>
           </div>
