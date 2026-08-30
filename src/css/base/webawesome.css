@@ -67,3 +67,7 @@
 :is(button, input[type="button"], input[type="reset"], input[type="submit"], input[type="file"], a.wa-button):not(input[type="file"]) {
   height: auto;
 }
+
+.end::slotted(*) {
+  margin-inline-start: auto;
+}

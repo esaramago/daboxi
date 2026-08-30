@@ -4,10 +4,10 @@
   --wa-space-scale: 1.6;
   --wa-font-size-scale: 1.6;
 
-  --wa-color-neutral-0: #131316;
+  --wa-color-neutral-0: #000;
   --wa-color-neutral-5: #18181b;
   --wa-color-neutral-10: #27272a;
-  --wa-color-neutral-20: #3f3f46;
+  --wa-color-neutral-20: #38383b;
   --wa-color-neutral-30: #52525b;
   --wa-color-neutral-40: #71717a;
   --wa-color-neutral-50: #a1a1aa;
@@ -57,7 +57,7 @@
 
   --wa-color-surface-default: var(--wa-color-neutral-20);
   --wa-color-surface-raised: var(--wa-color-neutral-10);
-  --wa-color-surface-border: var(--wa-color-neutral-40);
+  --wa-color-surface-border: var(--wa-color-neutral-30);
 
   --wa-color-text-normal: var(--wa-color-neutral-90);
 }

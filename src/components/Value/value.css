@@ -8,6 +8,7 @@
 }
 .c-value--x-large {
   font-size: var(--wa-font-size-2xl);
+  line-height: 1.1;
 }
 .c-value--small {
   font-size: var(--wa-font-size-s);

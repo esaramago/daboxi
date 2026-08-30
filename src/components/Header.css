@@ -1,10 +1,9 @@
 .c-header {
-  background-color: var(--wa-color-brand-50);
-  color: var(--wa-color-neutral-5);
+  background-color: var(--wa-color-brand-40);
+  color: var(--wa-color-neutral-90);
 }
 .c-header--no-background {
   background-color: transparent !important;
-  color: var(--wa-color-neutral-90);
 }
 .c-header__container {
   display: flex;

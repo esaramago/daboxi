@@ -14,7 +14,7 @@ interface Props {
 export default function Button(props: Props) {
 
   const color = getColorByVariant(props.variant as Variant)
-  const bgColor = color.replace('-50', '-10').replace('-60', '-20')
+  const bgColor = color.replace('-50', '-80')
 
   return (
     <div

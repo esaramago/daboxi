@@ -325,7 +325,7 @@ export default function Transaction() {
         {
           transaction ?
           <>
-            <div className="u-color-neutral-50 u-padding-block" style={{backgroundColor: backgroundColor}}>
+            <div className="u-padding-block" style={{backgroundColor: backgroundColor}}>
               <div className="l-container">
                 <div className="l-stack l-stack--small">
                   <button type="button" onClick={handleOpenDatePicker} className="u-text-start u-justify-start">

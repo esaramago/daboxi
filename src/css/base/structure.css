@@ -1,6 +1,6 @@
 html {
   font-size: 62.5%;
-  --background-color: var(--wa-color-neutral-5);
+  --background-color: var(--wa-color-neutral-10);
   background-color: var(--background-color);
 }
 body {

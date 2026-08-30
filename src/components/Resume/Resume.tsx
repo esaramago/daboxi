@@ -46,24 +46,24 @@ export default function Resume(props: Props) {
     <div className={props.className}>
       {
         loading ? <Loading size="small"></Loading> :
-        <div className="l-stack l-stack--small">
+        <div className="l-stack l-stack">
           <div className="l-row">
             <h2 className="l-row__fill">Balanço de <WaFormatDate date={props.date || new Date} month="long"></WaFormatDate></h2>
             {
               props.showDetailsButton ? <Link href="/stats" className="c-link">Detalhes</Link> : ''
             }
           </div>
-          <div>
-            <Value value={totalIncome + totalExpense} size="x-large"></Value>
+          <div className="l-row l-row--large">
+            <div>
+              Despesas<br />
+              <Value value={totalExpense} sign={true} style={{ color: 'var(--wa-color-brand-50)' }} size="x-large"></Value><br />
+            </div>
+            <div>
+              Receitas<br />
+              <Value value={totalIncome} sign={true} style={{ color: 'var(--wa-color-success-50)' }} size="x-large"></Value><br />
+            </div>
           </div>
-          <ul className="l-row">
-            <li>
-              Gasto: <Value value={totalExpense} sign={false} style={{color: 'var(--wa-color-brand-50)'}}></Value>
-            </li>
-            <li>
-              Ganho: <Value value={totalIncome} sign={false} style={{color: 'var(--wa-color-success-50)'}}></Value><br />
-            </li>
-          </ul>
+          <div>Balanço: <Value value={totalIncome + totalExpense} style={{ color: totalIncome + totalExpense > 0 ? 'var(--wa-color-success-50)' : 'var(--wa-color-brand-50)' }}></Value></div>
         </div>
       }
     </div>

@@ -8,6 +8,9 @@
   justify-content: space-between;
 }
 
+.l-row--large {
+  gap: var(--wa-space-l);
+}
 .l-row--small {
   gap: var(--wa-space-s);
 }

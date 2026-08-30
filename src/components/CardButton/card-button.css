@@ -31,7 +31,7 @@ button[disabled] > .c-card-button {
 }
 .c-card-button__sub-description {
   font-size: .9em;
-  color: var(--wa-color-neutral-40);
+  color: var(--wa-color-neutral-60);
   font-weight: 400;
 }
 .c-card-button__right {

@@ -12,7 +12,7 @@ export default function getColorByVariant(variant: Variant) {
       color = 'var(--wa-color-success-50)'
       break
     case 'refund':
-      color = 'var(--wa-color-warning-60)'
+      color = 'var(--wa-color-warning-50)'
       break
     case !variant || 'undefined':
       color = 'var(--wa-color-neutral-50)'

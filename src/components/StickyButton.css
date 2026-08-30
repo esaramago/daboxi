@@ -4,12 +4,8 @@
   bottom: var(--wa-space-m);
   box-shadow: 0 2px 12px 4px rgba(0, 0, 0, 0.2);
   border-radius: 50%;
-}
 
-:where(.c-sticky-button wa-button)::part(base) {
-  line-height: 30px;
-}
-:where(.c-sticky-button wa-icon) {
-  position: relative;
-  top: 4px;
+  wa-button::part(base) {
+    border-radius: var(--wa-border-radius-circle);
+  }
 }
