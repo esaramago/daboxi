@@ -4,7 +4,8 @@ import getEnableBankingSession from './getSession'
 export default async function getEnableBankingTransactions(
   sessionId: string,
   token: string | null,
-  knownAccountId?: string | null
+  knownAccountId?: string | null,
+  dateFrom: string = '2026-08-23'
 ) {
 
   if (!sessionId) {
@@ -29,9 +30,13 @@ export default async function getEnableBankingTransactions(
     console.error('Não foi possível obter o ID da conta EnableBanking')
     return null
   }
-  const transactionsUrl = `https://api.enablebanking.com/accounts/${accountId}/transactions`
 
-  const response = await fetch(transactionsUrl, requestOptions)
+  const url = new URL(`https://api.enablebanking.com/accounts/${accountId}/transactions`)
+  if (dateFrom) {
+    url.searchParams.set('date_from', dateFrom)
+  }
+
+  const response = await fetch(url.toString(), requestOptions)
   const data = await response.json()
 
   return data.transactions
