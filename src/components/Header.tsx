@@ -31,7 +31,7 @@ export default function Header(props: Props) {
   }
 
   return (
-    <header className={`c-header ${backgroundColor === 'transparent' && 'c-header--no-background'}`} style={{backgroundColor: backgroundColor}}>
+    <header className={`c-header ${backgroundColor === 'transparent' ? 'c-header--no-background' : ''}`} style={{backgroundColor: backgroundColor}}>
       <div className="l-container">
         <div className="c-header__container">
           {

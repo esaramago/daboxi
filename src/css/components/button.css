@@ -15,3 +15,8 @@
     cursor: not-allowed;
   }
 }
+.c-button--neutral {
+  background-color: var(--wa-color-neutral-80);
+  border-color: var(--wa-color-neutral-70);
+  color: var(--wa-color-neutral-20);
+}

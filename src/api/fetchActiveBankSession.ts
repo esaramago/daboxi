@@ -4,13 +4,19 @@ import { fetchAppwriteDB, Query } from '@/lib/appwrite'
 import { requireAuth } from '@/lib/appwriteServer'
 import type { BankSessions } from '@/appwrite.d'
 
-export default async function fetchActiveBankSession() {
+export default async function fetchActiveBankSession(bankName?: string | null) {
   await requireAuth()
 
-  const { data, error } = await fetchAppwriteDB('bank_sessions', [
+  const queries = [
     Query.orderDesc('$createdAt'),
-    Query.limit(1)
-  ])
+    Query.limit(10)
+  ]
+
+  if (bankName) {
+    queries.push(Query.equal('bankName', bankName))
+  }
+
+  const { data, error } = await fetchAppwriteDB('bank_sessions', queries)
 
   if (error || !data || !data.rows || data.rows.length === 0) {
     return {
@@ -19,12 +25,24 @@ export default async function fetchActiveBankSession() {
     }
   }
 
-  const session = data.rows[0] as BankSessions
+  // Encontra a sessão mais recente válida
+  const session = data.rows.find((s: any) => {
+    const bankSession = s as BankSessions
+    if (bankSession.status === 'EXPIRED' || bankSession.status === 'REVOKED') {
+      return false
+    }
+    if (bankSession.validUntil && new Date(bankSession.validUntil).getTime() < Date.now()) {
+      return false
+    }
+    if (bankName && bankSession.bankName && bankSession.bankName !== bankName) {
+      return false
+    }
+    return true
+  }) as BankSessions | undefined
 
-  // Verificar se o consentimento ainda é válido no tempo
-  if (session.validUntil && new Date(session.validUntil).getTime() < Date.now()) {
+  if (!session) {
     return {
-      error: 'A sessão expirou',
+      error: 'Nenhuma sessão ativa encontrada',
       data: null
     }
   }
@@ -34,4 +52,3 @@ export default async function fetchActiveBankSession() {
     data: session
   }
 }
-
