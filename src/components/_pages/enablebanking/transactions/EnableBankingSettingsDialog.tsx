@@ -26,15 +26,10 @@ export default function EnableBankingSettingsDialog({
   const dialogId = `dialog-settings-${generatedId}`
   const dialogRef = useRef<any>(null)
 
-  const [mounted, setMounted] = useState(false)
   const [bankName, setBankName] = useState(initialBankName || '')
   const [country, setCountry] = useState(initialCountry || '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   useEffect(() => {
     setBankName(initialBankName || '')
@@ -93,40 +88,22 @@ export default function EnableBankingSettingsDialog({
     }
   }
 
-  if (!mounted) {
-    return null
-  }
-
   return (
     <>
-      <span
-        data-dialog={`open ${dialogId}`}
-        onClick={handleOpen}
-        style={{ display: 'contents', cursor: 'pointer' }}
-      >
-        {trigger ? (
-          trigger
-        ) : (
-          <button
-            type="button"
-            title="Configurações EnableBanking"
-            aria-label="Configurações EnableBanking"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'none',
-              border: 'none',
-              color: 'inherit',
-              cursor: 'pointer',
-              padding: 'var(--wa-space-2xs)',
-              fontSize: 'var(--wa-font-size-l)',
-            }}
-          >
-            <WaIcon name="gear" label="Configurações EnableBanking"></WaIcon>
-          </button>
-        )}
-      </span>
+      {trigger ? (
+        trigger
+      ) : (
+        <WaButton
+          type="button"
+          title="Configurações EnableBanking"
+          aria-label="Configurações EnableBanking"
+          appearance="plain"
+          data-dialog={`open ${dialogId}`}
+          onClick={handleOpen}
+        >
+          <WaIcon name="gear" label="Configurações EnableBanking"></WaIcon>
+        </WaButton>
+      )}
 
       <WaDialog
         id={dialogId}
@@ -136,35 +113,38 @@ export default function EnableBankingSettingsDialog({
         onWaHide={() => setError(null)}
       >
         <div className="l-stack">
-          <WaInput
-            label="Nome do banco"
-            placeholder="Ex: Revolut, ActivoBank, Millennium bcp"
-            value={bankName}
-            onInput={(e: any) => setBankName(e.target.value)}
-            required
-            autoFocus
-          ></WaInput>
+          <div className="l-stack l-stack--x-small">
+            <WaInput
+              label="Nome do banco"
+              placeholder="Ex: Revolut, CaixaGeralDepositos, etc"
+              value={bankName}
+              onInput={(e: any) => setBankName(e.target.value)}
+              required
+              autoFocus
+            ></WaInput>
+            <p className="u-text-small">Se tiver dúvidas qual o nome exato, pesquise-o na <a href="https://enablebanking.com/open-banking-apis" target="_blank">documentação do EnableBanking</a>.</p>
+          </div>
 
           <WaInput
             label="País (código)"
             placeholder="Ex: PT, ES, GB"
-            value={country}
+            value={country || 'PT'}
             onInput={(e: any) => setCountry(e.target.value)}
             required
           ></WaInput>
 
-          <p style={{ fontSize: 'var(--wa-font-size-s)', color: 'var(--wa-color-neutral-60)', margin: 0 }}>
+          <p className="u-text-small">
             Ao guardar estas alterações, a sessão bancária atual será terminada e será necessário voltar a autenticar.
           </p>
 
           {error && (
-            <p className="u-color-danger" style={{ fontSize: 'var(--wa-font-size-s)', margin: 0 }}>
+            <p className="u-color-danger" style={{ fontSize: 'var(--wa-font-size-s)' }}>
               {error}
             </p>
           )}
         </div>
 
-        <div slot="footer" className="l-row l-row--small" style={{ justifyContent: 'flex-end', marginTop: 'var(--wa-space-m)' }}>
+        <div slot="footer" className="l-row l-row--small l-row--end">
           <WaButton
             appearance="outlined"
             data-dialog="close"
