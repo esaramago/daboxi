@@ -330,7 +330,7 @@ export default function Transaction() {
         backgroundColor={backgroundColor}
         actions={
           <WaButton appearance="plain" onClick={handleDeleteTransaction}>
-            <WaIcon name="trash3" label="Apagar movimento"></WaIcon>
+            <WaIcon name="trash" label="Apagar movimento"></WaIcon>
           </WaButton>
         }
       >Movimento</Header>
@@ -422,7 +422,7 @@ export default function Transaction() {
                           appearance="plain"
                           onClick={handleDeleteRefunds}
                         >
-                          <WaIcon name="trash3" label="Apagar reembolsos" />
+                          <WaIcon name="trash" label="Apagar reembolsos" />
                         </WaButton>
                       }
                     </div>

@@ -40,7 +40,7 @@ export default function DiscardTransactionButton({ enableBankingId }: DiscardTra
       onConfirm={handleDiscard}
     >
       <WaButton variant="danger" type="button">
-        <WaIcon slot="start" name="trash3"></WaIcon>
+        <WaIcon slot="start" name="trash"></WaIcon>
         Ignorar
       </WaButton>
     </ConfirmPopup>

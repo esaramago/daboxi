@@ -21,7 +21,7 @@ export default function Button(props: Props) {
       className={`c-icon ${props.size ? `c-icon--${props.size}` : ''}`}
       style={{backgroundColor: bgColor || 'var(--wa-color-neutral-10)', color: color || 'var(--wa-color-neutral-50)'}}
     >
-      <WaIcon name={props.name || 'question-lg'}></WaIcon>
+      <WaIcon name={props.name || 'question'}></WaIcon>
     </div>
   )
 }

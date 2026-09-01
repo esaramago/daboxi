@@ -4,9 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "copy-icons": "node scripts/copy-icons.js",
     "dev": "next dev --turbopack",
-    "build": "npm run copy-icons && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
