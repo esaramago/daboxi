@@ -32,7 +32,7 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy application files
 COPY . .
 
-# Build the application (includes copy-icons script)
+# Build the application
 RUN npm run build
 
 # Stage 3: Runner

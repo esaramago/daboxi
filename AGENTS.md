@@ -74,9 +74,8 @@ The database schema and TypeScript definitions are defined in:
 ## 5. Development Commands
 
 - `npm run dev`: Start Next.js local development server with Turbopack.
-- `npm run build`: Run icon preparation script and build production bundle.
+- `npm run build`: Build production bundle.
 - `npm run lint`: Run ESLint checks.
-- `npm run copy-icons`: Ensure icon assets directory exists.
 - `docker-compose up -d`: Run the application via Docker.
 
 ### Appwrite CLI

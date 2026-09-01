@@ -8,7 +8,6 @@ const montserrat = Montserrat({
 })
 
 import { Suspense } from 'react'
-import WebAwesomeProvider from '@/components/WebAwesomeProvider'
 import NavigationProgressBar from '@/components/NavigationProgressBar'
 
 export default function RootLayout({ children }) {
@@ -24,7 +23,6 @@ export default function RootLayout({ children }) {
         <Script defer src="https://analytics.emanuelsaramago.com/script.js" data-website-id="3bb64fca-1327-48ed-81bb-c809ea244b10"></Script>
       </head>
       <body className={`${montserrat.className}`}>
-        <WebAwesomeProvider />
         <Suspense fallback={null}>
           <NavigationProgressBar />
         </Suspense>
