@@ -280,13 +280,13 @@ export default function TransactionForm({ initialValues, redirectTo = '/' }: Tra
           onInput={handleInputChange}
         ></WaTextarea>
 
-        <div className="l-row l-row--small">
-          <WaButton type="submit" variant="brand">
-            Criar
-          </WaButton>
+        <div className="l-row l-row--small l-row--end">
           {formFields.enableBankingId && (
             <DiscardTransactionButton enableBankingId={formFields.enableBankingId} />
           )}
+          <WaButton type="submit" variant="brand">
+            Criar
+          </WaButton>
         </div>
       </form>
 

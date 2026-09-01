@@ -6,6 +6,7 @@ import ConfirmPopup from '@/components/ConfirmPopup'
 import discardEnableBankingTransaction from '@/api/discardEnableBankingTransaction'
 
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
+const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), { ssr: false })
 
 interface DiscardTransactionButtonProps {
   enableBankingId: string
@@ -31,15 +32,16 @@ export default function DiscardTransactionButton({ enableBankingId }: DiscardTra
 
   return (
     <ConfirmPopup
-      title="Descartar movimento"
-      message="Tem a certeza que deseja descartar este movimento?"
-      confirmLabel="Descartar"
+      title="Ignorar movimento"
+      message="Tem a certeza que deseja ignorar e eliminar este movimento?"
+      confirmLabel="Ignorar"
       cancelLabel="Cancelar"
       confirmVariant="danger"
       onConfirm={handleDiscard}
     >
       <WaButton variant="danger" type="button">
-        Descartar
+        <WaIcon slot="start" name="trash3"></WaIcon>
+        Ignorar
       </WaButton>
     </ConfirmPopup>
   )

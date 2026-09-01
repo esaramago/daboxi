@@ -7,6 +7,9 @@
 .l-row--space-between {
   justify-content: space-between;
 }
+.l-row--end {
+  justify-content: end;
+}
 
 .l-row--large {
   gap: var(--wa-space-l);
