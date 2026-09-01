@@ -9,6 +9,7 @@
   text-decoration: none;
   gap: var(--wa-space-m);
   font-weight: 600;
+  text-decoration: none; 
 }
 
 button[disabled] > .c-card-button {
