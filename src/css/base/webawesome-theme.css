@@ -61,5 +61,11 @@
 
   --wa-color-neutral-on-quiet: var(--wa-color-neutral-80);
   --wa-color-neutral-fill-quiet: var(--wa-color-neutral-50);
+  --wa-color-brand-fill-quiet: var(--wa-color-brand-20);
+  --wa-color-brand-border-quiet: var(--wa-color-brand-40);
+  --wa-color-warning-fill-quiet: var(--wa-color-warning-20);
+  --wa-color-warning-border-quiet: var(--wa-color-warning-40);
+  --wa-color-success-fill-quiet: var(--wa-color-success-20);
+  --wa-color-success-border-quiet: var(--wa-color-success-40);
   --wa-color-text-normal: var(--wa-color-neutral-90);
 }

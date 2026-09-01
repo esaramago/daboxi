@@ -8,6 +8,7 @@ import fetchExistingEnableBankingIds from '@/api/fetchExistingEnableBankingIds'
 import saveBankSession from '@/api/saveBankSession'
 import Date from '@/components/Date'
 import EnableBankingTransaction from '@/components/_pages/enablebanking/transactions/EnableBankingTransaction'
+import EmptyState from '@/components/EmptyState'
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL
 
@@ -114,15 +115,19 @@ export default async function EnableBankingTransactions({
               ))}
           </div>
         ) : (
-          <div className="l-stack">
-            <p>Não foram encontradas novas transações ou a sessão bancária não está ativa.</p>
-            {authUrl && (
-              <div>
-                <a href={authUrl} className="c-button">
-                  Autenticar EnableBanking
-                </a>
-              </div>
-            )}
+            <div className="l-stack">
+              {authUrl ? (
+                <>
+                  <p>A sessão bancária não está ativa.</p>
+                  <a href={authUrl} className="c-button">
+                    Autenticar EnableBanking
+                  </a>
+                </>
+              ) : (
+                <EmptyState message="Não existem transações bancárias disponíveis."></EmptyState>
+              )
+            }
+            
           </div>
         )}
       </main>
