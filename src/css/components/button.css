@@ -9,6 +9,7 @@
   background-color: var(--wa-color-brand-60);
   border-color: var(--wa-color-brand-60);
   color: var(--wa-color-neutral-0);
+  text-decoration: none;
 
   &[disabled] {
     opacity: .6;
