@@ -17,7 +17,7 @@ export default async function Callback({ searchParams }: CallbackProps) {
 
   return (
     <>
-      <Header>Transações EnableBanking</Header>
+      <Header>Movimentos bancários EnableBanking</Header>
 
       <main className="l-container l-stack u-padding-block">
         {error && <p>Erro na autorização: {error}</p>}

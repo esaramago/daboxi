@@ -4,7 +4,7 @@ import Loading from '@/components/Loading'
 export default function EnableBankingTransactionsLoading() {
   return (
     <>
-      <Header route="/">Transações EnableBanking</Header>
+      <Header route="/">Movimentos bancários EnableBanking</Header>
 
       <main className="l-container u-padding-block">
         <Loading />

@@ -91,7 +91,7 @@ export default async function EnableBankingTransactions({
 
   return (
     <>
-      <Header route="/">Transações EnableBanking</Header>
+      <Header route="/">Movimentos bancários EnableBanking</Header>
 
       <main className="l-container u-padding-block">
         {filteredTransactions && filteredTransactions.length > 0 ? (
