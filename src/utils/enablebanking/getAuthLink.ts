@@ -1,6 +1,11 @@
 const endpoint = 'https://api.enablebanking.com/auth'
 
-export default async function getEnableBankingAuthLink(redirectUrl: string, token: string | null) {
+export default async function getEnableBankingAuthLink(
+  redirectUrl: string,
+  token: string | null,
+  bankName: string,
+  country: string
+) {
   if (!redirectUrl) {
     console.error('URL de redirecionamento não informada')
     return null
@@ -10,6 +15,11 @@ export default async function getEnableBankingAuthLink(redirectUrl: string, toke
     console.error('Token não informado')
     return null
   }
+
+  if (!bankName || !country) {
+    console.error('Nome do banco ou país não configurados')
+    return null
+  }
       
   const requestBody = {
     response_type: 'code',
@@ -17,8 +27,8 @@ export default async function getEnableBankingAuthLink(redirectUrl: string, toke
       valid_until: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
     },
     aspsp: {
-      name: process.env.ENABLEBANKING_BANK_NAME || 'Revolut',
-      country: process.env.ENABLEBANKING_COUNTRY || 'PT'
+      name: bankName,
+      country: country
     },
     redirect_url: redirectUrl,
     state: 'SPys89MuHAGf010zJbMFm9UTeRUTB1cDTHcAT3rX6pRu18R3tJzQGKfwJxV0mBPv' 

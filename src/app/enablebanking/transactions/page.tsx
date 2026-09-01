@@ -5,12 +5,14 @@ import getEnableBankingTransactions from '@/utils/enablebanking/getTransactions'
 import getEnableBankingToken from '@/utils/enablebanking/getToken'
 import fetchActiveBankSession from '@/api/fetchActiveBankSession'
 import fetchExistingEnableBankingIds from '@/api/fetchExistingEnableBankingIds'
+import fetchEnableBankingSettings from '@/api/fetchEnableBankingSettings'
 import saveBankSession from '@/api/saveBankSession'
 import Date from '@/components/Date'
 import EnableBankingTransaction from '@/components/_pages/enablebanking/transactions/EnableBankingTransaction'
+import EnableBankingSettingsDialog from '@/components/_pages/enablebanking/transactions/EnableBankingSettingsDialog'
 import EmptyState from '@/components/EmptyState'
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || ''
 
 export default async function EnableBankingTransactions({
   searchParams,
@@ -22,27 +24,35 @@ export default async function EnableBankingTransactions({
   const code = sp?.code as string | undefined
   const token = getEnableBankingToken()
 
+  // 1. Obter configurações de banco e país do utilizador
+  const { data: settings } = await fetchEnableBankingSettings()
+  const bankName = settings?.bankName || null
+  const country = settings?.country || null
+  const isConfigured = Boolean(bankName && country)
+
   let sessionId: string | null = null
   let transactions: any[] = []
 
-  // 1. Obter sessão ativa na base de dados
-  const session = await fetchActiveBankSession()
+  // 2. Obter sessão ativa na base de dados para o banco configurado
+  const session = await fetchActiveBankSession(bankName)
   if (!session.error && session.data?.sessionId) {
     sessionId = session.data.sessionId
   }
 
-  // 2. Se não houver sessão ativa na BD mas houver um novo 'code'
-  if (!sessionId && code) {
+  // 3. Se não houver sessão ativa na BD mas houver um novo 'code' e configurações válidas
+  if (!sessionId && code && isConfigured && bankName && country) {
     sessionId = await createEnableBankingSession(code, token)
     if (sessionId) {
       await saveBankSession({
         sessionId,
+        bankName,
+        country,
         status: 'AUTHORIZED',
       })
     }
   }
 
-  // 3. Buscar transações e IDs existentes em paralelo se tivermos uma sessão válida
+  // 4. Buscar transações e IDs existentes em paralelo se tivermos uma sessão válida
   let existingIds = new Set<string>()
 
   if (sessionId) {
@@ -52,27 +62,38 @@ export default async function EnableBankingTransactions({
       fetchExistingEnableBankingIds(),
     ])
 
-    transactions = transactionsData || []
+    if (transactionsData === null) {
+      // Sessão no EnableBanking inválida ou expirada
+      sessionId = null
+      transactions = []
+    } else {
+      transactions = transactionsData
+    }
     existingIds = new Set(existingIdsResult.data || [])
   } else {
     const existingIdsResult = await fetchExistingEnableBankingIds()
     existingIds = new Set(existingIdsResult.data || [])
   }
 
-  // 4. Filtrar transações que já foram importadas ou descartadas
+  // 5. Filtrar transações que já foram importadas ou descartadas
   const filteredTransactions = transactions.filter(
     (transaction: any) =>
       !existingIds.has(transaction.transaction_id) &&
       (!transaction.entry_reference || !existingIds.has(transaction.entry_reference))
   )
 
-  // 5. Só gerar link de autenticação se não houver sessão ativa
+  // 6. Só gerar link de autenticação se não houver sessão ativa e estiver configurado
   let authUrl: string | null = null
-  if (!sessionId) {
-    authUrl = await getEnableBankingAuthLink(baseUrl + '/enablebanking/callback', token)
+  if (!sessionId && isConfigured && bankName && country) {
+    authUrl = await getEnableBankingAuthLink(
+      baseUrl + '/enablebanking/callback',
+      token,
+      bankName,
+      country
+    )
   }
 
-  // 6. Agrupar transações por data
+  // 7. Agrupar transações por data
   interface TransactionGroup {
     date: string
     transactions: any[]
@@ -92,7 +113,17 @@ export default async function EnableBankingTransactions({
 
   return (
     <>
-      <Header route="/">Movimentos bancários EnableBanking</Header>
+      <Header
+        route="/"
+        actions={
+          <EnableBankingSettingsDialog
+            initialBankName={bankName}
+            initialCountry={country}
+          />
+        }
+      >
+        Movimentos bancários EnableBanking
+      </Header>
 
       <main className="l-container u-padding-block">
         {filteredTransactions && filteredTransactions.length > 0 ? (
@@ -115,19 +146,40 @@ export default async function EnableBankingTransactions({
               ))}
           </div>
         ) : (
-            <div className="l-stack">
-              {authUrl ? (
-                <>
-                  <p>A sessão bancária não está ativa.</p>
-                  <a href={authUrl} className="c-button">
-                    Autenticar EnableBanking
-                  </a>
-                </>
-              ) : (
-                <EmptyState message="Não existem transações bancárias disponíveis."></EmptyState>
-              )
-            }
-            
+          <div className="l-stack">
+            {!isConfigured ? (
+              <EmptyState icon="building-columns">
+                Indique o seu banco e respetivo país para aceder aos seus movimentos.
+                <EnableBankingSettingsDialog
+                  initialBankName={bankName}
+                  initialCountry={country}
+                  trigger={
+                    <button type="button" className="c-button c-button--neutral">
+                      Configurar banco e país
+                    </button>
+                  }
+                />
+              </EmptyState>
+            ) : !sessionId ? (
+              <EmptyState icon="key">
+                A sessão bancária ({bankName}) não está ativa.
+                {authUrl ? (
+                  <div>
+                    <a href={authUrl} className="c-button c-button--neutral">
+                      Autenticar EnableBanking ({bankName})
+                    </a>
+                  </div>
+                ) : (
+                  <p className="u-color-danger" style={{ fontSize: 'var(--wa-font-size-s)', margin: 0 }}>
+                    Não foi possível gerar a hiperligação de autenticação para {bankName}. Verifique as credenciais do EnableBanking.
+                  </p>
+                )}
+              </EmptyState>
+            ) : (
+              <EmptyState icon="face-grin-stars">
+                Parabéns! Todos os movimentos bancários já foram tratados!
+              </EmptyState>
+            )}
           </div>
         )}
       </main>
