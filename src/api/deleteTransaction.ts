@@ -1,12 +1,17 @@
 'use server'
 
-import { deleteAppwriteRow } from '@/lib/appwrite'
-import { requireAuth } from '@/lib/appwriteServer'
+import { getPocketBase } from '@/lib/pocketbase'
+import { requireAuth } from '@/lib/pocketbaseServer'
 
 export default async function deleteTransaction(id: string) {
   await requireAuth()
 
   if (!id) return
 
-  await deleteAppwriteRow('transactions', id)
+  try {
+    const pb = await getPocketBase()
+    await pb.collection('transactions').delete(id)
+  } catch (error: any) {
+    console.error('[deleteTransaction] Error deleting transaction:', error)
+  }
 }

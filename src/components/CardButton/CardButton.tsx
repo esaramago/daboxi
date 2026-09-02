@@ -5,7 +5,7 @@ import { type Types } from '@/types/types'
 
 export interface CardButton {
   icon?: string
-  variant?: Types
+  variant?: Types | string
   size?: 'small'
   description?: string
   subDescription?: string

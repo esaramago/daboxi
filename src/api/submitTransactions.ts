@@ -1,30 +1,35 @@
 'use server'
 
-import { createAppwriteRow } from '@/lib/appwrite'
-import { requireAuth, getAuthenticatedUserId } from '@/lib/appwriteServer'
-import { Permission, Role } from '@node_modules/appwrite'
-import type { Transactions } from '@/appwrite.d'
+import { getPocketBase, formatRecord } from '@/lib/pocketbase'
+import { requireAuth, getAuthenticatedUserId } from '@/lib/pocketbaseServer'
+import type { Transactions } from '@/types/pocketbase'
 
 export default async function submitTransactions(data: Array<Transactions>) {
   await requireAuth()
 
-  if (!data) return
+  if (!data || data.length === 0) return []
 
   const userId = await getAuthenticatedUserId()
-  
-  const permissions = [
-    Permission.read(Role.user(userId)),
-    Permission.update(Role.user(userId)),
-    Permission.delete(Role.user(userId))
-  ]
+  const pb = await getPocketBase()
 
   const results = []
   for (const transaction of data) {
-    const { data: newTransaction, error: newTransactionError } = await createAppwriteRow('transactions', transaction, permissions)
-    results.push({
-      data: newTransaction,
-      error: newTransactionError
-    })
+    try {
+      const payload = {
+        ...transaction,
+        user: userId,
+      }
+      const record = await pb.collection('transactions').create(payload)
+      results.push({
+        data: formatRecord(record),
+        error: null,
+      })
+    } catch (err: any) {
+      results.push({
+        data: null,
+        error: err.message || err,
+      })
+    }
   }
 
   return results

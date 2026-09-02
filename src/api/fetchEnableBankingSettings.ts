@@ -1,7 +1,6 @@
 'use server'
 
-import { requireAuth, getAuthenticatedClient } from '@/lib/appwriteServer'
-import { Account } from '@node_modules/appwrite'
+import { requireAuth, getAuthenticatedUser } from '@/lib/pocketbaseServer'
 
 export interface EnableBankingSettings {
   bankName: string | null
@@ -14,17 +13,17 @@ export default async function fetchEnableBankingSettings(): Promise<{
 }> {
   try {
     await requireAuth()
-    const client = await getAuthenticatedClient()
-    const account = new Account(client)
-    const user = await account.get()
-    const prefs = (user.prefs || {}) as Record<string, any>
+    const { user, error } = await getAuthenticatedUser()
+    if (error || !user) {
+      throw new Error('User not authenticated')
+    }
 
-    const bankName = typeof prefs.enablebanking_bank_name === 'string' && prefs.enablebanking_bank_name.trim() !== ''
-      ? prefs.enablebanking_bank_name.trim()
+    const bankName = typeof user.enablebanking_bank_name === 'string' && user.enablebanking_bank_name.trim() !== ''
+      ? user.enablebanking_bank_name.trim()
       : null
 
-    const country = typeof prefs.enablebanking_country === 'string' && prefs.enablebanking_country.trim() !== ''
-      ? prefs.enablebanking_country.trim()
+    const country = typeof user.enablebanking_country === 'string' && user.enablebanking_country.trim() !== ''
+      ? user.enablebanking_country.trim()
       : null
 
     return {

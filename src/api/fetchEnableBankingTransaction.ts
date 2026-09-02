@@ -3,7 +3,7 @@
 import fetchActiveBankSession from './fetchActiveBankSession'
 import getEnableBankingToken from '@/utils/enablebanking/getToken'
 import getEnableBankingTransactions from '@/utils/enablebanking/getTransactions'
-import { requireAuth } from '@/lib/appwriteServer'
+import { requireAuth } from '@/lib/pocketbaseServer'
 
 export default async function fetchEnableBankingTransaction(transactionId: string) {
   await requireAuth()
@@ -50,4 +50,3 @@ export default async function fetchEnableBankingTransaction(transactionId: strin
     data: transaction
   }
 }
-
