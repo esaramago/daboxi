@@ -1,3 +1,7 @@
+a:has(.c-card-button) {
+  text-decoration: none;
+}
+
 .c-card-button {
   width: 100%;
   min-height: 4rem;
