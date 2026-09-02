@@ -14,6 +14,8 @@ import Date from '@/components/Date'
 import StickyButton from '@/components/StickyButton'
 import Resume from '@/components/Resume/Resume'
 import Loading from '@/components/Loading'
+import Grid from '@/components/Grid/Grid'
+import EmptyState from '@/components/EmptyState'
 import dynamic from 'next/dynamic'
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
 const WaCard = dynamic(() => import('@awesome.me/webawesome/dist/react/card/index.js'), {ssr: false})
@@ -28,6 +30,7 @@ type User = {
 export default function Home() {
 
   const router = useRouter()
+  const [ isLoading, setIsLoading ] = useState(true)
   const [ user, setUser ] = useState<User | null>({})
   const [ transactionsByDate, setTransactionsByDate ] = useState(null)
   const [ monthTransactions, setMonthTransactions ] = useState(null)
@@ -77,6 +80,8 @@ export default function Home() {
 
       const _monthTransactions = await getTransactionsByMonth()
       setMonthTransactions(_monthTransactions)
+
+      setIsLoading(false)
     }
 
     getData()
@@ -118,7 +123,7 @@ export default function Home() {
           <Resume transactions={monthTransactions} showDetailsButton={true} />
         </WaCard>
 
-        <section className="l-stack">
+        <Grid gap="xl" direction="column">
           <div className="l-row l-row--small">
             <h2 className="l-row__fill">Últimos movimentos</h2>
             <Link href="/enablebanking/transactions" className="c-link">Importar</Link>
@@ -127,38 +132,56 @@ export default function Home() {
           </div>
 
           {
-            transactionsByDate ? transactionsByDate.map((date) => (
-              <div
-                key={date[0]}
-              >
+            isLoading ? <Loading></Loading> : (
+              <>
                 {
-                  date[0] && <Date date={date[0]} sticky={true}></Date>
-                }
-                {
-                  date[1].map((transaction) => (
-                    <ButtonTransaction
-                      key={transaction.$id}
-                      id={transaction.$id}
-                      value={transaction.value}
-                      netValue={transaction.netValue}
-                      variant={transaction.subCategory?.category?.type?.code}
-                      icon={transaction.subCategory?.icon}
-                      description={transaction.description}
-                      niceDescription={transaction.niceDescription}
-                      subCategoryDescription={transaction.subCategory?.description}
-                    ></ButtonTransaction>
-                  ))
-                }
-              </div>
-            )) : <Loading></Loading>
-          }
-        </section>
+                  transactionsByDate.length > 0 ? (
 
-        <div className="u-text-center">
-          <Link href="/transactions">
-            <WaButton>Ver todos os movimentos</WaButton>
-          </Link>
-        </div>
+                    <Grid gap="xl" direction="column">
+                      {
+                        transactionsByDate.map((date) => (
+                          <div
+                            key={date[0]}
+                          >
+                            {
+                              date[0] && <Date date={date[0]} sticky={true}></Date>
+                            }
+                            {
+                              date[1].map((transaction) => (
+                                <ButtonTransaction
+                                  key={transaction.$id}
+                                  id={transaction.$id}
+                                  value={transaction.value}
+                                  netValue={transaction.netValue}
+                                  variant={transaction.subCategory?.category?.type?.code}
+                                  icon={transaction.subCategory?.icon}
+                                  description={transaction.description}
+                                  niceDescription={transaction.niceDescription}
+                                  subCategoryDescription={transaction.subCategory?.description}
+                                ></ButtonTransaction>
+                              ))
+                            }
+                          </div>
+                        ))
+                      }
+                      <div className="u-text-center">
+                        <Link href="/transactions">
+                          <WaButton>Ver todos os movimentos</WaButton>
+                        </Link>
+                      </div>
+                    </Grid>
+                  ) : (
+                    <EmptyState>
+                      Ainda não há movimentos. Cria o primeiro!
+                      <WaButton variant="brand" onClick={() => router.push('/transactions/create')}>Adicionar movimento</WaButton>
+                    </EmptyState>
+                  )
+                }
+              </>
+            )
+          }
+
+        </Grid>
 
         <Link href="/transactions/create">
           <StickyButton label="Adicionar movimentos" icon="plus"></StickyButton>
