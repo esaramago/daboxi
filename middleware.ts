@@ -13,7 +13,9 @@ export function middleware(request: NextRequest) {
   const authCookie = request.cookies.get(PB_COOKIE_NAME || 'pb_auth')
   const isAuthenticated = Boolean(authCookie && authCookie.value && authCookie.value.trim() !== '')
 
-  if (pathname === '/login') {
+  const isAuthRoute = pathname === '/login' || pathname === '/forgot-password'
+
+  if (isAuthRoute) {
     if (isAuthenticated) {
       return NextResponse.redirect(new URL('/', request.url))
     }

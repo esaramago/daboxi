@@ -142,3 +142,73 @@ export async function logout() {
     data: 'Logged out successfully'
   }
 }
+
+/**
+ * Request password reset email
+ */
+export async function requestPasswordReset(email: string) {
+  try {
+    const pb = await getPocketBase()
+    await pb.collection('users').requestPasswordReset(email)
+
+    return {
+      error: false,
+      data: true
+    }
+  } catch (error: any) {
+    console.error('[PocketBase Auth] Password reset request error:', error)
+
+    let message = 'Não foi possível enviar o pedido de recuperação de palavra-passe'
+    if (
+      error?.message?.includes('fetch failed') ||
+      error?.cause?.code === 'ECONNREFUSED' ||
+      error?.cause?.code === 'ENOTFOUND'
+    ) {
+      message = `Não foi possível conectar ao PocketBase em "${POCKETBASE_URL}". Verifica se o PocketBase está a correr.`
+    } else if (error?.message) {
+      message = error.message
+    }
+
+    return {
+      error: message,
+      data: null
+    }
+  }
+}
+
+/**
+ * Confirm password reset with token
+ */
+export async function confirmPasswordReset(token: string, password: string, passwordConfirm: string) {
+  try {
+    const pb = await getPocketBase()
+    await pb.collection('users').confirmPasswordReset(token, password, passwordConfirm)
+
+    return {
+      error: false,
+      data: true
+    }
+  } catch (error: any) {
+    console.error('[PocketBase Auth] Confirm password reset error:', error)
+
+    let message = 'Token inválido ou expirado. Por favor, solicita um novo pedido de recuperação.'
+    if (error?.data?.data?.password?.message) {
+      message = error.data.data.password.message
+    } else if (error?.data?.data?.passwordConfirm?.message) {
+      message = error.data.data.passwordConfirm.message
+    } else if (
+      error?.message?.includes('fetch failed') ||
+      error?.cause?.code === 'ECONNREFUSED' ||
+      error?.cause?.code === 'ENOTFOUND'
+    ) {
+      message = `Não foi possível conectar ao PocketBase em "${POCKETBASE_URL}". Verifica se o PocketBase está a correr.`
+    } else if (error?.message) {
+      message = error.message
+    }
+
+    return {
+      error: message,
+      data: null
+    }
+  }
+}
