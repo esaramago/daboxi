@@ -15,6 +15,7 @@ import Loading from '@/components/Loading'
 import Categories from '@/components/Categories'
 import Refunds from '@/components/Refunds'
 import getColorByVariant from '@/utils/getColorByVariant'
+import getNetValue from '@/utils/getNetValue'
 import calcNetValue from '@/utils/calcNetValue'
 import type { SubCategories, Transactions } from '@/types/pocketbase'
 

@@ -9,8 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/",
-    "pb:serve": "./pocketbase_bin serve --dir=./pb_data",
-    "migrate:appwrite": "node scripts/migrate-to-pocketbase.mjs"
+    "pb:serve": "./pocketbase_bin serve --dir=./pb_data"
   },
   "dependencies": {
     "@awesome.me/webawesome": "^3.12.0",
