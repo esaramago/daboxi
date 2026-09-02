@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/",
-    "pb:serve": "./pocketbase_bin serve --dir=./pb_data"
+    "pb:serve": "./pocketbase_bin serve --dir=./pb_data",
+    "fix:dates": "node scripts/fix-transaction-dates.mjs"
   },
   "dependencies": {
     "@awesome.me/webawesome": "^3.12.0",
