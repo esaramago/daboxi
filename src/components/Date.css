@@ -5,6 +5,7 @@
   padding-block: var(--wa-space-xs);
   background-color: var(--background-color);
   font-weight: 500;
+  z-index: 1;
 }
 .c-date--small {
   font-size: var(--wa-font-size-s);
