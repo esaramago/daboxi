@@ -63,7 +63,7 @@ export default function Resume(props: Props) {
               <Value value={totalIncome} sign={true} style={{ color: 'var(--wa-color-success-50)' }} size="large"></Value><br />
             </div>
           </div>
-          <div>Balanço: <Value value={totalIncome + totalExpense} style={{ color: totalIncome + totalExpense > 0 ? 'var(--wa-color-success-50)' : 'var(--wa-color-brand-50)' }}></Value></div>
+          <div>Balanço: <Value value={totalIncome + totalExpense} style={{ color: totalIncome + totalExpense > 0 ? 'var(--wa-color-success-50)' : 'var(--wa-color-secondary-50)' }}></Value></div>
         </div>
       }
     </div>
