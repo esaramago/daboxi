@@ -14,7 +14,6 @@ import exportStats from '@/utils/exportStats'
 const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), {ssr: false})
 const WaFormatDate = dynamic(() => import('@awesome.me/webawesome/dist/react/format-date/index.js'), {ssr: false})
 const WaCard = dynamic(() => import('@awesome.me/webawesome/dist/react/card/index.js'), {ssr: false})
-const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
 
 function StatsContent() {
 
@@ -95,8 +94,8 @@ function StatsContent() {
     return transactionByCategory
   }
 
-  const getTransactions = async (date: Date) => {
-    const { data, error } = await fetchTransactionsByMonth(date)
+  const getTransactions = async (monthOrDate?: Date | string) => {
+    const { data, error } = await fetchTransactionsByMonth(monthOrDate)
     if (error) {
       console.error(error)
       return null
@@ -108,18 +107,18 @@ function StatsContent() {
 
     const getData = async () => {
 
-      if (!date) return null
+      if (!month && !date) return null
 
       setLoading(true)
 
-      const transactions = await getTransactions(date)
+      const transactions = await getTransactions(month || date)
       setTransactions(transactions)
 
       setLoading(false)
     }
 
     getData()
-  }, [date])
+  }, [date, month])
   //#endregion Transactions
 
   //#region Export

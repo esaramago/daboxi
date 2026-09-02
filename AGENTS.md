@@ -85,6 +85,5 @@ The database schema and TypeScript definitions are defined in:
 
 ## 6. Environment Variables
 
-Refer to [`.env.example`](file:///home/emanuelsaramago/www/daboxi/.env.example) for the required environment variables:
+Never ask to see `.env` file. Refer to [`.env.example`](./.env.example) for the required environment variables:
 - `POCKETBASE_URL`: Internal PocketBase URL for server actions (e.g. `http://pocketbase:8090` in Docker or `http://127.0.0.1:8090` locally).
-- `NEXT_PUBLIC_POCKETBASE_URL`: Public PocketBase URL for browser/client access (e.g. `https://pb.daboxi.emanuelsaramago.com`).

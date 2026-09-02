@@ -381,7 +381,12 @@ async function migrateData() {
 
         let dateStr = t.date
         try {
-          dateStr = new Date(t.date).toISOString()
+          const raw = String(t.date).trim()
+          if (raw.includes(' ') && !raw.includes('T')) {
+            dateStr = new Date(raw.replace(' ', 'T') + 'Z').toISOString()
+          } else {
+            dateStr = new Date(t.date).toISOString()
+          }
         } catch {
           dateStr = new Date().toISOString()
         }

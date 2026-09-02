@@ -4,17 +4,28 @@ import { getPocketBase, formatRecord } from '@/lib/pocketbase'
 import type { Categories, Transactions } from '@/types/pocketbase'
 import { requireAuth } from '@/lib/pocketbaseServer'
 
-export default async function fetchTransactionsByMonth(date?: Date, type?: Categories['type']['code']) {
+export default async function fetchTransactionsByMonth(date?: Date | string, type?: Categories['type']['code']) {
   await requireAuth()
 
-  const today = new Date()
-  const _date = date ? new Date(date) : today
+  let year: number
+  let month: number // 1-indexed: 1 to 12
 
-  const startDate = new Date(_date.getFullYear(), _date.getMonth(), 1, 0, 0, 0, 0)
-  const endDate = new Date(_date.getFullYear(), _date.getMonth() + 1, 0, 23, 59, 59, 999)
+  if (typeof date === 'string' && /^\d{4}-\d{2}/.test(date)) {
+    const parts = date.split('-')
+    year = Number(parts[0])
+    month = Number(parts[1])
+  } else if (date instanceof Date && !isNaN(date.getTime())) {
+    year = date.getUTCFullYear()
+    month = date.getUTCMonth() + 1
+  } else {
+    const now = new Date()
+    year = now.getUTCFullYear()
+    month = now.getUTCMonth() + 1
+  }
 
-  const startStr = startDate.toISOString().replace('T', ' ')
-  const endStr = endDate.toISOString().replace('T', ' ')
+  const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate()
+  const startStr = `${year}-${String(month).padStart(2, '0')}-01 00:00:00.000Z`
+  const endStr = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')} 23:59:59.999Z`
 
   try {
     const pb = await getPocketBase()

@@ -35,8 +35,10 @@ export default function CreateTransaction() {
 
     const json: Array<Transactions> = (result.data as any[]).map((transaction: any) => {
       const undefinedSubCategoryId = '693358aa38f7be9fcaa5'
+      const rawDate = String(transaction.date || '').trim()
+      const cleanDate = rawDate ? new Date(`${rawDate.split(' ')[0].split('T')[0]}T00:00:00.000Z`) : new Date()
       return {
-        date: new Date(transaction.date),
+        date: cleanDate,
         value: Number(transaction.value),
         description: transaction.description || null,
         niceDescription: transaction.niceDescription,
