@@ -6,7 +6,7 @@ export default function getColorByVariant(variant?: Variant | string | null) {
 
   switch (variant) {
     case 'expense':
-      color = 'var(--wa-color-brand-50)'
+      color = 'var(--wa-color-secondary-50)'
       break
     case 'income':
       color = 'var(--wa-color-success-50)'
