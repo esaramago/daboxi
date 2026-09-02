@@ -1,6 +1,1 @@
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="240" height="240" rx="30" fill="#F0E962"/>
-<rect y="272" width="240" height="240" rx="30" fill="#FF99BB"/>
-<rect x="272" width="240" height="240" rx="30" fill="#FFAB67"/>
-<rect x="272" y="272" width="240" height="240" rx="30" fill="#01FFB6"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" viewBox="0 0 288 288"><defs><clipPath id="a" class="frame-clip frame-clip-def"><rect width="288" height="288" rx="0" ry="0"/></clipPath></defs><g class="frame-container-wrapper"><g class="frame-container-blur"><g class="frame-container-shadows" clip-path="url(#a)"><g class="fills"><rect width="288" height="288" class="frame-background" rx="0" ry="0"/></g><g class="frame-children"><rect width="240" height="240" y="48" fill="#03ad7b" class="fills" rx="30" ry="30" transform="matrix(1 0 0 -1 0 336)"/><rect width="240" height="240" x="49" fill="#17f482" class="fills" rx="30" ry="30" transform="matrix(1 0 0 -1 0 240)"/><path fill="#03ad7b" fill-opacity=".6" d="M49 210c0 16.558 13.443 30 30 30h161l1-162c0-16.557-13.443-30-30-30H49z" class="fills"/></g></g></g></g></svg>
