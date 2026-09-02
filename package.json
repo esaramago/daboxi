@@ -7,7 +7,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate:transactions": "node scripts/migrate-transactions-to-user.mjs",
+    "update:permissions": "node scripts/update-collection-permissions.mjs"
   },
   "dependencies": {
     "@awesome.me/webawesome": "^3.12.0",

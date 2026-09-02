@@ -288,7 +288,6 @@ export default function Transaction() {
       const wasRefund = transaction.subCategory?.code === 'refund'
       if (wasRefund) {
         // reset refunds
-        debugger
         const refundsIds = refunds?.map(refund => refund.$id) || []
         const data = [...refundsIds, transactionId].map(refundId => {
           return {

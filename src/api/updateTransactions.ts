@@ -1,7 +1,8 @@
 'use server'
 
 import { updateAppwriteRow } from '@/lib/appwrite'
-import { requireAuth } from '@/lib/appwriteServer'
+import { requireAuth, getAuthenticatedUserId } from '@/lib/appwriteServer'
+import { Permission, Role } from '@node_modules/appwrite'
 
 interface Record {
   id: string
@@ -10,8 +11,15 @@ interface Record {
 
 export default async function updateTransactions(records: Array<Record>) {
   await requireAuth()
+  const userId = await getAuthenticatedUserId()
+
+  const permissions = [
+    Permission.read(Role.user(userId)),
+    Permission.update(Role.user(userId)),
+    Permission.delete(Role.user(userId))
+  ]
 
   await Promise.all(
-    records.map(record => updateAppwriteRow('transactions', record.id, record.fields))
+    records.map(record => updateAppwriteRow('transactions', record.id, record.fields, permissions))
   )
 }
