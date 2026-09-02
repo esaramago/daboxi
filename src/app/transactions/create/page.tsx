@@ -68,7 +68,7 @@ export default function CreateTransaction() {
     <>
       <Header>Adicionar movimentos</Header>
 
-      <main className="l-container l-container--wide u-padding-block">
+      <main className="l-container u-padding-block">
         <WaTabGroup>
           <WaTab slot="nav" panel="add-single">
             Criar
