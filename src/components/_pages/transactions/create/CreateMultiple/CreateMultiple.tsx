@@ -11,6 +11,7 @@ import CardButton from '@/components/CardButton'
 import Value from '@/components/Value'
 import Categories from '@/components/Categories'
 import Refunds from '@/components/Refunds'
+import Grid from '@/components/Grid/Grid'
 import type { Transactions, SubCategories } from '@/appwrite.d'
 
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
@@ -258,6 +259,8 @@ export default function CreateMultiple() {
                   required
                   style={{ width: '140px' }}
                 ></WaInput>
+              </div>
+              <Grid>
                 <WaInput
                   name="niceDescription"
                   label="Descrição"
@@ -273,32 +276,32 @@ export default function CreateMultiple() {
                   value={item.description}
                   onInput={(e: any) => handleInputChange(index, e)}
                 ></WaInput>
+              </Grid>
 
-                <div>
-                  <label htmlFor={`subCategory-${item.id}`} className="c-label">
-                    Categoria <span className="u-color-danger">*</span>
-                  </label>
-                  <button
-                    type="button"
-                    className="u-width-100"
-                    disabled={!item.value}
-                    onClick={() => openCategoriesDrawer(index)}
-                  >
-                    {item.subCategory && item.selectedSubCategory ? (
-                      <CardButton
-                        variant={item.selectedSubCategory?.category?.type.code}
-                        icon={item.selectedSubCategory?.icon}
-                        description={item.selectedSubCategory?.description}
-                        subDescription={item.selectedSubCategory?.category?.description}
-                      ></CardButton>
-                    ) : (
-                      <CardButton description="Selecione a categoria"></CardButton>
-                    )}
-                  </button>
-                  <input id={`subCategory-${item.id}`} type="hidden" value={item.subCategory} />
-                </div>
+
+              <div>
+                <label htmlFor={`subCategory-${item.id}`} className="c-label">
+                  Categoria <span className="u-color-danger">*</span>
+                </label>
+                <button
+                  type="button"
+                  className="u-width-100"
+                  disabled={!item.value}
+                  onClick={() => openCategoriesDrawer(index)}
+                >
+                  {item.subCategory && item.selectedSubCategory ? (
+                    <CardButton
+                      variant={item.selectedSubCategory?.category?.type.code}
+                      icon={item.selectedSubCategory?.icon}
+                      description={item.selectedSubCategory?.description}
+                      subDescription={item.selectedSubCategory?.category?.description}
+                    ></CardButton>
+                  ) : (
+                    <CardButton description="Selecione a categoria"></CardButton>
+                  )}
+                </button>
+                <input id={`subCategory-${item.id}`} type="hidden" value={item.subCategory} />
               </div>
-
               {item.selectedSubCategory && item.selectedSubCategory.code === 'refund' && (
                 <div>
                   <label htmlFor={`refund-${item.id}`} className="c-label">

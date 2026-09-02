@@ -5,7 +5,3 @@
   margin: 0 auto;
   padding-inline: var(--wa-space-m);
 }
-
-.l-container--wide {
-  max-width: 1400px;
-}

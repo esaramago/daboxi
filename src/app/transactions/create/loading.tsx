@@ -6,7 +6,7 @@ export default function CreateTransactionLoading() {
     <>
       <Header>Adicionar movimentos</Header>
 
-      <main className="l-container l-container--wide u-padding-block">
+      <main className="l-container u-padding-block">
         <Loading />
       </main>
     </>
