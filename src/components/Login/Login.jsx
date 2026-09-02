@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { login } from '@/lib/appwrite'
+import dynamic from 'next/dynamic'
+const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
+const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), { ssr: false })
 
 export default function Login() {
   const router = useRouter()
@@ -51,29 +54,27 @@ export default function Login() {
           onSubmit={handleSubmitLogin}
           className="l-stack l-stack--small"
         >
-          <div>
-            <label htmlFor="email" className="c-label">Email</label>
-            <input
-              className="c-input"
-              id="email"
-              name="email"
-              type="email"
-              onInput={handleInputChange}
-              />
-          </div>
-          <div>
-            <label htmlFor="password" className="c-label">Palavra-passe</label>
-            <input
-              className="c-input"
-              id="password"
-              name="password"
-              type="password"
-              onInput={handleInputChange}
-            />
-          </div>
-          <button className="c-button" type="submit" disabled={loading}>
+          <WaInput
+            onChange={handleInputChange}
+            value={formFields.email}
+            label="Email"
+            placeholder="Email"
+            type="email"
+            id="email"
+            name="email"
+          />
+          <WaInput
+            onChange={handleInputChange}
+            value={formFields.password}
+            placeholder="Palavra-passe"
+            type="password"
+            id="password"
+            name="password"
+            label="Palavra-passe"
+          />
+          <WaButton type="submit" disabled={loading} variant="brand">
             {loading ? 'A entrar...' : 'Entrar'}
-          </button>
+          </WaButton>
         </form>
       </div>
     </div>

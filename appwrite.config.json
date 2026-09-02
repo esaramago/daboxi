@@ -156,10 +156,7 @@
         {
             "$id": "transactions",
             "$permissions": [
-                "create(\"users\")",
-                "read(\"users\")",
-                "update(\"users\")",
-                "delete(\"users\")"
+                "create(\"users\")"
             ],
             "databaseId": "693347b20038c67958ec",
             "name": "transactions",
@@ -255,10 +252,7 @@
         {
             "$id": "bank_sessions",
             "$permissions": [
-                "create(\"users\")",
-                "read(\"users\")",
-                "update(\"users\")",
-                "delete(\"users\")"
+                "create(\"users\")"
             ],
             "databaseId": "693347b20038c67958ec",
             "name": "bank_sessions",
@@ -324,10 +318,7 @@
         {
             "$id": "enablebanking_transactions",
             "$permissions": [
-                "create(\"users\")",
-                "read(\"users\")",
-                "update(\"users\")",
-                "delete(\"users\")"
+                "create(\"users\")"
             ],
             "databaseId": "693347b20038c67958ec",
             "name": "enablebanking_transactions",
