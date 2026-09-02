@@ -1,9 +1,14 @@
+.c-ghost-input {
+  &::part(base),
+  &::part(textarea) {
+    padding: 0;
+  }
+}
+
 .c-ghost-input::part(base) {
   background-color: transparent;
   border: none;
   height: auto;
-  padding: 0;
-  margin: 0;
   color: inherit;
   height: auto;
   padding-block: var(--wa-space-2xs);
