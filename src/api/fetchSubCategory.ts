@@ -1,28 +1,33 @@
 'use server'
 
-import { fetchAppwriteDB, Query } from '@/lib/appwrite'
+import { getPocketBase, formatRecord } from '@/lib/pocketbase'
+import type { SubCategories } from '@/types/pocketbase'
+import { requireAuth } from '@/lib/pocketbaseServer'
 
 export default async function fetchSubCategory(code: string) {
+  await requireAuth()
 
-  if (!code) return {
-    error: 'Invalid code',
-    data: null,
-  }
-
-  const result = await fetchAppwriteDB('subCategories', [
-    Query.select(['*', 'category.*', 'category.type']),
-    Query.equal('code', code)
-  ])
-
-  if (result.error) {
+  if (!code) {
     return {
-      error: result.error,
+      error: 'Invalid code',
       data: null,
     }
-  } else {
+  }
+
+  try {
+    const pb = await getPocketBase()
+    const record = await pb.collection('subcategories').getFirstListItem(`code = "${code}"`, {
+      expand: 'category.type',
+    })
+
     return {
       error: false,
-      data: result.data.rows[0],
+      data: formatRecord<SubCategories>(record),
+    }
+  } catch (error: any) {
+    return {
+      error: error.message || error,
+      data: null,
     }
   }
 }

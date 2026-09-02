@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { logout } from '@/lib/appwrite'
-import { getAuthenticatedUser } from '@/lib/appwriteServer'
+import { logout, getAuthenticatedUser } from '@/lib/pocketbaseServer'
 import Link from 'next/link'
 import Image from 'next/image'
 import fetchTransactions from '@/api/fetchTransactions'

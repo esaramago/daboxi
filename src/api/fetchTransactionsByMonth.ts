@@ -1,80 +1,46 @@
 'use server'
 
-import { fetchAppwriteDB, Query } from '@/lib/appwrite'
-import type { Categories, Transactions } from '@/appwrite.d'
-import { requireAuth } from '@/lib/appwriteServer'
-import fetchCategories from './fetchCategories'
+import { getPocketBase, formatRecord } from '@/lib/pocketbase'
+import type { Categories, Transactions } from '@/types/pocketbase'
+import { requireAuth } from '@/lib/pocketbaseServer'
 
 export default async function fetchTransactionsByMonth(date?: Date, type?: Categories['type']['code']) {
   await requireAuth()
 
-  const today = new Date
+  const today = new Date()
   const _date = date ? new Date(date) : today
 
-  // get first second of the month
-  const startDate = new Date(_date)
-  startDate.setDate(0) // TOFIX: server time + summer time
-  startDate.setHours(23,0,0,0) // TOFIX: server time + summer time
+  const startDate = new Date(_date.getFullYear(), _date.getMonth(), 1, 0, 0, 0, 0)
+  const endDate = new Date(_date.getFullYear(), _date.getMonth() + 1, 0, 23, 59, 59, 999)
 
-  // get last second of the month
-  const endDate = new Date(_date.getFullYear(), _date.getMonth() + 1, 0)
-  endDate.setHours(23,59,59,999)
+  const startStr = startDate.toISOString().replace('T', ' ')
+  const endStr = endDate.toISOString().replace('T', ' ')
 
-  const queries = [
-    Query.select(['value',
-      'netValue',
-      'subCategory.description',
-      'subCategory.code',
-      'subCategory.budget',
-      'subCategory.category.code',
-    ]),
-    Query.greaterThan('date', startDate.toISOString()),
-    Query.lessThan('date', endDate.toISOString()),
-    Query.orderDesc('date'),
-  ]
+  try {
+    const pb = await getPocketBase()
+    const filterParts = [
+      `date >= "${startStr}"`,
+      `date <= "${endStr}"`
+    ]
 
-  if (type) {
-    queries.push(Query.equal('subCategory.category.type.code', type))
-  }
-
-  const { data, error } = await fetchAppwriteDB('transactions', queries)
-
-  if (error) {
-    return {
-      error: error,
-      data: null,
-    }
-  } else {
-
-    const { data: categories, error: categoriesError } = await fetchCategories()
-    if (categoriesError) {
-      return {
-        error: categoriesError,
-        data: null,
-      }
+    if (type) {
+      filterParts.push(`subCategory.category.type.code = "${type}"`)
     }
 
-    const transactions: Transactions[] = data.rows.map((transaction: Transactions) => {
-      const category = categories.find((category: Categories) => category.code === transaction.subCategory?.category?.code)
-      return {
-        ...transaction,
-        subCategory: {
-          ...transaction.subCategory,
-          category: {
-            code: category?.code,
-            $id: category?.$id,
-            type: {
-              code: category?.type?.code,
-              $id: category?.type?.$id,
-            },
-          }
-        },
-      }
+    const records = await pb.collection('transactions').getFullList({
+      filter: filterParts.join(' && '),
+      sort: '-date',
+      expand: 'subCategory.category.type'
     })
 
     return {
       error: false,
-      data: transactions,
+      data: records.map(r => formatRecord<Transactions>(r))
+    }
+  } catch (error: any) {
+    return {
+      error: error.message || error,
+      data: null
     }
   }
 }

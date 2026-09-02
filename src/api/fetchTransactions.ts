@@ -1,69 +1,30 @@
 'use server'
 
-import { fetchAppwriteDB, Query } from '@/lib/appwrite'
-import { requireAuth } from '@/lib/appwriteServer'
-import fetchCategories from './fetchCategories'
-import type { Categories, Transactions } from '@/appwrite.d'
+import { getPocketBase, formatRecord } from '@/lib/pocketbase'
+import { requireAuth } from '@/lib/pocketbaseServer'
+import type { Transactions } from '@/types/pocketbase'
 
 export default async function fetchTransactions(size?: number) {
   await requireAuth()
-  
-  const { data, error } = await fetchAppwriteDB('transactions', [
-    Query.select([
-      '$id',
-      'date',
-      'value',
-      'netValue',
-      'description',
-      'niceDescription',
-      'notes',
-      'subCategory.$id',
-      'subCategory.code',
-      'subCategory.description',
-      'subCategory.icon',
-      'subCategory.category.code',
-      'enableBankingId',
-    ]),
-    Query.orderDesc('date'),
-    Query.orderDesc('$createdAt')
-  ], size)
 
-  if (error) {
-    return {
-      error: error,
-      data: null,
-    }
-  } else {
+  try {
+    const pb = await getPocketBase()
+    const limit = size || 500
 
-    const { data: categories, error: categoriesError } = await fetchCategories()
-    if (categoriesError) {
-      return {
-        error: categoriesError,
-        data: null,
-      }
-    }
-    
-    const transactions: Transactions[] = data.rows.map((transaction: Transactions) => {
-      const category = categories.find((category: Categories) => category.code === transaction.subCategory?.category?.code)
-      return {
-        ...transaction,
-        subCategory: {
-          ...transaction.subCategory,
-          category: {
-            code: category?.code,
-            $id: category?.$id,
-            type: {
-              code: category?.type?.code,
-              $id: category?.type?.$id,
-            },
-          }
-        },
-      }
+    const records = await pb.collection('transactions').getList(1, limit, {
+      sort: '-date,-id',
+      expand: 'subCategory.category.type',
     })
 
     return {
       error: false,
-      data: transactions,
+      data: records.items.map(r => formatRecord<Transactions>(r)),
+    }
+  } catch (error: any) {
+    console.error('[fetchTransactions] Error:', error)
+    return {
+      error: error.message || error,
+      data: null,
     }
   }
 }

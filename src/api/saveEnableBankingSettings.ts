@@ -1,8 +1,7 @@
 'use server'
 
-import { requireAuth, getAuthenticatedClient } from '@/lib/appwriteServer'
-import { Account } from '@node_modules/appwrite'
-import { fetchAppwriteDB, deleteAppwriteRow } from '@/lib/appwrite'
+import { requireAuth, getAuthenticatedUser } from '@/lib/pocketbaseServer'
+import { getPocketBase } from '@/lib/pocketbase'
 import { revalidatePath } from 'next/cache'
 
 interface SaveEnableBankingSettingsParams {
@@ -16,6 +15,10 @@ export default async function saveEnableBankingSettings({
 }: SaveEnableBankingSettingsParams) {
   try {
     await requireAuth()
+    const { user, error } = await getAuthenticatedUser()
+    if (error || !user) {
+      throw new Error('User not authenticated')
+    }
 
     const trimmedBankName = bankName?.trim()
     const trimmedCountry = country?.trim()
@@ -27,22 +30,16 @@ export default async function saveEnableBankingSettings({
       }
     }
 
-    const client = await getAuthenticatedClient()
-    const account = new Account(client)
-    const currentPrefs = await account.getPrefs()
-
-    await account.updatePrefs({
-      ...currentPrefs,
+    const pb = await getPocketBase()
+    await pb.collection('users').update(user.id, {
       enablebanking_bank_name: trimmedBankName,
       enablebanking_country: trimmedCountry,
     })
 
     // Terminar todas as sessões ativas do EnableBanking para este utilizador
-    const { data: bankSessions } = await fetchAppwriteDB('bank_sessions')
-    if (bankSessions && bankSessions.rows && bankSessions.rows.length > 0) {
-      for (const session of bankSessions.rows) {
-        await deleteAppwriteRow('bank_sessions', session.$id)
-      }
+    const bankSessions = await pb.collection('bank_sessions').getFullList()
+    for (const session of bankSessions) {
+      await pb.collection('bank_sessions').delete(session.id).catch(() => {})
     }
 
     revalidatePath('/enablebanking/transactions')
@@ -62,4 +59,3 @@ export default async function saveEnableBankingSettings({
     }
   }
 }
-

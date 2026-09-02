@@ -1,53 +1,48 @@
 'use server'
 
-import { fetchAppwriteDBWithSession, Query } from '@/lib/appwrite'
-import type { Types } from '@/appwrite.d'
-import { requireAuth, getSessionToken } from '@/lib/appwriteServer'
-import { getCachedDataWithSession } from '@/lib/cache'
+import { getPocketBase, formatRecord } from '@/lib/pocketbase'
+import type { Types, Categories } from '@/types/pocketbase'
+import { requireAuth } from '@/lib/pocketbaseServer'
 
-const getAllCategories = async (sessionToken: string) => {
-
-  const result = await fetchAppwriteDBWithSession(sessionToken, 'categories', [
-    Query.select(['description', 'icon', 'code', 'type.code']),
-    Query.notEqual('type', 'undefined'),
-    Query.notEqual('type', 'refund'),
-    Query.orderDesc('type'),
-    Query.orderAsc('description'),
-  ])
-
-  if (result.error) {
-    return {
-      error: result.error,
-      data: null,
-    }
-  } else {
+const getAllCategories = async () => {
+  try {
+    const pb = await getPocketBase()
+    const records = await pb.collection('categories').getFullList({
+      expand: 'type',
+      filter: 'type.code != "undefined" && type.code != "refund"',
+      sort: '-type,description',
+    })
     return {
       error: false,
-      data: result.data.rows,
+      data: records.map(r => formatRecord<Categories>(r)),
+    }
+  } catch (error: any) {
+    return {
+      error: error.message || error,
+      data: null,
     }
   }
 }
 
-const getCategoriesByType = async (transactionType: Types['code'], sessionToken: string) => {
-
-  const types = transactionType === 'income' ? ['income', 'refund'] : ['expense']
-
-  const result = await fetchAppwriteDBWithSession(sessionToken, 'categories', [
-    Query.select(['*', 'type.code']),
-    Query.equal('type.code', ['undefined', ...types]),
-    Query.orderAsc('type'),
-    Query.orderAsc('description'),
-  ])
-
-  if (result.error) {
-    return {
-      error: result.error,
-      data: null,
-    }
-  } else {
+const getCategoriesByType = async (transactionType: Types['code']) => {
+  try {
+    const pb = await getPocketBase()
+    const types = transactionType === 'income' ? ['income', 'refund', 'undefined'] : ['expense', 'undefined']
+    const filterConditions = types.map(t => `type.code = "${t}"`).join(' || ')
+    
+    const records = await pb.collection('categories').getFullList({
+      expand: 'type',
+      filter: filterConditions,
+      sort: 'type,description',
+    })
     return {
       error: false,
-      data: result.data.rows,
+      data: records.map(r => formatRecord<Categories>(r)),
+    }
+  } catch (error: any) {
+    return {
+      error: error.message || error,
+      data: null,
     }
   }
 }
@@ -55,31 +50,9 @@ const getCategoriesByType = async (transactionType: Types['code'], sessionToken:
 export default async function fetchCategories(transactionType?: 'income' | 'expense') {
   await requireAuth()
 
-  const cacheKey = `categories-${transactionType || 'all'}`
-  
-  const response = await getCachedDataWithSession(
-    cacheKey,
-    async (sessionToken: string) => {
-      if (transactionType) {
-        return await getCategoriesByType(transactionType, sessionToken)
-      } else {
-        return await getAllCategories(sessionToken)
-      }
-    },
-    getSessionToken,
-    ['categories', cacheKey]
-  )
-
-  if (response.error) {
-    return {
-      error: response.error,
-      data: null,
-    }
+  if (transactionType) {
+    return await getCategoriesByType(transactionType)
   } else {
-    return {
-      error: false,
-      data: response.data,
-    }
+    return await getAllCategories()
   }
-
 }
