@@ -1,5 +1,4 @@
-.c-empty-state::part(message) {
-  display: flex;
-  flex-direction: column;
-  gap: var(--wa-space-m);
+.c-empty-state {
+  padding-block: var(--wa-space-xl);
+  text-align: center;
 }

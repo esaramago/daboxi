@@ -1,8 +1,7 @@
 'use client'
 import './EmptyState.css'
-import dynamic from 'next/dynamic'
-const WaCallout = dynamic(() => import('@awesome.me/webawesome/dist/react/callout/index.js'), { ssr: false })
-const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), { ssr: false })
+import Grid from '@/components/Grid/Grid'
+import Icon from '@/components/Icon'
 
 interface EmptyStateProps {
   children?: React.ReactNode,
@@ -14,9 +13,9 @@ interface EmptyStateProps {
 
 export default function EmptyState(props: EmptyStateProps) {
   return (
-    <WaCallout className="c-empty-state" size={props.size || 'large'} variant={props.variant || 'warning'}>
-      <WaIcon name={props.icon || 'inbox'} slot="icon" />
+    <Grid className="c-empty-state" direction="column" align="center" justify="center" gap="l">
+      <Icon name={props.icon || 'inbox'} size="3xl" className="c-empty-state__icon"></Icon>
       {props.children || 'Não existem dados disponíveis.'}
-    </WaCallout>
+    </Grid>
   )
 }
