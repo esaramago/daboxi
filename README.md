@@ -116,4 +116,10 @@ docker compose down
 
 ## 📄 License
 
-Private personal project.
+This project is licensed under the **Daboxi Source-Available License (Non-Commercial & Share-Alike)**:
+
+- **Non-Commercial Use**: Free to inspect, use, and modify for personal, educational, and non-profit purposes.
+- **Commercial Use**: Exclusively reserved for the author ([Emanuel Saramago](https://github.com/esaramago)). Commercial use, hosting as a paid service, or distribution requires prior written authorization.
+- **Share-Alike / Mandatory Publication**: Any modifications or derivative works made available to third parties must have their full source code published under the exact same license terms.
+
+See the [LICENSE](LICENSE) file for complete terms and details.
