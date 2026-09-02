@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { login } from '@/lib/pocketbaseServer'
 import dynamic from 'next/dynamic'
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
@@ -75,6 +76,11 @@ export default function Login() {
           <WaButton type="submit" disabled={loading} variant="brand">
             {loading ? 'A entrar...' : 'Entrar'}
           </WaButton>
+          <div className="u-text-center">
+            <Link href="/forgot-password" className="c-link u-text-small">
+              Recuperar palavra-passe
+            </Link>
+          </div>
         </form>
       </div>
     </div>

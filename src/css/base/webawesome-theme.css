@@ -29,6 +29,21 @@
   --wa-color-brand-80: #95ffc8;
   --wa-color-brand-90: #cbfde2;
   --wa-color-brand-95: #edfff5;
+
+  .environment-development,
+  .environment-staging {
+    --wa-color-brand-10: var(--wa-color-orange-10);
+    --wa-color-brand-20: var(--wa-color-orange-20);
+    --wa-color-brand-30: var(--wa-color-orange-30);
+    --wa-color-brand-40: var(--wa-color-orange-40);
+    --wa-color-brand-50: var(--wa-color-orange-50);
+    --wa-color-brand-60: var(--wa-color-orange-60);
+    --wa-color-brand-70: var(--wa-color-orange-70);
+    --wa-color-brand-80: var(--wa-color-orange-80);
+    --wa-color-brand-90: var(--wa-color-orange-90);
+    --wa-color-brand-95: var(--wa-color-orange-95);
+  }
+
   --wa-color-brand: var(--wa-color-brand-50);
 
   --wa-color-secondary-10: #002e5f;

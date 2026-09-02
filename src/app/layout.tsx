@@ -10,10 +10,12 @@ const montserrat = Montserrat({
 import { Suspense } from 'react'
 import NavigationProgressBar from '@/components/NavigationProgressBar'
 
+const environment = process.env.NODE_ENV || 'development'
+
 export default function RootLayout({ children }) {
 
   return (
-    <html lang="pt">
+    <html lang="pt-PT">
       <head>
         <meta charSet="UTF-8" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -22,7 +24,7 @@ export default function RootLayout({ children }) {
         <title>Daboxi</title>
         <Script defer src="https://analytics.emanuelsaramago.com/script.js" data-website-id="3bb64fca-1327-48ed-81bb-c809ea244b10"></Script>
       </head>
-      <body className={`${montserrat.className}`}>
+      <body className={`${montserrat.className} environment-${environment}`}>
         <Suspense fallback={null}>
           <NavigationProgressBar />
         </Suspense>
