@@ -1,5 +1,5 @@
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
   --wa-space-scale: 1.6;
   --wa-font-size-scale: 1.6;
@@ -62,6 +62,7 @@
   --wa-color-neutral-fill-quiet: var(--wa-color-neutral-50);
   --wa-color-neutral-on-quiet: var(--wa-color-neutral-80);
   --wa-color-neutral-border-quiet: var(--wa-color-neutral-30);
+  --wa-color-neutral-border-loud: var(--wa-color-neutral-40);
   
   --wa-color-brand-fill-quiet: var(--wa-color-brand-20);
   --wa-color-brand-on-quiet: var(--wa-color-brand-80);
