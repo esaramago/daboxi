@@ -16,7 +16,7 @@ const WaDropdown = dynamic(() => import('@awesome.me/webawesome/dist/react/dropd
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
 const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
 const WaDropdownItem = dynamic(() => import('@awesome.me/webawesome/dist/react/dropdown-item/index.js'), {ssr: false})
-import type { Transactions, Categories, SubCategories } from '@/appwrite.d'
+import type { Transactions, Categories, SubCategories } from '@/types/pocketbase'
 
 export default function Transactions() {
 

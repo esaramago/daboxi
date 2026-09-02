@@ -7,7 +7,7 @@ import sum from '@/utils/sum'
 import Icon from '@/components/Icon'
 import Value from '@/components/Value'
 import Loading from '@/components/Loading'
-import type { Categories, SubCategories, Transactions } from 'appwrite.d'
+import type { Categories, SubCategories, Transactions } from '@/types/pocketbase'
 import dynamic from 'next/dynamic'
 const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
 const WaCard = dynamic(() => import('@awesome.me/webawesome/dist/react/card/index.js'), {ssr: false})

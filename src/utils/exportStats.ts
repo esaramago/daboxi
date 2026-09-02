@@ -1,7 +1,7 @@
 import fetchAllTransactions from '@/api/fetchTransactions'
 import getAllSubCategories from '@/api/fetchSubCategories'
 import { utils, writeFileXLSX } from 'xlsx'
-import { SubCategories, Transactions } from 'appwrite.d'
+import type { SubCategories, Transactions } from '@/types/pocketbase'
 
 const createDataStructure = (transactions: Transactions[], subCategories: SubCategories[]) => {
 

@@ -1,61 +1,119 @@
 # Daboxi
-A personal finance app
 
+**Daboxi** is a modern personal finance web application designed for simple, fast tracking of expenses, incomes, refunds, and monthly statistics, with Open Banking (EnableBanking) integration.
 
-# Setup
-## Dependencies
-- [Node.js](https://nodejs.org/en/download/)
-- NPM (Comes with Node.js)
-- [Appwrite CLI](https://appwrite.io/docs/tooling/command-line/installation#getting-started) (optional)
+---
 
-## Installation
-1. Install dependencies
-2. Copy .env.example to .env and fill in the values
-3. Run `npm install`
+## 🛠️ Tech Stack
 
-# Appwrite (optional)
-## Setup
-See [Appwrite CLI Installation](https://appwrite.io/docs/tooling/command-line/installation#getting-started) for more information.
-1. Install Appwrite CLI by running `npm install -g appwrite-cli`
-2. Login to Appwrite by running `appwrite login --endpoint "YOUR_APPWRITE_ENDPOINT"`
+- **Framework**: [Next.js 16+](https://nextjs.org/) (App Router, Turbopack)
+- **Language**: [TypeScript](https://www.typescriptlang.org/) / React 18
+- **Backend / Database**: [PocketBase](https://pocketbase.io/) (SQLite, embedded Go server)
+- **UI Components**: [WebAwesome](https://www.awesome.me/webawesome)
+- **Styling**: Modular CSS (BEM / ITCSS naming conventions)
+- **Integrations**: Open Banking via EnableBanking API, Sentry, SheetJS (Excel export), PapaParse (CSV import)
 
-## Push tables to Appwrite
-1. Run `appwrite push tables` to push the tables to the project
+---
 
-## Bring tables from Appwrite to local (if you don't have appwrite.config.json already)
-1. Run `appwrite init` to create a file `appwrite.config.json` with the project ID and endpoint
-2. Run `appwrite pull tables` to pull the tables from the project
-3. Run `appwrite types --language ts ./` to generate the types for the project
+## 🚀 Getting Started
 
-# Docker
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v20+ recommended)
+- NPM (bundled with Node.js)
+- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/install/) *(optional, for containerized run/deployment)*
 
-## Prerequisites
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+### Installation
 
-## Setup
-
-1. Ensure you have a `.env` file with the following variables:
-   - `NEXT_PUBLIC_APPWRITE_ENDPOINT` - Your Appwrite endpoint URL
-   - `NEXT_PUBLIC_APPWRITE_PROJECT_ID` - Your Appwrite project ID
-   - `APPWRITE_DATABASE_ID` - Your Appwrite database ID
-
-2. Build and start the application:
+1. Clone the repository and install dependencies:
    ```bash
-   docker-compose up -d
+   git clone <repo-url>
+   cd daboxi
+   npm install
    ```
 
-   Or build first, then start:
+2. Configure environment variables:
    ```bash
-   docker-compose build
-   docker-compose up -d
+   cp .env.example .env
    ```
 
-## Usage
+---
 
-- **Start the application**: `docker-compose up -d`
-- **Stop the application**: `docker-compose down`
-- **View logs**: `docker-compose logs -f`
-- **Rebuild after changes**: `docker-compose build --no-cache && docker-compose up -d`
+## 💻 Development & Running Locally
 
-The application will be available at `http://localhost:3000`
+### Option 1: VS Code (One-Click with `F5`) ⭐
+Press **`F5`** (or go to **Run & Debug** ▶️ **Daboxi + PocketBase**). This automatically:
+1. Starts the local PocketBase daemon with data in `./pb_data` (Port `8090`).
+2. Starts the Next.js development server (Port `3000`).
+
+### Option 2: Terminal All-in-One
+Run both services concurrently in a single command:
+```bash
+npm run dev:all
+```
+
+### Option 3: Separate Terminals
+- **Start PocketBase**:
+  ```bash
+  npm run pb:serve
+  ```
+  *(Admin Dashboard accessible at `http://127.0.0.1:8090/_/`)*
+
+- **Start Next.js**:
+  ```bash
+  npm run dev
+  ```
+  *(Application accessible at `http://localhost:3000`)*
+
+---
+
+## 🔑 Environment Variables
+
+| Variable | Description | Local Value | Docker / Production Value |
+| :--- | :--- | :--- | :--- |
+| `POCKETBASE_URL` | Server-side PocketBase URL | `http://127.0.0.1:8090` | `http://pocketbase:8090` |
+| `NEXT_PUBLIC_POCKETBASE_URL` | Client-side PocketBase URL | `http://127.0.0.1:8090` | `https://pb.yourdomain.com` |
+| `NEXT_PUBLIC_APP_URL` | App public base URL | `http://localhost:3000` | `https://yourdomain.com` |
+| `ENABLEBANKING_APP_ID` | EnableBanking Application ID | *(optional)* | *(optional)* |
+| `ENABLEBANKING_PRIVATE_KEY` | EnableBanking RS256 Private Key | *(optional)* | *(optional)* |
+
+---
+
+## 🐳 Docker & Coolify Deployment
+
+The project includes a multi-service `docker-compose.yml` for deployment on **Coolify** or standard Docker hosts.
+
+### Running with Docker Compose:
+```bash
+# Build and start services in background
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop services
+docker compose down
+```
+
+### Services:
+- **`pocketbase`**: Runs PocketBase on port `8090` with persistent volume `pocketbase_data:/pb_data`.
+- **`app`**: Runs the standalone Next.js production build on port `3000`.
+
+---
+
+## 📜 Available Scripts
+
+| Script | Description |
+| :--- | :--- |
+| `npm run dev` | Start Next.js with Turbopack |
+| `npm run dev:all` | Start both PocketBase and Next.js concurrently |
+| `npm run pb:serve` | Start local PocketBase server using `./pb_data` |
+| `npm run build` | Build Next.js production application |
+| `npm run start` | Start Next.js production server |
+| `npm run lint` | Run ESLint checks |
+| `npm run migrate:appwrite`| Run backup extraction and import into PocketBase |
+
+---
+
+## 📄 License
+
+Private personal project.

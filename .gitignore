@@ -19,6 +19,7 @@
 # misc
 .DS_Store
 *.pem
+.git-backup/
 
 # debug
 npm-debug.log*
@@ -27,15 +28,23 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
+.env.sentry-build-plugin
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
-
-.env
-# Sentry Config File
-.env.sentry-build-plugin
-
-
+# Backups & Extracted data
 backup/
+scripts/extracted_appwrite_data.json
+scripts/*.json
+
+# PocketBase local database and binary
+pb_data/
+pocketbase_bin
+pocketbase
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

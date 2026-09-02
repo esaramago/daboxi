@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import type { Transactions } from 'appwrite.d'
+import type { Transactions } from '@/types/pocketbase'
 import Value from '@/components/Value'
 import Loading from '@/components/Loading'
 import Link from 'next/link'
