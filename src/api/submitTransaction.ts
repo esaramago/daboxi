@@ -1,39 +1,40 @@
 'use server'
 
-import { createAppwriteRow } from '@/lib/appwrite'
-import { requireAuth, getAuthenticatedUserId } from '@/lib/appwriteServer'
-import { Permission, Role } from '@node_modules/appwrite'
+import { getPocketBase, formatRecord } from '@/lib/pocketbase'
+import { requireAuth, getAuthenticatedUserId } from '@/lib/pocketbaseServer'
 
-export default async function submitTransaction(data) {
+export default async function submitTransaction(data: any) {
   await requireAuth()
   const userId = await getAuthenticatedUserId()
-  
-  const permissions = [
-    Permission.read(Role.user(userId)),
-    Permission.update(Role.user(userId)),
-    Permission.delete(Role.user(userId))
-  ]
-  
-  const { data: response, error } = await createAppwriteRow('transactions', data, permissions)
 
-  if (error) {
-    return {
-      error,
-      data: null
+  try {
+    const pb = await getPocketBase()
+    const payload = {
+      ...data,
+      user: userId,
     }
-  }
 
-  if (data.enableBankingId) {
-    await createAppwriteRow('enablebanking_transactions', {
-      enableBankingId: data.enableBankingId,
-      status: 'imported'
-    }, permissions).catch(err => {
-      console.error('[submitTransaction] Error saving to enablebanking_transactions:', err)
-    })
-  }
+    const record = await pb.collection('transactions').create(payload)
 
-  return {
-    error: null,
-    data: response
+    if (data.enableBankingId) {
+      await pb.collection('enablebanking_transactions').create({
+        enableBankingId: data.enableBankingId,
+        status: 'imported',
+        user: userId,
+      }).catch(err => {
+        console.error('[submitTransaction] Error saving to enablebanking_transactions:', err)
+      })
+    }
+
+    return {
+      error: null,
+      data: formatRecord(record),
+    }
+  } catch (error: any) {
+    console.error('[submitTransaction] Error creating transaction:', error)
+    return {
+      error: error.message || error,
+      data: null,
+    }
   }
 }

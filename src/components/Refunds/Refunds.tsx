@@ -7,7 +7,7 @@ import Loading from '@/components/Loading'
 import Date from '@/components/Date'
 import Value from '@/components/Value'
 import CardButton from '@/components/CardButton'
-import type { Transactions } from 'appwrite.d'
+import type { Transactions } from '@/types/pocketbase'
 
 import dynamic from 'next/dynamic'
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})

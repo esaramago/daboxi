@@ -1,8 +1,7 @@
 'use server'
 
-import { createAppwriteRow } from '@/lib/appwrite'
-import { requireAuth, getAuthenticatedUserId } from '@/lib/appwriteServer'
-import { Permission, Role } from '@node_modules/appwrite'
+import { getPocketBase, formatRecord } from '@/lib/pocketbase'
+import { requireAuth, getAuthenticatedUserId } from '@/lib/pocketbaseServer'
 
 interface SaveBankSessionParams {
   sessionId: string
@@ -17,24 +16,24 @@ export default async function saveBankSession(data: SaveBankSessionParams) {
   await requireAuth()
   const userId = await getAuthenticatedUserId()
 
-  const permissions = [
-    Permission.read(Role.user(userId)),
-    Permission.update(Role.user(userId)),
-    Permission.delete(Role.user(userId))
-  ]
+  try {
+    const pb = await getPocketBase()
+    const payload = {
+      ...data,
+      user: userId,
+    }
 
-  const { data: response, error } = await createAppwriteRow('bank_sessions', data, permissions)
+    const response = await pb.collection('bank_sessions').create(payload)
 
-  if (error) {
     return {
-      error,
-      data: null
+      error: null,
+      data: formatRecord(response),
+    }
+  } catch (error: any) {
+    console.error('[saveBankSession] Error saving bank session:', error)
+    return {
+      error: error.message || error,
+      data: null,
     }
   }
-
-  return {
-    error: null,
-    data: response
-  }
 }
-

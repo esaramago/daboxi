@@ -12,7 +12,7 @@ import Value from '@/components/Value'
 import Categories from '@/components/Categories'
 import Refunds from '@/components/Refunds'
 import Grid from '@/components/Grid/Grid'
-import type { Transactions, SubCategories } from '@/appwrite.d'
+import type { Transactions, SubCategories } from '@/types/pocketbase'
 
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
 const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), { ssr: false })

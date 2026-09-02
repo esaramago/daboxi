@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { login } from '@/lib/appwrite'
+import { login } from '@/lib/pocketbaseServer'
 import dynamic from 'next/dynamic'
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
 const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), { ssr: false })
@@ -26,12 +26,12 @@ export default function Login() {
     event.preventDefault()
     setLoading(true)
 
-    // Criar sessão com Appwrite
+    // Criar sessão com PocketBase
     const { error } = await login(formFields.email, formFields.password)
 
     if (error) {
       setLoading(false)
-      alert(error.message)
+      alert(typeof error === 'string' ? error : error?.message || 'Erro ao iniciar sessão')
     } else {
       // Redirect to home
       router.push('/')

@@ -5,7 +5,7 @@ import fetchSubCategoriesByCategory from '@/api/fetchSubCategoriesByCategory'
 import fetchCategories from '@/api/fetchCategories'
 import CardButton from '@/components/CardButton'
 import Loading from '@/components/Loading'
-import type { SubCategories } from '@/appwrite.d'
+import type { SubCategories } from '@/types/pocketbase'
 import dynamic from 'next/dynamic'
 const WaDrawer = dynamic(() => import('@awesome.me/webawesome/dist/react/drawer/index.js'), {ssr: false})
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})

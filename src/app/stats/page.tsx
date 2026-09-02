@@ -8,7 +8,7 @@ import Loading from '@/components/Loading'
 import CategoryResume from '@/components/CategoryResume'
 import fetchTransactionsByMonth from '@/api/fetchTransactionsByMonth'
 import fetchCategories from '@/api/fetchCategories'
-import type { Transactions, Categories} from 'appwrite.d'
+import type { Transactions, Categories } from '@/types/pocketbase'
 import dynamic from 'next/dynamic'
 import exportStats from '@/utils/exportStats'
 const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), {ssr: false})

@@ -17,7 +17,7 @@ import Refunds from '@/components/Refunds'
 import getColorByVariant from '@/utils/getColorByVariant'
 import getNetValue from '@/utils/getNetValue'
 import calcNetValue from '@/utils/calcNetValue'
-import type { SubCategories, Transactions } from 'appwrite.d'
+import type { SubCategories, Transactions } from '@/types/pocketbase'
 
 import dynamic from 'next/dynamic'
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})

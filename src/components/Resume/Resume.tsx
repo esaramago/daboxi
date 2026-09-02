@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import type { Transactions } from 'appwrite.d'
+import type { Transactions } from '@/types/pocketbase'
 import Value from '@/components/Value'
 import Loading from '@/components/Loading'
 import Link from 'next/link'
@@ -56,7 +56,7 @@ export default function Resume(props: Props) {
           <div className="l-row l-row--large">
             <div>
               Despesas<br />
-              <Value value={totalExpense} sign={true} style={{ color: 'var(--wa-color-brand-50)' }} size="large"></Value><br />
+              <Value value={totalExpense} sign={true} style={{ color: 'var(--wa-color-secondary-50)' }} size="large"></Value><br />
             </div>
             <div>
               Receitas<br />

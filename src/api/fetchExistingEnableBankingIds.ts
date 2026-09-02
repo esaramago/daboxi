@@ -1,41 +1,41 @@
 'use server'
 
-import { fetchAppwriteDB, Query } from '@/lib/appwrite'
-import { requireAuth } from '@/lib/appwriteServer'
+import { getPocketBase } from '@/lib/pocketbase'
+import { requireAuth } from '@/lib/pocketbaseServer'
 
 export default async function fetchExistingEnableBankingIds() {
   await requireAuth()
 
-  const [ebResult, txResult] = await Promise.all([
-    fetchAppwriteDB('enablebanking_transactions', [
-      Query.select(['$id', 'enableBankingId']),
-    ], 5000),
-    fetchAppwriteDB('transactions', [
-      Query.select(['$id', 'enableBankingId']),
-    ], 5000),
-  ])
+  try {
+    const pb = await getPocketBase()
 
-  const ids = new Set<string>()
+    const [ebRecords, txRecords] = await Promise.all([
+      pb.collection('enablebanking_transactions').getFullList({ fields: 'id,enableBankingId' }),
+      pb.collection('transactions').getFullList({ fields: 'id,enableBankingId', filter: 'enableBankingId != ""' })
+    ])
 
-  if (ebResult.data?.rows) {
-    for (const row of ebResult.data.rows) {
+    const ids = new Set<string>()
+
+    for (const row of ebRecords) {
       if (typeof row.enableBankingId === 'string' && row.enableBankingId.length > 0) {
         ids.add(row.enableBankingId)
       }
     }
-  }
 
-  if (txResult.data?.rows) {
-    for (const row of txResult.data.rows) {
+    for (const row of txRecords) {
       if (typeof row.enableBankingId === 'string' && row.enableBankingId.length > 0) {
         ids.add(row.enableBankingId)
       }
     }
-  }
 
-  return {
-    error: null,
-    data: Array.from(ids)
+    return {
+      error: null,
+      data: Array.from(ids)
+    }
+  } catch (error: any) {
+    return {
+      error: error.message || error,
+      data: []
+    }
   }
 }
-

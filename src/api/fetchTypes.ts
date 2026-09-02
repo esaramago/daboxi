@@ -1,26 +1,24 @@
 'use server'
 
-import { fetchAppwriteDBPublic, Query } from '@/lib/appwrite'
+import { getPublicPocketBase, formatRecord } from '@/lib/pocketbase'
 import { getCachedData } from '@/lib/cache'
+import type { Types } from '@/types/pocketbase'
 
 export default async function fetchTypes() {
-
   const response = await getCachedData(
     'types-all',
     async () => {
-      const result = await fetchAppwriteDBPublic('types', [
-        Query.select(['*']),
-      ])
-
-      if (result.error) {
-        return {
-          error: result.error,
-          data: null,
-        }
-      } else {
+      try {
+        const pb = getPublicPocketBase()
+        const records = await pb.collection('types').getFullList()
         return {
           error: false,
-          data: result.data.rows,
+          data: records.map(r => formatRecord<Types>(r))
+        }
+      } catch (error: any) {
+        return {
+          error: error.message || error,
+          data: null
         }
       }
     },

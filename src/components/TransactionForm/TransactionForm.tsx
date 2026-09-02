@@ -10,7 +10,7 @@ import Value from '@/components/Value'
 import Categories from '@/components/Categories'
 import Refunds from '@/components/Refunds'
 import calcNetValue from '@/utils/calcNetValue'
-import type { Transactions, SubCategories } from '@/appwrite.d'
+import type { Transactions, SubCategories } from '@/types/pocketbase'
 import DiscardTransactionButton from '@/components/_pages/enablebanking/transactions/DiscardTransactionButton'
 
 import dynamic from 'next/dynamic'

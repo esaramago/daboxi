@@ -1,18 +1,25 @@
 'use server'
 
-import { updateAppwriteRow } from '@/lib/appwrite'
-import { requireAuth, getAuthenticatedUserId } from '@/lib/appwriteServer'
-import { Permission, Role } from '@node_modules/appwrite'
+import { getPocketBase, formatRecord } from '@/lib/pocketbase'
+import { requireAuth } from '@/lib/pocketbaseServer'
 
 export default async function updateTransaction(id: string, data: object) {
   await requireAuth()
-  const userId = await getAuthenticatedUserId()
 
-  const permissions = [
-    Permission.read(Role.user(userId)),
-    Permission.update(Role.user(userId)),
-    Permission.delete(Role.user(userId))
-  ]
+  if (!id) return
 
-  await updateAppwriteRow('transactions', id, data, permissions)
+  try {
+    const pb = await getPocketBase()
+    const updated = await pb.collection('transactions').update(id, data)
+    return {
+      error: null,
+      data: formatRecord(updated)
+    }
+  } catch (error: any) {
+    console.error('[updateTransaction] Error updating transaction:', error)
+    return {
+      error: error.message || error,
+      data: null
+    }
+  }
 }

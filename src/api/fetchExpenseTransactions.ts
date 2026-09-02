@@ -1,36 +1,30 @@
 'use server'
 
-import { fetchAppwriteDB, Query } from '@/lib/appwrite'
-import { requireAuth } from '@/lib/appwriteServer'
+import { getPocketBase, formatRecord } from '@/lib/pocketbase'
+import { requireAuth } from '@/lib/pocketbaseServer'
+import type { Transactions } from '@/types/pocketbase'
 
 export default async function fetchExpenseTransactions(size?: number) {
   await requireAuth()
 
-  const { data, error } = await fetchAppwriteDB('transactions', [
-    Query.select([
-      '*',
-      'subCategory.*',
-      'subCategory.category',
-      'subCategory.category.type.code',
-    ]),
-    Query.lessThan('value', 0),
-    Query.or([
-      Query.equal('refundsIds', ''),
-      Query.isNull('refundsIds'),
-    ]),
-    Query.orderDesc('date'),
-    Query.orderAsc('description'),
-  ], size)
+  try {
+    const pb = await getPocketBase()
+    const limit = size || 500
 
-  if (error) {
-    return {
-      error: error,
-      data: null,
-    }
-  } else {
+    const records = await pb.collection('transactions').getList(1, limit, {
+      filter: 'value < 0 && (refundsIds = "" || refundsIds = null)',
+      sort: '-date,description',
+      expand: 'subCategory.category.type',
+    })
+
     return {
       error: false,
-      data: data.rows,
+      data: records.items.map(r => formatRecord<Transactions>(r)),
+    }
+  } catch (error: any) {
+    return {
+      error: error.message || error,
+      data: null,
     }
   }
 }

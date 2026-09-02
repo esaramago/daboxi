@@ -7,7 +7,7 @@ import submitTransactions from '@/api/submitTransactions'
 import Header from '@/components/Header'
 import TransactionForm from '@/components/TransactionForm'
 import CreateMultiple from '@/components/_pages/transactions/create/CreateMultiple'
-import type { Transactions } from '@/appwrite.d'
+import type { Transactions } from '@/types/pocketbase'
 
 import dynamic from 'next/dynamic'
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
