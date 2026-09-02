@@ -52,7 +52,7 @@ export default function Login() {
           </div>
         <form
           onSubmit={handleSubmitLogin}
-          className="l-stack l-stack--small"
+          className="l-stack l-stack--large"
         >
           <WaInput
             onChange={handleInputChange}
