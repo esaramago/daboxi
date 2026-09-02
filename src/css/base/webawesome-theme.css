@@ -18,17 +18,17 @@
   --wa-color-neutral-95: #f9f9f9;
 
   /* Brand */
-  --wa-color-brand-5: #001a38;
-  --wa-color-brand-10: #002e5f;
-  --wa-color-brand-20: #024286;
-  --wa-color-brand-30: #0458b1;
-  --wa-color-brand-40: #036bda;
-  --wa-color-brand-50: #1A87FE;
-  --wa-color-brand-60: #3597ff;
-  --wa-color-brand-70: #7ebdff;
-  --wa-color-brand-80: #b2d5ff;
-  --wa-color-brand-90: #E2EFFF;
-  --wa-color-brand-95: #f2f8ff;
+  --wa-color-brand-5: #043122;
+  --wa-color-brand-10: #004f38;
+  --wa-color-brand-20: #006647;
+  --wa-color-brand-30: #00875e;
+  --wa-color-brand-40: #03ad7b;
+  --wa-color-brand-50: #0dd17f;
+  --wa-color-brand-60: #17f482;
+  --wa-color-brand-70: #5df6a2;
+  --wa-color-brand-80: #95ffc8;
+  --wa-color-brand-90: #cbfde2;
+  --wa-color-brand-95: #edfff5;
   --wa-color-brand: var(--wa-color-brand-50);
 
   --wa-color-success-5: #0c311b;
