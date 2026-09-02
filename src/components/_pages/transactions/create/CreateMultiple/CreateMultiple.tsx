@@ -186,7 +186,7 @@ export default function CreateMultiple() {
         const _netValue = item.refund && item.selectedRefund ? calcNetValue(_value, item.selectedRefund.value) : null
 
         const data = {
-          date: new Date(item.date),
+          date: new Date(`${item.date.split('T')[0]}T00:00:00.000Z`),
           niceDescription: item.niceDescription,
           description: item.description || '',
           value: _value,

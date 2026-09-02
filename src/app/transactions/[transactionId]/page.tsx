@@ -193,7 +193,8 @@ export default function Transaction() {
     }
   }
   const handleChangeDate = async (event) => {
-    const date = event.currentTarget.value
+    const rawDate = event.currentTarget.value
+    const date = rawDate ? new globalThis.Date(`${rawDate.split('T')[0]}T00:00:00.000Z`) : null
     await updateTransaction(transactionId, { date })
     getTransaction() // re-render transaction
   }

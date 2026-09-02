@@ -44,7 +44,9 @@ export default function Home() {
     return Array.from(groupedByDate)
   }
   const getTransactionsByMonth = async () => {
-    const { data, error } = await fetchTransactionsByMonth()
+    const now = new globalThis.Date()
+    const currentMonth = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`
+    const { data, error } = await fetchTransactionsByMonth(currentMonth)
     if (error) {
       console.error(error)
       return null

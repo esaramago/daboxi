@@ -149,7 +149,7 @@ export default function TransactionForm({ initialValues, redirectTo = '/' }: Tra
         const _netValue = formFields.refund && selectedRefund ? calcNetValue(_value, selectedRefund.value) : null
 
         const data: any = {
-          date: new Date(formFields.date),
+          date: new Date(`${formFields.date.split('T')[0]}T00:00:00.000Z`),
           niceDescription: formFields.niceDescription,
           description: formFields.description || null,
           notes: formFields.notes || null,
