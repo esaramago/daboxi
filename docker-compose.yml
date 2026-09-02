@@ -7,8 +7,6 @@ services:
     restart: unless-stopped
     volumes:
       - pocketbase_data:/pb_data
-    ports:
-      - "8090:8090"
     networks:
       - daboxi-network
 
