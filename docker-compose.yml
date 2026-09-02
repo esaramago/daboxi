@@ -1,25 +1,38 @@
 services:
+  pocketbase:
+    build:
+      context: .
+      dockerfile: Dockerfile.pocketbase
+    container_name: daboxi-pocketbase
+    restart: unless-stopped
+    volumes:
+      - pocketbase_data:/pb_data
+    ports:
+      - "8090:8090"
+    networks:
+      - daboxi-network
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_APPWRITE_ENDPOINT=${NEXT_PUBLIC_APPWRITE_ENDPOINT}
-        - NEXT_PUBLIC_APPWRITE_PROJECT_ID=${NEXT_PUBLIC_APPWRITE_PROJECT_ID}
-        - APPWRITE_DATABASE_ID=${APPWRITE_DATABASE_ID}
-        - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY}
-        - SOURCE_COMMIT=${SOURCE_COMMIT}
+        - POCKETBASE_URL=${POCKETBASE_URL:-http://pocketbase:8090}
+        - NEXT_PUBLIC_POCKETBASE_URL=${NEXT_PUBLIC_POCKETBASE_URL:-http://localhost:8090}
+        - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
+        - SOURCE_COMMIT=${SOURCE_COMMIT:-}
     container_name: daboxi-app
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_APPWRITE_ENDPOINT=${NEXT_PUBLIC_APPWRITE_ENDPOINT}
-      - NEXT_PUBLIC_APPWRITE_PROJECT_ID=${NEXT_PUBLIC_APPWRITE_PROJECT_ID}
-      - APPWRITE_DATABASE_ID=${APPWRITE_DATABASE_ID}
-      - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY}
+      - POCKETBASE_URL=${POCKETBASE_URL:-http://pocketbase:8090}
+      - NEXT_PUBLIC_POCKETBASE_URL=${NEXT_PUBLIC_POCKETBASE_URL:-http://localhost:8090}
+      - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
     env_file:
       - .env
     restart: unless-stopped
+    depends_on:
+      - pocketbase
     deploy:
       resources:
         limits:
@@ -30,6 +43,9 @@ services:
           memory: 512M     # Reserva mínima de 512MB
     networks:
       - daboxi-network
+
+volumes:
+  pocketbase_data:
 
 networks:
   daboxi-network:

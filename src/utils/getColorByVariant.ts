@@ -1,6 +1,6 @@
 export type Variant = 'expense' | 'income' | 'refund' | 'undefined'
 
-export default function getColorByVariant(variant: Variant) {
+export default function getColorByVariant(variant?: Variant | string | null) {
 
   let color: string = ''
 

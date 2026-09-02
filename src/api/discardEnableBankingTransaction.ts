@@ -1,8 +1,7 @@
 'use server'
 
-import { createAppwriteRow } from '@/lib/appwrite'
-import { requireAuth, getAuthenticatedUserId } from '@/lib/appwriteServer'
-import { Permission, Role } from '@node_modules/appwrite'
+import { getPocketBase, formatRecord } from '@/lib/pocketbase'
+import { requireAuth, getAuthenticatedUserId } from '@/lib/pocketbaseServer'
 
 export default async function discardEnableBankingTransaction(enableBankingId: string) {
   await requireAuth()
@@ -15,31 +14,23 @@ export default async function discardEnableBankingTransaction(enableBankingId: s
     }
   }
 
-  const permissions = [
-    Permission.read(Role.user(userId)),
-    Permission.update(Role.user(userId)),
-    Permission.delete(Role.user(userId)),
-  ]
-
-  const { data: response, error } = await createAppwriteRow(
-    'enablebanking_transactions',
-    {
+  try {
+    const pb = await getPocketBase()
+    const response = await pb.collection('enablebanking_transactions').create({
       enableBankingId,
       status: 'discarded',
-    },
-    permissions
-  )
+      user: userId,
+    })
 
-  if (error) {
     return {
-      error,
+      error: null,
+      data: formatRecord(response),
+    }
+  } catch (error: any) {
+    console.error('[discardEnableBankingTransaction] Error:', error)
+    return {
+      error: error.message || error,
       data: null,
     }
   }
-
-  return {
-    error: null,
-    data: response,
-  }
 }
-
