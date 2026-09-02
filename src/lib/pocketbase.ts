@@ -59,6 +59,12 @@ export function formatRecord<T = any>(record: any): T {
     $id: record.id,
   }
 
+  // Normalize netValue: In PocketBase, empty number fields can default to 0.
+  // In Daboxi, netValue must be null unless there is a linked refund (or non-zero netValue).
+  if (formatted.netValue === 0 && (!formatted.refundsIds || formatted.refundsIds === '')) {
+    formatted.netValue = null
+  }
+
   if (record.expand) {
     for (const key of Object.keys(record.expand)) {
       const expandedVal = record.expand[key]

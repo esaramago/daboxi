@@ -31,6 +31,16 @@
   --wa-color-brand-95: #edfff5;
   --wa-color-brand: var(--wa-color-brand-50);
 
+  --wa-color-secondary-10: #002e5f;
+  --wa-color-secondary-20: #024286;
+  --wa-color-secondary-30: #0458b1;
+  --wa-color-secondary-40: #036bda;
+  --wa-color-secondary-50: #1A87FE;
+  --wa-color-secondary-60: #3597ff;
+  --wa-color-secondary-70: #7ebdff;
+  --wa-color-secondary-80: #b2d5ff;
+  --wa-color-secondary-90: #E2EFFF;
+
   --wa-color-success-5: #0c311b;
   --wa-color-success-10: #14532d;
   --wa-color-success-20: #166534;

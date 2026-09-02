@@ -13,11 +13,14 @@ export default async function fetchTransactionsByMonth(date?: Date, type?: Categ
   const startDate = new Date(_date.getFullYear(), _date.getMonth(), 1, 0, 0, 0, 0)
   const endDate = new Date(_date.getFullYear(), _date.getMonth() + 1, 0, 23, 59, 59, 999)
 
+  const startStr = startDate.toISOString().replace('T', ' ')
+  const endStr = endDate.toISOString().replace('T', ' ')
+
   try {
     const pb = await getPocketBase()
     const filterParts = [
-      `date >= "${startDate.toISOString()}"`,
-      `date <= "${endDate.toISOString()}"`
+      `date >= "${startStr}"`,
+      `date <= "${endStr}"`
     ]
 
     if (type) {

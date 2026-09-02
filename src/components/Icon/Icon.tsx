@@ -17,10 +17,8 @@ export default function Button(props: Props) {
   const color = getColorByVariant(props.variant as Variant)
   const bgColor = color.replace('-50', '-80')
 
-  if (props.size === 'small') {
-    props.size = 's'
-  }
-  const fontSize = props.size ? `var(--wa-font-size-${props.size})` : ''
+  const size = props.size === 'small' ? 's' : props.size
+  const fontSize = size ? `var(--wa-font-size-${size})` : ''
 
   return (
     <div
