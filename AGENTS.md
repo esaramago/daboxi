@@ -26,7 +26,6 @@ Technical guide and conventions for AI agents and developers working on **Daboxi
 - **Backend / BaaS**: PocketBase (SQLite, embedded Go server).
 - **UI Components**: WebAwesome (`@awesome.me/webawesome`).
 - **Styling**: Modular CSS (`src/css/`) following BEM / ITCSS naming conventions.
-- **Observability**: Sentry (`@sentry/nextjs`).
 - **Utilities**: `papaparse` (CSV), `xlsx` (SheetJS), `jsonwebtoken` + native `crypto` (RS256 signing for Open Banking).
 
 ---

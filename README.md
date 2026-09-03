@@ -41,9 +41,8 @@
 ## 💻 Development & Running Locally
 
 ### Option 1: VS Code (One-Click with `F5`) ⭐
-Press **`F5`** (or go to **Run & Debug** ▶️ **Daboxi + PocketBase**). This automatically:
-1. Starts the local PocketBase daemon with data in `./pb_data` (Port `8090`).
-2. Starts the Next.js development server (Port `3000`).
+Press **`F5`** (ou aceda a **Run & Debug** ▶️ **Daboxi (Next.js)**) para iniciar o servidor Next.js (`npm run dev`).
+*(Se quiser iniciar o servidor PocketBase em simultâneo via VS Code, selecione a configuração **Daboxi + PocketBase** no menu de debug).*
 
 ### Option 2: Terminal All-in-One
 Run both services concurrently in a single command:
