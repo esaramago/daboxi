@@ -1,7 +1,7 @@
 'use client'
 import './EmptyState.css'
 import Grid from '@/components/Grid/Grid'
-import Icon from '@/components/Icon'
+import Icon from '@/components/webawesome/WaIcon'
 
 interface EmptyStateProps {
   children?: React.ReactNode,

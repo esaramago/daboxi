@@ -16,13 +16,11 @@ services:
       dockerfile: Dockerfile
       args:
         - POCKETBASE_URL=${POCKETBASE_URL:-http://pocketbase:8090}
-        - NEXT_PUBLIC_POCKETBASE_URL=${NEXT_PUBLIC_POCKETBASE_URL:-http://localhost:8090}
         - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
         - SOURCE_COMMIT=${SOURCE_COMMIT:-}
     container_name: daboxi-app
     environment:
       - POCKETBASE_URL=${POCKETBASE_URL:-http://pocketbase:8090}
-      - NEXT_PUBLIC_POCKETBASE_URL=${NEXT_PUBLIC_POCKETBASE_URL:-http://localhost:8090}
       - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
     env_file:
       - .env

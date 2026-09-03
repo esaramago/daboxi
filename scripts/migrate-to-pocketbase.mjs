@@ -49,6 +49,10 @@ async function ensureCollections() {
       fields.push({ name: 'enablebanking_country', type: 'text', required: false })
       modified = true
     }
+    if (!hasField('enablebanking_enabled')) {
+      fields.push({ name: 'enablebanking_enabled', type: 'bool', required: false })
+      modified = true
+    }
     
     if (modified) {
       console.log('[Migration] Updating users collection fields...')

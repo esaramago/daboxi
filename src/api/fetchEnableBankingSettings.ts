@@ -5,6 +5,7 @@ import { requireAuth, getAuthenticatedUser } from '@/lib/pocketbaseServer'
 export interface EnableBankingSettings {
   bankName: string | null
   country: string | null
+  enabled: boolean
 }
 
 export default async function fetchEnableBankingSettings(): Promise<{
@@ -26,11 +27,16 @@ export default async function fetchEnableBankingSettings(): Promise<{
       ? user.enablebanking_country.trim()
       : null
 
+    const enabled = typeof user.enablebanking_enabled === 'boolean'
+      ? user.enablebanking_enabled
+      : Boolean(bankName && country)
+
     return {
       error: null,
       data: {
         bankName,
         country,
+        enabled,
       },
     }
   } catch (error: any) {

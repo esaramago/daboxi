@@ -13,6 +13,10 @@ RUN wget https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSIO
     && rm pocketbase_${PB_VERSION}_linux_amd64.zip \
     && chmod +x /pb/pocketbase
 
+WORKDIR /pb
+
+COPY pb_migrations /pb/pb_migrations
+
 EXPOSE 8090
 
 VOLUME /pb_data

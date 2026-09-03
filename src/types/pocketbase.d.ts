@@ -10,6 +10,14 @@ export interface BaseModel {
   [key: string]: any;
 }
 
+export type Users = BaseModel & {
+  name?: string | null;
+  email?: string;
+  enablebanking_bank_name?: string | null;
+  enablebanking_country?: string | null;
+  enablebanking_enabled?: boolean | null;
+}
+
 export type Types = BaseModel & {
   code: Variant;
   description: string;

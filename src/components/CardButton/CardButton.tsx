@@ -1,6 +1,6 @@
 'use client'
 
-import Icon from '@/components/Icon'
+import Icon from '@/components/webawesome/WaIcon'
 import { type Types } from '@/types/types'
 
 export interface CardButton {

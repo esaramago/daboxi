@@ -21,9 +21,9 @@ export default async function EnableBankingCreateTransaction({ params }: EnableB
           <div className="l-stack">
             <p>{error || 'Transação não encontrada ou sessão bancária inválida.'}</p>
             <div>
-              <Link href="/enablebanking/transactions" className="c-button">
+              <wa-button href="/enablebanking/transactions">
                 Voltar às transações EnableBanking
-              </Link>
+              </wa-button>
             </div>
           </div>
         </main>

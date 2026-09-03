@@ -70,8 +70,7 @@ npm run dev:all
 
 | Variable | Description | Local Value | Docker / Production Value |
 | :--- | :--- | :--- | :--- |
-| `POCKETBASE_URL` | Server-side PocketBase URL | `http://127.0.0.1:8090` | `http://pocketbase:8090` |
-| `NEXT_PUBLIC_POCKETBASE_URL` | Client-side PocketBase URL | `http://127.0.0.1:8090` | `https://pb.yourdomain.com` |
+| `POCKETBASE_URL` | Server-side PocketBase URL | `http://127.0.0.1:8090` | `http://pocketbase:8090` | `https://pb.yourdomain.com`
 | `NEXT_PUBLIC_APP_URL` | App public base URL | `http://localhost:3000` | `https://yourdomain.com` |
 | `ENABLEBANKING_APP_ID` | EnableBanking Application ID | *(optional)* | *(optional)* |
 | `ENABLEBANKING_PRIVATE_KEY` | EnableBanking RS256 Private Key | *(optional)* | *(optional)* |

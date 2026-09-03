@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getPocketBase } from './pocketbase'
+import { getPocketBase, getPublicPocketBase } from './pocketbase'
 import { PB_COOKIE_NAME, POCKETBASE_URL } from './config'
 
 /**
@@ -148,7 +148,7 @@ export async function logout() {
  */
 export async function requestPasswordReset(email: string) {
   try {
-    const pb = await getPocketBase()
+    const pb = getPublicPocketBase()
     await pb.collection('users').requestPasswordReset(email)
 
     return {
@@ -181,7 +181,7 @@ export async function requestPasswordReset(email: string) {
  */
 export async function confirmPasswordReset(token: string, password: string, passwordConfirm: string) {
   try {
-    const pb = await getPocketBase()
+    const pb = getPublicPocketBase()
     await pb.collection('users').confirmPasswordReset(token, password, passwordConfirm)
 
     return {

@@ -11,6 +11,7 @@ import Date from '@/components/Date'
 import EnableBankingTransaction from '@/components/_pages/enablebanking/transactions/EnableBankingTransaction'
 import EnableBankingSettingsDialog from '@/components/_pages/enablebanking/transactions/EnableBankingSettingsDialog'
 import EmptyState from '@/components/EmptyState'
+import '@webawesome/button'
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || ''
 
@@ -28,27 +29,31 @@ export default async function EnableBankingTransactions({
   const { data: settings } = await fetchEnableBankingSettings()
   const bankName = settings?.bankName || null
   const country = settings?.country || null
-  const isConfigured = Boolean(bankName && country)
+  const isEnabled = settings?.enabled ?? Boolean(bankName && country)
+  const isConfigured = Boolean(isEnabled && bankName && country)
 
   let sessionId: string | null = null
+  let session: any = null
   let transactions: any[] = []
 
   // 2. Obter sessão ativa na base de dados para o banco configurado
-  const session = await fetchActiveBankSession(bankName)
-  if (!session.error && session.data?.sessionId) {
-    sessionId = session.data.sessionId
-  }
+  if (isConfigured && bankName) {
+    session = await fetchActiveBankSession(bankName)
+    if (!session.error && session.data?.sessionId) {
+      sessionId = session.data.sessionId
+    }
 
-  // 3. Se não houver sessão ativa na BD mas houver um novo 'code' e configurações válidas
-  if (!sessionId && code && isConfigured && bankName && country) {
-    sessionId = await createEnableBankingSession(code, token)
-    if (sessionId) {
-      await saveBankSession({
-        sessionId,
-        bankName,
-        country,
-        status: 'AUTHORIZED',
-      })
+    // 3. Se não houver sessão ativa na BD mas houver um novo 'code' e configurações válidas
+    if (!sessionId && code && country) {
+      sessionId = await createEnableBankingSession(code, token)
+      if (sessionId) {
+        await saveBankSession({
+          sessionId,
+          bankName,
+          country,
+          status: 'AUTHORIZED',
+        })
+      }
     }
   }
 
@@ -119,6 +124,7 @@ export default async function EnableBankingTransactions({
           <EnableBankingSettingsDialog
             initialBankName={bankName}
             initialCountry={country}
+            initialEnabled={isEnabled}
           />
         }
       >
@@ -147,16 +153,31 @@ export default async function EnableBankingTransactions({
           </div>
         ) : (
           <div className="l-stack">
-            {!isConfigured ? (
+            {!isEnabled ? (
+              <EmptyState icon="building-columns">
+                A integração com o EnableBanking está desativada.
+                <EnableBankingSettingsDialog
+                  initialBankName={bankName}
+                  initialCountry={country}
+                  initialEnabled={isEnabled}
+                  trigger={
+                    <wa-button type="button">
+                      Configurar EnableBanking
+                    </wa-button>
+                  }
+                />
+              </EmptyState>
+            ) : !isConfigured ? (
               <EmptyState icon="building-columns">
                 Indique o seu banco e respetivo país para aceder aos seus movimentos.
                 <EnableBankingSettingsDialog
                   initialBankName={bankName}
                   initialCountry={country}
+                  initialEnabled={isEnabled}
                   trigger={
-                    <button type="button" className="c-button c-button--neutral">
+                    <wa-button type="button">
                       Configurar banco e país
-                    </button>
+                    </wa-button>
                   }
                 />
               </EmptyState>
@@ -165,9 +186,7 @@ export default async function EnableBankingTransactions({
                 A sessão bancária ({bankName}) não está ativa.
                 {authUrl ? (
                   <div>
-                    <a href={authUrl} className="c-button c-button--neutral">
-                      Autenticar EnableBanking ({bankName})
-                    </a>
+                    <wa-button href={authUrl}>Autenticar EnableBanking ({bankName})</wa-button>
                   </div>
                 ) : (
                   <p className="u-color-danger" style={{ fontSize: 'var(--wa-font-size-s)', margin: 0 }}>
