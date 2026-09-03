@@ -12,6 +12,9 @@ import EnableBankingTransaction from '@/components/_pages/enablebanking/transact
 import EnableBankingSettingsDialog from '@/components/_pages/enablebanking/transactions/EnableBankingSettingsDialog'
 import EmptyState from '@/components/EmptyState'
 import '@webawesome/button'
+import '@awesome.me/webawesome/dist/components/icon/icon.js'
+
+const SETTINGS_DIALOG_ID = 'enablebanking-settings-dialog'
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || ''
 
@@ -121,11 +124,14 @@ export default async function EnableBankingTransactions({
       <Header
         route="/"
         actions={
-          <EnableBankingSettingsDialog
-            initialBankName={bankName}
-            initialCountry={country}
-            initialEnabled={isEnabled}
-          />
+          <wa-button
+            appearance="plain"
+            data-dialog={`open ${SETTINGS_DIALOG_ID}`}
+            title="Configurações EnableBanking"
+            aria-label="Configurações EnableBanking"
+          >
+            <wa-icon name="gear" label="Configurações EnableBanking"></wa-icon>
+          </wa-button>
         }
       >
         Movimentos bancários EnableBanking
@@ -156,30 +162,20 @@ export default async function EnableBankingTransactions({
             {!isEnabled ? (
               <EmptyState icon="building-columns">
                 A integração com o EnableBanking está desativada.
-                <EnableBankingSettingsDialog
-                  initialBankName={bankName}
-                  initialCountry={country}
-                  initialEnabled={isEnabled}
-                  trigger={
-                    <wa-button type="button">
-                      Configurar EnableBanking
-                    </wa-button>
-                  }
-                />
+                <div>
+                  <wa-button type="button" data-dialog={`open ${SETTINGS_DIALOG_ID}`}>
+                    Configurar EnableBanking
+                  </wa-button>
+                </div>
               </EmptyState>
             ) : !isConfigured ? (
               <EmptyState icon="building-columns">
                 Indique o seu banco e respetivo país para aceder aos seus movimentos.
-                <EnableBankingSettingsDialog
-                  initialBankName={bankName}
-                  initialCountry={country}
-                  initialEnabled={isEnabled}
-                  trigger={
-                    <wa-button type="button">
-                      Configurar banco e país
-                    </wa-button>
-                  }
-                />
+                <div>
+                  <wa-button type="button" data-dialog={`open ${SETTINGS_DIALOG_ID}`}>
+                    Configurar banco e país
+                  </wa-button>
+                </div>
               </EmptyState>
             ) : !sessionId ? (
               <EmptyState icon="key">
@@ -202,6 +198,12 @@ export default async function EnableBankingTransactions({
           </div>
         )}
       </main>
+
+      <EnableBankingSettingsDialog
+        initialBankName={bankName}
+        initialCountry={country}
+        initialEnabled={isEnabled}
+      />
     </>
   )
 }
