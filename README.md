@@ -11,7 +11,7 @@
 - **Backend / Database**: [PocketBase](https://pocketbase.io/) (SQLite, embedded Go server)
 - **UI Components**: [WebAwesome](https://www.awesome.me/webawesome)
 - **Styling**: Modular CSS (BEM / ITCSS naming conventions)
-- **Integrations**: Open Banking via EnableBanking API, Sentry, SheetJS (Excel export), PapaParse (CSV import)
+- **Integrations**: Open Banking via EnableBanking API, SheetJS (Excel export), PapaParse (CSV import)
 
 ---
 
