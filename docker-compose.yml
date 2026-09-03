@@ -3,12 +3,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.pocketbase
-    container_name: daboxi-pocketbase
     restart: unless-stopped
+    expose:
+      - "8090"
     volumes:
       - pocketbase_data:/pb_data
-    networks:
-      - daboxi-network
 
   app:
     build:
@@ -18,13 +17,14 @@ services:
         - POCKETBASE_URL=${POCKETBASE_URL:-http://pocketbase:8090}
         - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
         - SOURCE_COMMIT=${SOURCE_COMMIT:-}
-    container_name: daboxi-app
+    restart: unless-stopped
+    expose:
+      - "3000"
     environment:
       - POCKETBASE_URL=${POCKETBASE_URL:-http://pocketbase:8090}
       - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
     env_file:
       - .env
-    restart: unless-stopped
     depends_on:
       - pocketbase
     deploy:
@@ -35,12 +35,6 @@ services:
         reservations:
           cpus: '0.5'      # Reserva mínima de 0.5 CPU
           memory: 512M     # Reserva mínima de 512MB
-    networks:
-      - daboxi-network
 
 volumes:
   pocketbase_data:
-
-networks:
-  daboxi-network:
-    driver: bridge

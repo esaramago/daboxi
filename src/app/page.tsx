@@ -20,6 +20,7 @@ const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/
 const WaCard = dynamic(() => import('@awesome.me/webawesome/dist/react/card/index.js'), {ssr: false})
 const WaAvatar = dynamic(() => import('@awesome.me/webawesome/dist/react/avatar/index.js'), {ssr: false})
 const WaDropdown = dynamic(() => import('@awesome.me/webawesome/dist/react/dropdown/index.js'), {ssr: false})
+import type { Transactions } from '@/types/pocketbase'
 
 type User = {
   name?: string
@@ -31,14 +32,14 @@ export default function Home() {
   const router = useRouter()
   const [ isLoading, setIsLoading ] = useState(true)
   const [ user, setUser ] = useState<User | null>({})
-  const [ transactionsByDate, setTransactionsByDate ] = useState(null)
-  const [ monthTransactions, setMonthTransactions ] = useState(null)
+  const [ transactionsByDate, setTransactionsByDate ] = useState<any[]>([])
+  const [ monthTransactions, setMonthTransactions ] = useState<Transactions[]>([])
 
   const getTransactionsByDate = async () => {
     const { data, error } = await fetchTransactions(15)
-    if (error) {
+    if (error || !data) {
       console.error(error)
-      return null
+      return []
     }
     const groupedByDate = Map.groupBy(data, ({ date }) => date)
     return Array.from(groupedByDate)
@@ -47,9 +48,9 @@ export default function Home() {
     const now = new globalThis.Date()
     const currentMonth = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`
     const { data, error } = await fetchTransactionsByMonth(currentMonth)
-    if (error) {
+    if (error || !data) {
       console.error(error)
-      return null
+      return []
     }
     return data
   }
@@ -136,7 +137,7 @@ export default function Home() {
             isLoading ? <Loading></Loading> : (
               <>
                 {
-                  transactionsByDate.length > 0 ? (
+                  transactionsByDate?.length > 0 ? (
 
                     <Grid gap="xl" direction="column">
                       {
