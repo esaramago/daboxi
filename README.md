@@ -11,7 +11,7 @@
 - **Backend / Database**: [PocketBase](https://pocketbase.io/) (SQLite, embedded Go server)
 - **UI Components**: [WebAwesome](https://www.awesome.me/webawesome)
 - **Styling**: Modular CSS (BEM / ITCSS naming conventions)
-- **Integrations**: Open Banking via EnableBanking API, Sentry, SheetJS (Excel export), PapaParse (CSV import)
+- **Integrations**: Open Banking via EnableBanking API, SheetJS (Excel export), PapaParse (CSV import)
 
 ---
 
@@ -41,9 +41,8 @@
 ## 💻 Development & Running Locally
 
 ### Option 1: VS Code (One-Click with `F5`) ⭐
-Press **`F5`** (or go to **Run & Debug** ▶️ **Daboxi + PocketBase**). This automatically:
-1. Starts the local PocketBase daemon with data in `./pb_data` (Port `8090`).
-2. Starts the Next.js development server (Port `3000`).
+Press **`F5`** (ou aceda a **Run & Debug** ▶️ **Daboxi (Next.js)**) para iniciar o servidor Next.js (`npm run dev`).
+*(Se quiser iniciar o servidor PocketBase em simultâneo via VS Code, selecione a configuração **Daboxi + PocketBase** no menu de debug).*
 
 ### Option 2: Terminal All-in-One
 Run both services concurrently in a single command:
@@ -70,8 +69,7 @@ npm run dev:all
 
 | Variable | Description | Local Value | Docker / Production Value |
 | :--- | :--- | :--- | :--- |
-| `POCKETBASE_URL` | Server-side PocketBase URL | `http://127.0.0.1:8090` | `http://pocketbase:8090` |
-| `NEXT_PUBLIC_POCKETBASE_URL` | Client-side PocketBase URL | `http://127.0.0.1:8090` | `https://pb.yourdomain.com` |
+| `POCKETBASE_URL` | Server-side PocketBase URL | `http://127.0.0.1:8090` | `http://pocketbase:8090` | `https://pb.yourdomain.com`
 | `NEXT_PUBLIC_APP_URL` | App public base URL | `http://localhost:3000` | `https://yourdomain.com` |
 | `ENABLEBANKING_APP_ID` | EnableBanking Application ID | *(optional)* | *(optional)* |
 | `ENABLEBANKING_PRIVATE_KEY` | EnableBanking RS256 Private Key | *(optional)* | *(optional)* |

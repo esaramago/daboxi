@@ -77,7 +77,7 @@ export default function ForgotPassword() {
   }
 
   // View: Password reset confirmed successfully
-  if (token && isResetSuccess) {
+  if (isResetSuccess) {
     return (
       <div className="c-login">
         <div className="l-stack l-stack--large">

@@ -1,0 +1,12 @@
+node_modules
+.next
+pb_data
+.git
+.gitignore
+.git-backup
+*.pem
+.env*
+scripts/extracted_appwrite_data.json
+README.md
+AGENTS.md
+.dockerignore
