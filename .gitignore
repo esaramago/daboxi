@@ -47,3 +47,5 @@ pocketbase
 *.db-journal
 *.db-wal
 *.db-shm
+
+.agents/mcp_config.json

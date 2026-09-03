@@ -8,11 +8,6 @@ services:
       - "8090"
     volumes:
       - pocketbase_data:/pb_data
-    networks:
-      - daboxi-network
-    labels:
-      - "traefik.docker.network=coolify"
-      - "traefik.http.services.pocketbase.loadbalancer.server.port=8090"
 
   app:
     build:
@@ -32,9 +27,6 @@ services:
       - .env
     depends_on:
       - pocketbase
-    labels:
-      - "traefik.docker.network=coolify"
-      - "traefik.http.services.app.loadbalancer.server.port=3000"
     deploy:
       resources:
         limits:
@@ -43,12 +35,6 @@ services:
         reservations:
           cpus: '0.5'      # Reserva mínima de 0.5 CPU
           memory: 512M     # Reserva mínima de 512MB
-    networks:
-      - daboxi-network
 
 volumes:
   pocketbase_data:
-
-networks:
-  daboxi-network:
-    driver: bridge
