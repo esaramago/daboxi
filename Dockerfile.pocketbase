@@ -16,10 +16,12 @@ RUN wget https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSIO
 WORKDIR /pb
 
 COPY pb_migrations /pb/pb_migrations
+RUN ln -s /pb/pb_migrations /pb_migrations
 
 EXPOSE 8090
 
 VOLUME /pb_data
 
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb_data"]
+CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb_data", "--migrationsDir=/pb/pb_migrations"]
+
 
