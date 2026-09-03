@@ -12,7 +12,8 @@ import EnableBankingTransaction from '@/components/_pages/enablebanking/transact
 import EnableBankingSettingsDialog from '@/components/_pages/enablebanking/transactions/EnableBankingSettingsDialog'
 import EmptyState from '@/components/EmptyState'
 import '@webawesome/button'
-import '@awesome.me/webawesome/dist/components/icon/icon.js'
+import '@webawesome/icon/icon.js'
+import '@webawesome/card/card.js'
 
 const SETTINGS_DIALOG_ID = 'enablebanking-settings-dialog'
 
@@ -32,7 +33,7 @@ export default async function EnableBankingTransactions({
   const { data: settings } = await fetchEnableBankingSettings()
   const bankName = settings?.bankName || null
   const country = settings?.country || null
-  const isEnabled = settings?.enabled ?? Boolean(bankName && country)
+  const isEnabled = settings?.enabled ?? false
   const isConfigured = Boolean(isEnabled && bankName && country)
 
   let sessionId: string | null = null
@@ -159,9 +160,12 @@ export default async function EnableBankingTransactions({
           </div>
         ) : (
           <div className="l-stack">
+              
             {!isEnabled ? (
               <EmptyState icon="building-columns">
-                A integração com o EnableBanking está desativada.
+                <p>A integração com o <a href="https://enablebanking.com" target="_blank">EnableBanking</a> está desativada.</p>
+                <p>Para importar os seus movimentos bancários, configure a integração com o EnableBanking e autentique a sua conta.</p>
+                
                 <div>
                   <wa-button type="button" data-dialog={`open ${SETTINGS_DIALOG_ID}`}>
                     Configurar EnableBanking

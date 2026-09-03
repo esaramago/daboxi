@@ -2,6 +2,8 @@
 
 import { requireAuth, getAuthenticatedUser } from '@/lib/pocketbaseServer'
 import { getPocketBase } from '@/lib/pocketbase'
+import { PB_COOKIE_NAME } from '@/lib/config'
+import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
 interface SaveEnableBankingSettingsParams {
@@ -60,7 +62,31 @@ export default async function saveEnableBankingSettings({
       updateData.enablebanking_country = trimmedCountry
     }
 
-    await pb.collection('users').update(user.id, updateData)
+    const updatedUser = await pb.collection('users').update(user.id, updateData)
+
+    // Sincronizar authStore e o cookie da sessão
+    pb.authStore.save(pb.authStore.token, updatedUser)
+    try {
+      const cookieStore = await cookies()
+      const cookieHeader = pb.authStore.exportToCookie({
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/'
+      })
+      const match = cookieHeader.match(new RegExp(`${PB_COOKIE_NAME}=([^;]+)`))
+      const cookieValue = match ? match[1] : pb.authStore.exportToCookie()
+
+      cookieStore.set(PB_COOKIE_NAME, cookieValue, {
+        path: '/',
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 30
+      })
+    } catch (cookieErr) {
+      console.warn('[EnableBanking] Warning syncing session cookie:', cookieErr)
+    }
 
     // Terminar todas as sessões ativas do EnableBanking para este utilizador
     const bankSessions = await pb.collection('bank_sessions').getFullList()
@@ -74,8 +100,8 @@ export default async function saveEnableBankingSettings({
       error: null,
       data: {
         enabled,
-        bankName: trimmedBankName || user.enablebanking_bank_name || null,
-        country: trimmedCountry || user.enablebanking_country || null,
+        bankName: updatedUser.enablebanking_bank_name || null,
+        country: updatedUser.enablebanking_country || null,
       },
     }
   } catch (error: any) {
