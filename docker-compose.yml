@@ -3,7 +3,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.pocketbase
-    container_name: daboxi-pocketbase
     restart: unless-stopped
     expose:
       - "8090"
@@ -11,6 +10,9 @@ services:
       - pocketbase_data:/pb_data
     networks:
       - daboxi-network
+    labels:
+      - "traefik.docker.network=coolify"
+      - "traefik.http.services.pocketbase.loadbalancer.server.port=8090"
 
   app:
     build:
@@ -20,7 +22,6 @@ services:
         - POCKETBASE_URL=${POCKETBASE_URL:-http://pocketbase:8090}
         - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
         - SOURCE_COMMIT=${SOURCE_COMMIT:-}
-    container_name: daboxi-app
     restart: unless-stopped
     expose:
       - "3000"
@@ -31,6 +32,9 @@ services:
       - .env
     depends_on:
       - pocketbase
+    labels:
+      - "traefik.docker.network=coolify"
+      - "traefik.http.services.app.loadbalancer.server.port=3000"
     deploy:
       resources:
         limits:
