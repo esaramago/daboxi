@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile.pocketbase
     container_name: daboxi-pocketbase
     restart: unless-stopped
+    expose:
+      - "8090"
     volumes:
       - pocketbase_data:/pb_data
     networks:
@@ -19,12 +21,14 @@ services:
         - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
         - SOURCE_COMMIT=${SOURCE_COMMIT:-}
     container_name: daboxi-app
+    restart: unless-stopped
+    expose:
+      - "3000"
     environment:
       - POCKETBASE_URL=${POCKETBASE_URL:-http://pocketbase:8090}
       - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
     env_file:
       - .env
-    restart: unless-stopped
     depends_on:
       - pocketbase
     deploy:
