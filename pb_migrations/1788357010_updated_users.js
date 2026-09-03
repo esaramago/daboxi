@@ -2,39 +2,47 @@
 migrate((app) => {
   const collection = app.findCollectionByNameOrId("_pb_users_auth_")
 
-  // add field
-  collection.fields.addAt(10, new Field({
-    "autogeneratePattern": "",
-    "hidden": false,
-    "id": "text3244933776",
-    "max": 0,
-    "min": 0,
-    "name": "enablebanking_bank_name",
-    "pattern": "",
-    "presentable": false,
-    "primaryKey": false,
-    "required": false,
-    "system": false,
-    "type": "text"
-  }))
+  let modified = false
 
-  // add field
-  collection.fields.addAt(11, new Field({
-    "autogeneratePattern": "",
-    "hidden": false,
-    "id": "text2859811872",
-    "max": 0,
-    "min": 0,
-    "name": "enablebanking_country",
-    "pattern": "",
-    "presentable": false,
-    "primaryKey": false,
-    "required": false,
-    "system": false,
-    "type": "text"
-  }))
+  if (!collection.fields.getByName("enablebanking_bank_name")) {
+    collection.fields.add(new Field({
+      "autogeneratePattern": "",
+      "hidden": false,
+      "id": "text3244933776",
+      "max": 0,
+      "min": 0,
+      "name": "enablebanking_bank_name",
+      "pattern": "",
+      "presentable": false,
+      "primaryKey": false,
+      "required": false,
+      "system": false,
+      "type": "text"
+    }))
+    modified = true
+  }
 
-  return app.save(collection)
+  if (!collection.fields.getByName("enablebanking_country")) {
+    collection.fields.add(new Field({
+      "autogeneratePattern": "",
+      "hidden": false,
+      "id": "text2859811872",
+      "max": 0,
+      "min": 0,
+      "name": "enablebanking_country",
+      "pattern": "",
+      "presentable": false,
+      "primaryKey": false,
+      "required": false,
+      "system": false,
+      "type": "text"
+    }))
+    modified = true
+  }
+
+  if (modified) {
+    return app.save(collection)
+  }
 }, (app) => {
   const collection = app.findCollectionByNameOrId("_pb_users_auth_")
 

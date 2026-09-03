@@ -1,5 +1,11 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((app) => {
+  try {
+    if (app.findCollectionByNameOrId("subcategories")) {
+      return
+    }
+  } catch (_) {}
+
   const collection = new Collection({
     "createRule": "@request.auth.id != \"\"",
     "deleteRule": "@request.auth.id != \"\"",
