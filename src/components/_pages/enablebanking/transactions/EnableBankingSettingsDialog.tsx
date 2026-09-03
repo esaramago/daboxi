@@ -33,7 +33,7 @@ export default function EnableBankingSettingsDialog({
   const router = useRouter()
   const dialogRef = useRef<any>(null)
 
-  const defaultEnabled = initialEnabled ?? Boolean(initialBankName && initialCountry)
+  const defaultEnabled = initialEnabled ?? false
   const [enabled, setEnabled] = useState(defaultEnabled)
   const [bankName, setBankName] = useState(initialBankName || '')
   const [country, setCountry] = useState(initialCountry || 'PT')
@@ -41,7 +41,7 @@ export default function EnableBankingSettingsDialog({
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    setEnabled(initialEnabled ?? Boolean(initialBankName && initialCountry))
+    setEnabled(initialEnabled ?? false)
     setBankName(initialBankName || '')
     setCountry(initialCountry || 'PT')
   }, [initialBankName, initialCountry, initialEnabled])
@@ -54,7 +54,7 @@ export default function EnableBankingSettingsDialog({
 
   const syncFormWithProps = () => {
     setError(null)
-    setEnabled(initialEnabled ?? Boolean(initialBankName && initialCountry))
+    setEnabled(initialEnabled ?? false)
     setBankName(initialBankName || '')
     setCountry(initialCountry || 'PT')
   }
@@ -131,7 +131,7 @@ export default function EnableBankingSettingsDialog({
         <WaSwitch
           checked={enabled}
           onChange={(e: any) => {
-            const isChecked = e.target.checked ?? !enabled
+            const isChecked = typeof e.target.checked === 'boolean' ? e.target.checked : !enabled
             setEnabled(isChecked)
             if (error) setError(null)
           }}

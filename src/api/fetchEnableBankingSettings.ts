@@ -1,6 +1,7 @@
 'use server'
 
 import { requireAuth, getAuthenticatedUser } from '@/lib/pocketbaseServer'
+import { getPocketBase } from '@/lib/pocketbase'
 
 export interface EnableBankingSettings {
   bankName: string | null
@@ -19,16 +20,24 @@ export default async function fetchEnableBankingSettings(): Promise<{
       throw new Error('User not authenticated')
     }
 
-    const bankName = typeof user.enablebanking_bank_name === 'string' && user.enablebanking_bank_name.trim() !== ''
-      ? user.enablebanking_bank_name.trim()
+    const pb = await getPocketBase()
+    let dbUser = user
+    try {
+      dbUser = await pb.collection('users').getOne(user.id)
+    } catch (dbErr) {
+      console.warn('[EnableBanking] Could not fetch fresh user from DB, falling back to session:', dbErr)
+    }
+
+    const bankName = typeof dbUser.enablebanking_bank_name === 'string' && dbUser.enablebanking_bank_name.trim() !== ''
+      ? dbUser.enablebanking_bank_name.trim()
       : null
 
-    const country = typeof user.enablebanking_country === 'string' && user.enablebanking_country.trim() !== ''
-      ? user.enablebanking_country.trim()
+    const country = typeof dbUser.enablebanking_country === 'string' && dbUser.enablebanking_country.trim() !== ''
+      ? dbUser.enablebanking_country.trim()
       : null
 
-    const enabled = typeof user.enablebanking_enabled === 'boolean'
-      ? user.enablebanking_enabled
+    const enabled = typeof dbUser.enablebanking_enabled === 'boolean'
+      ? dbUser.enablebanking_enabled
       : Boolean(bankName && country)
 
     return {
