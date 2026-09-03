@@ -11,3 +11,5 @@ const nextConfig = {
     return process.env.SOURCE_COMMIT || 'development'
   },
 }
+
+export default nextConfig
