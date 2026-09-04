@@ -16,9 +16,12 @@ export default async function fetchSubCategory(code: string) {
 
   try {
     const pb = await getPocketBase()
-    const record = await pb.collection('subcategories').getFirstListItem(`code = "${code}"`, {
-      expand: 'category.type',
-    })
+    const record = await pb.collection('subcategories').getFirstListItem(
+      pb.filter('code = {:code}', { code }),
+      {
+        expand: 'category.type',
+      }
+    )
 
     return {
       error: false,

@@ -9,7 +9,7 @@ export default async function fetchActiveBankSession(bankName?: string | null) {
 
   try {
     const pb = await getPocketBase()
-    const filter = bankName ? `bankName = "${bankName}"` : ''
+    const filter = bankName ? pb.filter('bankName = {:bankName}', { bankName }) : ''
 
     const records = await pb.collection('bank_sessions').getList(1, 10, {
       filter,

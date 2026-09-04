@@ -11,7 +11,7 @@ export default async function fetchSubCategoriesByCategory(categoryId: string) {
     const pb = await getPocketBase()
     const records = await pb.collection('subcategories').getFullList({
       expand: 'category.type',
-      filter: `category.code = "${categoryId}"`,
+      filter: pb.filter('category.code = {:categoryId}', { categoryId: categoryId || '' }),
       sort: 'description',
     })
 
