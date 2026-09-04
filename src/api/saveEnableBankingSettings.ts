@@ -17,13 +17,13 @@ export default async function saveEnableBankingSettings({
   country,
   enabled = true,
 }: SaveEnableBankingSettingsParams) {
-  try {
-    await requireAuth()
-    const { user, error } = await getAuthenticatedUser()
-    if (error || !user) {
-      throw new Error('User not authenticated')
-    }
+  await requireAuth()
+  const { user, error } = await getAuthenticatedUser()
+  if (error || !user) {
+    throw new Error('User not authenticated')
+  }
 
+  try {
     const trimmedBankName = bankName?.trim() || ''
     const trimmedCountry = country?.trim().toUpperCase() || ''
 
@@ -105,6 +105,9 @@ export default async function saveEnableBankingSettings({
       },
     }
   } catch (error: any) {
+    if (error?.digest?.startsWith('NEXT_REDIRECT')) {
+      throw error
+    }
     console.error('[EnableBanking] Error saving settings:', error)
     return {
       error: error?.message || error,

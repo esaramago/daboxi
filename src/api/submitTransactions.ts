@@ -4,10 +4,12 @@ import { getPocketBase, formatRecord } from '@/lib/pocketbase'
 import { requireAuth, getAuthenticatedUserId } from '@/lib/pocketbaseServer'
 import type { Transactions } from '@/types/pocketbase'
 
+import { sanitizeTransactionUpdate } from './updateTransaction'
+
 export default async function submitTransactions(data: Array<Transactions>) {
   await requireAuth()
 
-  if (!data || data.length === 0) return []
+  if (!data || !Array.isArray(data) || data.length === 0) return []
 
   const userId = await getAuthenticatedUserId()
   const pb = await getPocketBase()
@@ -16,7 +18,7 @@ export default async function submitTransactions(data: Array<Transactions>) {
   for (const transaction of data) {
     try {
       const payload = {
-        ...transaction,
+        ...sanitizeTransactionUpdate(transaction),
         user: userId,
       }
       const record = await pb.collection('transactions').create(payload)

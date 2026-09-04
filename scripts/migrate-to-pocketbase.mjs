@@ -71,9 +71,9 @@ async function ensureCollections() {
       type: 'base',
       listRule: '',
       viewRule: '',
-      createRule: '@request.auth.id != ""',
-      updateRule: '@request.auth.id != ""',
-      deleteRule: '@request.auth.id != ""',
+      createRule: null,
+      updateRule: null,
+      deleteRule: null,
       fields: [
         { name: 'code', type: 'text', required: true },
         { name: 'description', type: 'text', required: true }
@@ -90,9 +90,9 @@ async function ensureCollections() {
       type: 'base',
       listRule: '@request.auth.id != ""',
       viewRule: '@request.auth.id != ""',
-      createRule: '@request.auth.id != ""',
-      updateRule: '@request.auth.id != ""',
-      deleteRule: '@request.auth.id != ""',
+      createRule: null,
+      updateRule: null,
+      deleteRule: null,
       fields: [
         { name: 'code', type: 'text', required: true },
         { name: 'description', type: 'text', required: true },
@@ -118,9 +118,9 @@ async function ensureCollections() {
       type: 'base',
       listRule: '@request.auth.id != ""',
       viewRule: '@request.auth.id != ""',
-      createRule: '@request.auth.id != ""',
-      updateRule: '@request.auth.id != ""',
-      deleteRule: '@request.auth.id != ""',
+      createRule: null,
+      updateRule: null,
+      deleteRule: null,
       fields: [
         { name: 'code', type: 'text', required: true },
         { name: 'description', type: 'text', required: true },

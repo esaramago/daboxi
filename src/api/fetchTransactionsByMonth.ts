@@ -29,17 +29,24 @@ export default async function fetchTransactionsByMonth(date?: Date | string, typ
 
   try {
     const pb = await getPocketBase()
-    const filterParts = [
-      `date >= "${startStr}"`,
-      `date <= "${endStr}"`
+    const filterParams: Record<string, string> = {
+      startDate: startStr,
+      endDate: endStr,
+    }
+    const filterClauses = [
+      'date >= {:startDate}',
+      'date <= {:endDate}',
     ]
 
-    if (type) {
-      filterParts.push(`subCategory.category.type.code = "${type}"`)
+    if (type && typeof type === 'string' && type.trim() !== '') {
+      filterParams.type = type
+      filterClauses.push('subCategory.category.type.code = {:type}')
     }
 
+    const filter = pb.filter(filterClauses.join(' && '), filterParams)
+
     const records = await pb.collection('transactions').getFullList({
-      filter: filterParts.join(' && '),
+      filter,
       sort: '-date',
       expand: 'subCategory.category.type'
     })

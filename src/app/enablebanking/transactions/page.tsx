@@ -1,12 +1,9 @@
 import Header from '@/components/Header'
-import getEnableBankingAuthLink from '@/utils/enablebanking/getAuthLink'
-import createEnableBankingSession from '@/utils/enablebanking/createSession'
 import getEnableBankingTransactions from '@/utils/enablebanking/getTransactions'
 import getEnableBankingToken from '@/utils/enablebanking/getToken'
 import fetchActiveBankSession from '@/api/fetchActiveBankSession'
 import fetchExistingEnableBankingIds from '@/api/fetchExistingEnableBankingIds'
 import fetchEnableBankingSettings from '@/api/fetchEnableBankingSettings'
-import saveBankSession from '@/api/saveBankSession'
 import Date from '@/components/Date'
 import EnableBankingTransaction from '@/components/_pages/enablebanking/transactions/EnableBankingTransaction'
 import EnableBankingSettingsDialog from '@/components/_pages/enablebanking/transactions/EnableBankingSettingsDialog'
@@ -17,8 +14,6 @@ import '@webawesome/card/card.js'
 
 const SETTINGS_DIALOG_ID = 'enablebanking-settings-dialog'
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || ''
-
 export default async function EnableBankingTransactions({
   searchParams,
 }: {
@@ -26,8 +21,31 @@ export default async function EnableBankingTransactions({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const sp = await searchParams
-  const code = sp?.code as string | undefined
+  const errorParam = sp?.error as string | undefined
   const token = getEnableBankingToken()
+
+  let errorMessage: string | null = null
+  if (errorParam) {
+    switch (errorParam) {
+      case 'invalid_state':
+        errorMessage = 'Falha na verificação de segurança (CSRF) ou a sessão de autorização expirou. Por favor, tente novamente.'
+        break
+      case 'missing_code':
+        errorMessage = 'Não foi recebido nenhum código de autorização do banco.'
+        break
+      case 'auth_link_failed':
+        errorMessage = 'Não foi possível gerar a ligação de autenticação com o EnableBanking.'
+        break
+      case 'session_creation_failed':
+        errorMessage = 'Não foi possível estabelecer sessão com o banco. O código pode ter expirado.'
+        break
+      case 'not_configured':
+        errorMessage = 'Banco ou país não configurados.'
+        break
+      default:
+        errorMessage = `Erro na autorização: ${decodeURIComponent(errorParam)}`
+    }
+  }
 
   // 1. Obter configurações de banco e país do utilizador
   const { data: settings } = await fetchEnableBankingSettings()
@@ -46,22 +64,9 @@ export default async function EnableBankingTransactions({
     if (!session.error && session.data?.sessionId) {
       sessionId = session.data.sessionId
     }
-
-    // 3. Se não houver sessão ativa na BD mas houver um novo 'code' e configurações válidas
-    if (!sessionId && code && country) {
-      sessionId = await createEnableBankingSession(code, token)
-      if (sessionId) {
-        await saveBankSession({
-          sessionId,
-          bankName,
-          country,
-          status: 'AUTHORIZED',
-        })
-      }
-    }
   }
 
-  // 4. Buscar transações e IDs existentes em paralelo se tivermos uma sessão válida
+  // 3. Buscar transações e IDs existentes em paralelo se tivermos uma sessão válida
   let existingIds = new Set<string>()
 
   if (sessionId) {
@@ -84,23 +89,12 @@ export default async function EnableBankingTransactions({
     existingIds = new Set(existingIdsResult.data || [])
   }
 
-  // 5. Filtrar transações que já foram importadas ou descartadas
+  // 4. Filtrar transações que já foram importadas ou descartadas
   const filteredTransactions = transactions.filter(
     (transaction: any) =>
       !existingIds.has(transaction.transaction_id) &&
       (!transaction.entry_reference || !existingIds.has(transaction.entry_reference))
   )
-
-  // 6. Só gerar link de autenticação se não houver sessão ativa e estiver configurado
-  let authUrl: string | null = null
-  if (!sessionId && isConfigured && bankName && country) {
-    authUrl = await getEnableBankingAuthLink(
-      baseUrl + '/enablebanking/callback',
-      token,
-      bankName,
-      country
-    )
-  }
 
   // 7. Agrupar transações por data
   interface TransactionGroup {
@@ -139,6 +133,22 @@ export default async function EnableBankingTransactions({
       </Header>
 
       <main className="l-container u-padding-block">
+        {errorMessage && (
+          <div
+            style={{
+              padding: '0.75rem 1rem',
+              borderRadius: 'var(--wa-border-radius-m, 8px)',
+              backgroundColor: 'var(--wa-color-danger-50, #fef2f2)',
+              color: 'var(--wa-color-danger-800, #991b1b)',
+              border: '1px solid var(--wa-color-danger-200, #fecaca)',
+              marginBottom: '1rem',
+              fontSize: 'var(--wa-font-size-s, 0.875rem)',
+            }}
+          >
+            {errorMessage}
+          </div>
+        )}
+
         {filteredTransactions && filteredTransactions.length > 0 ? (
           <div className="l-stack">
             {transactionsByDate &&
@@ -184,15 +194,9 @@ export default async function EnableBankingTransactions({
             ) : !sessionId ? (
               <EmptyState icon="key">
                 A sessão bancária ({bankName}) não está ativa.
-                {authUrl ? (
-                  <div>
-                    <wa-button href={authUrl}>Autenticar EnableBanking ({bankName})</wa-button>
-                  </div>
-                ) : (
-                  <p className="u-color-danger" style={{ fontSize: 'var(--wa-font-size-s)', margin: 0 }}>
-                    Não foi possível gerar a hiperligação de autenticação para {bankName}. Verifique as credenciais do EnableBanking.
-                  </p>
-                )}
+                <div>
+                  <wa-button href="/api/enablebanking/auth">Autenticar EnableBanking ({bankName})</wa-button>
+                </div>
               </EmptyState>
             ) : (
               <EmptyState icon="face-grin-stars">

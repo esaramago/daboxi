@@ -7,13 +7,23 @@ import type { Transactions } from '@/types/pocketbase'
 export default async function fetchTransactionsByIds(ids: string[]) {
   await requireAuth()
 
-  if (!ids || ids.length === 0) {
+  const validIds = Array.isArray(ids)
+    ? ids.filter(id => typeof id === 'string' && id.trim() !== '')
+    : []
+
+  if (validIds.length === 0) {
     return { error: false, data: [] }
   }
 
   try {
     const pb = await getPocketBase()
-    const filter = ids.map(id => `id = "${id}"`).join(' || ')
+    const filterParams: Record<string, string> = {}
+    const clauses = validIds.map((id, index) => {
+      const key = `id${index}`
+      filterParams[key] = id
+      return `id = {:${key}}`
+    })
+    const filter = pb.filter(clauses.join(' || '), filterParams)
     
     const records = await pb.collection('transactions').getFullList({
       filter,

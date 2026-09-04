@@ -7,14 +7,25 @@ import type { Transactions } from '@/types/pocketbase'
 export default async function fetchSuggestedRefundTransactions(value: number) {
   await requireAuth()
 
-  const negativeValue = value * -1
-  const negativeDouble = (value * 2) * -1
+  const numValue = Number(value)
+  if (isNaN(numValue) || !isFinite(numValue)) {
+    return {
+      error: 'Valor inválido',
+      data: null,
+    }
+  }
+
+  const negativeValue = Number((-numValue).toFixed(2))
+  const negativeDouble = Number((-numValue * 2).toFixed(2))
   const minValue = Number((negativeDouble - 0.01).toFixed(2))
   const maxValue = Number((negativeDouble + 0.01).toFixed(2))
 
   try {
     const pb = await getPocketBase()
-    const filter = `value = ${negativeValue} || value = ${negativeDouble} || (value >= ${minValue} && value <= ${maxValue})`
+    const filter = pb.filter(
+      'value = {:negativeValue} || value = {:negativeDouble} || (value >= {:minValue} && value <= {:maxValue})',
+      { negativeValue, negativeDouble, minValue, maxValue }
+    )
 
     const records = await pb.collection('transactions').getList(1, 5, {
       filter,

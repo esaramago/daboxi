@@ -7,8 +7,8 @@ migrate((app) => {
   } catch (_) {}
 
   const collection = new Collection({
-    "createRule": "@request.auth.id != \"\"",
-    "deleteRule": "@request.auth.id != \"\"",
+    "createRule": null,
+    "deleteRule": null,
     "fields": [
       {
         "autogeneratePattern": "[a-z0-9]{15}",
@@ -86,7 +86,7 @@ migrate((app) => {
     "name": "categories",
     "system": false,
     "type": "base",
-    "updateRule": "@request.auth.id != \"\"",
+    "updateRule": null,
     "viewRule": "@request.auth.id != \"\""
   });
 
