@@ -3,22 +3,33 @@
 import { getPocketBase, formatRecord } from '@/lib/pocketbase'
 import { requireAuth, getAuthenticatedUserId } from '@/lib/pocketbaseServer'
 
+import { sanitizeTransactionUpdate } from './updateTransaction'
+
 export default async function submitTransaction(data: any) {
   await requireAuth()
   const userId = await getAuthenticatedUserId()
 
   try {
     const pb = await getPocketBase()
-    const payload = {
-      ...data,
+    const enableBankingId =
+      typeof data?.enableBankingId === 'string' && data.enableBankingId.trim() !== ''
+        ? data.enableBankingId.trim()
+        : null
+
+    const payload: Record<string, any> = {
+      ...sanitizeTransactionUpdate(data),
       user: userId,
+    }
+
+    if (enableBankingId) {
+      payload.enableBankingId = enableBankingId
     }
 
     const record = await pb.collection('transactions').create(payload)
 
-    if (data.enableBankingId) {
+    if (enableBankingId) {
       await pb.collection('enablebanking_transactions').create({
-        enableBankingId: data.enableBankingId,
+        enableBankingId,
         status: 'imported',
         user: userId,
       }).catch(err => {
