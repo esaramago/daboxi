@@ -8,16 +8,45 @@ import fetchSubCategories from '@/api/fetchSubCategories'
 import fetchCategories from '@/api/fetchCategories'
 import fetchTypes from '@/api/fetchTypes'
 
+import Papa from 'papaparse'
+
+function sanitizeCSVValue(val: any): any {
+  if (val === null || val === undefined) {
+    return ''
+  }
+
+  if (typeof val === 'number' || typeof val === 'boolean') {
+    return val
+  }
+
+  if (val instanceof Date) {
+    return val.toISOString()
+  }
+
+  const str = String(val)
+
+  // Valores numéricos legítimos (incluindo números negativos como "-10.50") não são fórmulas
+  if (/^-?\d+(\.\d+)?$/.test(str.trim())) {
+    return str
+  }
+
+  // Se o texto começar por caracteres executáveis de fórmulas (=, +, -, @, tab, cr), prefixa com '
+  if (/^[=+\-@\t\r]/.test(str)) {
+    return `'${str}`
+  }
+
+  return str
+}
+
 export default function Home() {
   
   const exportTransactions = async () => {
     const { data: transactions, error } = await fetchTransactions()
-    if (error) {
+    if (error || !transactions) {
       console.error(error)
       return
     }
 
-    // export to csv
     const headers = [
       '$id',
       'date',
@@ -29,19 +58,30 @@ export default function Home() {
       'notes',
       'subCategory',
     ]
-    const csv = transactions.map((transaction) => {
-      return `${transaction.$id},${transaction.date},${transaction.refundsIds ?? ''},${transaction.value ?? ''},${transaction.netValue ?? ''},${transaction.description ?? ''},${transaction.niceDescription ?? ''},${transaction.notes ?? ''},${transaction.subCategory?.$id ?? ''}`
-    }).join('\n')
 
-    exportToCSV(headers, csv, 'transactions')
+    const data = transactions.map((transaction: any) => [
+      sanitizeCSVValue(transaction.$id),
+      sanitizeCSVValue(transaction.date),
+      sanitizeCSVValue(transaction.refundsIds),
+      sanitizeCSVValue(transaction.value),
+      sanitizeCSVValue(transaction.netValue),
+      sanitizeCSVValue(transaction.description),
+      sanitizeCSVValue(transaction.niceDescription),
+      sanitizeCSVValue(transaction.notes),
+      sanitizeCSVValue(transaction.subCategory?.$id || transaction.subCategory),
+    ])
+
+    const csv = Papa.unparse({ fields: headers, data })
+    exportToCSV(csv, 'transactions')
   }
 
   const exportSubCategories = async () => {
     const { data: subCategories, error: subCategoriesError } = await fetchSubCategories()
-    if (subCategoriesError) {
+    if (subCategoriesError || !subCategories) {
       console.error(subCategoriesError)
       return
     }
+
     const headers = [
       '$id',
       'code',
@@ -50,18 +90,27 @@ export default function Home() {
       'category',
       'budget',
     ]
-    const csv = subCategories.map((subCategory) => {
-      return `${subCategory.$id},${subCategory.code},${subCategory.description},${subCategory.icon},${subCategory.category.$id},${subCategory.budget ?? ''}`
-    }).join('\n')
-    exportToCSV(headers, csv, 'subCategories')
+
+    const data = subCategories.map((subCategory: any) => [
+      sanitizeCSVValue(subCategory.$id),
+      sanitizeCSVValue(subCategory.code),
+      sanitizeCSVValue(subCategory.description),
+      sanitizeCSVValue(subCategory.icon),
+      sanitizeCSVValue(subCategory.category?.$id || subCategory.category),
+      sanitizeCSVValue(subCategory.budget),
+    ])
+
+    const csv = Papa.unparse({ fields: headers, data })
+    exportToCSV(csv, 'subCategories')
   }
 
   const exportCategories = async () => {
     const { data: categories, error: categoriesError } = await fetchCategories()
-    if (categoriesError) {
+    if (categoriesError || !categories) {
       console.error(categoriesError)
       return
     }
+
     const headers = [
       '$id',
       'code',
@@ -69,36 +118,52 @@ export default function Home() {
       'icon',
       'type',
     ]
-    const csv = categories.map((category) => {
-      return `${category.$id},${category.code},${category.description},${category.icon},${category.type.$id}`
-    }).join('\n')
-    exportToCSV(headers, csv, 'categories')
+
+    const data = categories.map((category: any) => [
+      sanitizeCSVValue(category.$id),
+      sanitizeCSVValue(category.code),
+      sanitizeCSVValue(category.description),
+      sanitizeCSVValue(category.icon),
+      sanitizeCSVValue(category.type?.$id || category.type),
+    ])
+
+    const csv = Papa.unparse({ fields: headers, data })
+    exportToCSV(csv, 'categories')
   }
 
   const exportTypes = async () => {
     const { data: types, error: typesError } = await fetchTypes()
-    if (typesError) {
+    if (typesError || !types) {
       console.error(typesError)
       return
     }
+
     const headers = [
       '$id',
       'code',
       'description',
     ]
-    const csv = types.map((type) => {
-      return `${type.$id},${type.code},${type.description}`
-    }).join('\n')
-    exportToCSV(headers, csv, 'types')
+
+    const data = types.map((type: any) => [
+      sanitizeCSVValue(type.$id),
+      sanitizeCSVValue(type.code),
+      sanitizeCSVValue(type.description),
+    ])
+
+    const csv = Papa.unparse({ fields: headers, data })
+    exportToCSV(csv, 'types')
   }
 
-  const exportToCSV = (headers: string[], csv: string[], filename: string) => {
-    const blob = new Blob([headers.join(',') + '\n' + csv], { type: 'text/csv' })
+  const exportToCSV = (csv: string, filename: string) => {
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = filename + '.csv'
+    a.download = `${filename}.csv`
+    document.body.appendChild(a)
     a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 
   return (

@@ -4,7 +4,7 @@ import { getPocketBase, formatRecord } from '@/lib/pocketbase'
 import { requireAuth, getAuthenticatedUserId } from '@/lib/pocketbaseServer'
 import type { Transactions } from '@/types/pocketbase'
 
-import { sanitizeTransactionUpdate } from './updateTransaction'
+import { sanitizeTransactionUpdate } from '@/utils/sanitizeTransaction'
 
 export default async function submitTransactions(data: Array<Transactions>) {
   await requireAuth()
