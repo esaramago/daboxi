@@ -13,13 +13,13 @@ export default async function fetchEnableBankingSettings(): Promise<{
   error: any
   data: EnableBankingSettings | null
 }> {
-  try {
-    await requireAuth()
-    const { user, error } = await getAuthenticatedUser()
-    if (error || !user) {
-      throw new Error('User not authenticated')
-    }
+  await requireAuth()
+  const { user, error } = await getAuthenticatedUser()
+  if (error || !user) {
+    throw new Error('User not authenticated')
+  }
 
+  try {
     const pb = await getPocketBase()
     let dbUser = user
     try {
@@ -49,6 +49,9 @@ export default async function fetchEnableBankingSettings(): Promise<{
       },
     }
   } catch (error: any) {
+    if (error?.digest?.startsWith('NEXT_REDIRECT')) {
+      throw error
+    }
     console.error('[EnableBanking] Error fetching settings:', error)
     return {
       error: error?.message || error,
