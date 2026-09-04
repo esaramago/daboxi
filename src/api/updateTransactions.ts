@@ -3,7 +3,7 @@
 import { getPocketBase } from '@/lib/pocketbase'
 import { requireAuth } from '@/lib/pocketbaseServer'
 
-import { sanitizeTransactionUpdate, type AllowedTransactionUpdates } from './updateTransaction'
+import { sanitizeTransactionUpdate, type AllowedTransactionUpdates } from '@/utils/sanitizeTransaction'
 
 export interface TransactionUpdateItem {
   id: string
