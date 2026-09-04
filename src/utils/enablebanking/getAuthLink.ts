@@ -4,7 +4,8 @@ export default async function getEnableBankingAuthLink(
   redirectUrl: string,
   token: string | null,
   bankName: string,
-  country: string
+  country: string,
+  state: string
 ) {
   if (!redirectUrl) {
     console.error('URL de redirecionamento não informada')
@@ -20,6 +21,11 @@ export default async function getEnableBankingAuthLink(
     console.error('Nome do banco ou país não configurados')
     return null
   }
+
+  if (!state) {
+    console.error('Parâmetro state não informado')
+    return null
+  }
       
   const requestBody = {
     response_type: 'code',
@@ -31,7 +37,7 @@ export default async function getEnableBankingAuthLink(
       country: country
     },
     redirect_url: redirectUrl,
-    state: 'SPys89MuHAGf010zJbMFm9UTeRUTB1cDTHcAT3rX6pRu18R3tJzQGKfwJxV0mBPv' 
+    state
   }
 
   try {
