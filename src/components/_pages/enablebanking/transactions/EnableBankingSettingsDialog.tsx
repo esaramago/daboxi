@@ -76,7 +76,7 @@ export default function EnableBankingSettingsDialog({
     const trimmedCountry = country.trim().toUpperCase()
 
     if (enabled) {
-      if (!trimmedBank || !trimmedCountry) {
+      if (!bankName|| !trimmedCountry) {
         setError('Por favor preencha todos os campos.')
         return
       }
