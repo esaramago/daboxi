@@ -73,7 +73,6 @@ export default function EnableBankingSettingsDialog({
       e.stopPropagation()
     }
 
-    const trimmedBank = bankName.trim()
     const trimmedCountry = country.trim().toUpperCase()
 
     if (enabled) {
@@ -82,10 +81,7 @@ export default function EnableBankingSettingsDialog({
         return
       }
 
-      if (!/^[a-zA-Z0-9]+$/.test(trimmedBank)) {
-        setError('O nome do banco não pode ter espaços nem caracteres especiais.')
-        return
-      }
+
 
       if (!/^[A-Z]{2}$/.test(trimmedCountry)) {
         setError('O código do país só pode ter 2 letras.')
@@ -99,7 +95,7 @@ export default function EnableBankingSettingsDialog({
     try {
       const result = await saveEnableBankingSettings({
         enabled,
-        bankName: trimmedBank,
+        bankName, 
         country: trimmedCountry,
       })
 
