@@ -137,7 +137,7 @@ export default function EnableBankingSettingsDialog({
 
         {enabled && (
           <>
-            <div className="l-stack l-stack--x-small">
+
               <WaInput
                 label="Nome do banco"
                 placeholder="Ex: Revolut, CaixaGeralDepositos, etc"
@@ -153,8 +153,7 @@ export default function EnableBankingSettingsDialog({
                 required={enabled}
                 autoFocus={enabled}
               ></WaInput>
-              <p className="u-text-small">Se tiver dúvidas qual o nome exato, pesquise-o na <a href="https://enablebanking.com/open-banking-apis" target="_blank">documentação do EnableBanking</a>.</p>
-            </div>
+          
 
             <WaInput
               label="País (código)"
