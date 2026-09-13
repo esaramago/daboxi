@@ -1,14 +1,18 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import saveEnableBankingSettings from '@/api/saveEnableBankingSettings'
+import fetchEnableBankingBanks from '@/api/fetchEnableBankingBanks'
+import type { EnableBankingAspsp } from '@/utils/enablebanking/getAspsps'
 import type WaInputElement from '@webawesome/input/input.js'
 
 const WaDialog = dynamic(() => import('@awesome.me/webawesome/dist/react/dialog/index.js'), { ssr: false })
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
 const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), { ssr: false })
+const WaSelect = dynamic(() => import('@awesome.me/webawesome/dist/react/select/index.js'), { ssr: false })
+const WaOption = dynamic(() => import('@awesome.me/webawesome/dist/react/option/index.js'), { ssr: false })
 const WaSwitch = dynamic(() => import('@awesome.me/webawesome/dist/react/switch/index.js'), { ssr: false })
 
 const DEFAULT_DIALOG_ID = 'enablebanking-settings-dialog'
@@ -20,6 +24,7 @@ interface Props {
   initialBankName?: string | null
   initialCountry?: string | null
   initialEnabled?: boolean
+  initialBanks?: EnableBankingAspsp[]
 }
 
 export default function EnableBankingSettingsDialog({
@@ -29,6 +34,7 @@ export default function EnableBankingSettingsDialog({
   initialBankName,
   initialCountry,
   initialEnabled,
+  initialBanks,
 }: Props) {
   const router = useRouter()
   const dialogRef = useRef<any>(null)
@@ -39,6 +45,8 @@ export default function EnableBankingSettingsDialog({
   const [country, setCountry] = useState(initialCountry || 'PT')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [banks, setBanks] = useState<EnableBankingAspsp[]>(initialBanks || [])
+  const [loadingBanks, setLoadingBanks] = useState(false)
 
   useEffect(() => {
     setEnabled(initialEnabled ?? false)
@@ -47,16 +55,85 @@ export default function EnableBankingSettingsDialog({
   }, [initialBankName, initialCountry, initialEnabled])
 
   useEffect(() => {
+    if (initialBanks && initialBanks.length > 0) {
+      setBanks(initialBanks)
+    }
+  }, [initialBanks])
+
+  useEffect(() => {
+    if (banks.length === 0) {
+      setLoadingBanks(true)
+      fetchEnableBankingBanks()
+        .then((res) => {
+          if (res.data && res.data.length > 0) {
+            setBanks(res.data)
+          }
+        })
+        .catch((err) => {
+          console.error('[EnableBanking] Erro ao carregar bancos:', err)
+        })
+        .finally(() => {
+          setLoadingBanks(false)
+        })
+    }
+  }, [banks.length])
+
+  useEffect(() => {
     if (dialogRef.current && typeof isOpen === 'boolean') {
       dialogRef.current.open = isOpen
     }
   }, [isOpen])
+
+  const filteredBanks = useMemo(() => {
+    const trimmedCountry = country.trim().toUpperCase()
+    if (!trimmedCountry) return banks
+    return banks.filter((b) => b.country?.toUpperCase() === trimmedCountry)
+  }, [banks, country])
+
+  const sortedBanks = useMemo(() => {
+    const uniqueMap = new Map<string, EnableBankingAspsp>()
+    for (const bank of filteredBanks) {
+      if (!uniqueMap.has(bank.name)) {
+        uniqueMap.set(bank.name, bank)
+      }
+    }
+    return Array.from(uniqueMap.values()).sort((a, b) => {
+      const nameA = a.title || a.name
+      const nameB = b.title || b.name
+      return nameA.localeCompare(nameB)
+    })
+  }, [filteredBanks])
 
   const syncFormWithProps = () => {
     setError(null)
     setEnabled(initialEnabled ?? false)
     setBankName(initialBankName || '')
     setCountry(initialCountry || 'PT')
+    if (banks.length === 0) {
+      setLoadingBanks(true)
+      fetchEnableBankingBanks()
+        .then((res) => {
+          if (res.data && res.data.length > 0) {
+            setBanks(res.data)
+          }
+        })
+        .catch((err) => {
+          console.error('[EnableBanking] Erro ao carregar bancos:', err)
+        })
+        .finally(() => {
+          setLoadingBanks(false)
+        })
+    }
+  }
+
+  const handleDialogShow = (e: any) => {
+    if (e.target !== dialogRef.current) return
+    syncFormWithProps()
+  }
+
+  const handleDialogHide = (e: any) => {
+    if (e.target !== dialogRef.current) return
+    handleClose()
   }
 
   const handleClose = () => {
@@ -76,12 +153,10 @@ export default function EnableBankingSettingsDialog({
     const trimmedCountry = country.trim().toUpperCase()
 
     if (enabled) {
-      if (!bankName|| !trimmedCountry) {
+      if (!bankName || !trimmedCountry) {
         setError('Por favor preencha todos os campos.')
         return
       }
-
-
 
       if (!/^[A-Z]{2}$/.test(trimmedCountry)) {
         setError('O código do país só pode ter 2 letras.')
@@ -95,7 +170,7 @@ export default function EnableBankingSettingsDialog({
     try {
       const result = await saveEnableBankingSettings({
         enabled,
-        bankName, 
+        bankName,
         country: trimmedCountry,
       })
 
@@ -119,9 +194,8 @@ export default function EnableBankingSettingsDialog({
       id={id}
       ref={dialogRef}
       label="Configurações EnableBanking"
-      lightDismiss
-      onWaShow={syncFormWithProps}
-      onWaHide={handleClose}
+      onWaShow={handleDialogShow}
+      onWaHide={handleDialogHide}
     >
       <div className="l-stack">
         <WaSwitch
@@ -137,24 +211,6 @@ export default function EnableBankingSettingsDialog({
 
         {enabled && (
           <>
-
-              <WaInput
-                label="Nome do banco"
-                placeholder="Ex: Revolut, CaixaGeralDepositos, etc"
-                value={bankName}
-                pattern="^[a-zA-Z0-9]+$"
-                onInput={(e: any) => {
-                  setBankName(e.target.value)
-                  if (error) setError(null)
-                }}
-                onKeyDown={(e: any) => {
-                  if (e.key === 'Enter') handleSave(e)
-                }}
-                required={enabled}
-                autoFocus={enabled}
-              ></WaInput>
-          
-
             <WaInput
               label="País (código)"
               placeholder="Ex: PT, ES, GB"
@@ -162,7 +218,7 @@ export default function EnableBankingSettingsDialog({
               maxlength={2}
               pattern="^[a-zA-Z]{2}$"
               disabled={!enabled}
-              onInput={event => {
+              onInput={(event) => {
                 setCountry((event.target as WaInputElement).value.toUpperCase())
                 if (error) setError(null)
               }}
@@ -171,6 +227,38 @@ export default function EnableBankingSettingsDialog({
               }}
               required={enabled}
             ></WaInput>
+
+            <WaSelect
+              label="Nome do banco"
+              placeholder={loadingBanks ? 'A carregar bancos...' : 'Selecione o banco'}
+              value={bankName}
+              disabled={!enabled || loadingBanks}
+              required={enabled}
+              onWaShow={(e: any) => e.stopPropagation()}
+              onWaHide={(e: any) => e.stopPropagation()}
+              onChange={(e: any) => {
+                setBankName(e.target.value)
+                if (error) setError(null)
+              }}
+              onInput={(e: any) => {
+                setBankName(e.target.value)
+                if (error) setError(null)
+              }}
+            >
+              {bankName && !sortedBanks.some((b) => b.name === bankName) && (
+                <WaOption value={bankName}>{bankName}</WaOption>
+              )}
+              {sortedBanks.map((bank) => (
+                <WaOption key={bank.name} value={bank.name}>
+                  {bank.title || bank.name}
+                </WaOption>
+              ))}
+              {sortedBanks.length === 0 && !loadingBanks && (
+                <WaOption disabled value="">
+                  Nenhum banco encontrado para este país
+                </WaOption>
+              )}
+            </WaSelect>
 
             <p className="u-text-small">
               {enabled

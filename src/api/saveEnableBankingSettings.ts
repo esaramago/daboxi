@@ -35,12 +35,6 @@ export default async function saveEnableBankingSettings({
         }
       }
 
-      if (!/^[a-zA-Z0-9]+$/.test(trimmedBankName)) {
-        return {
-          error: 'O nome do banco não pode ter espaços nem caracteres especiais',
-          data: null,
-        }
-      }
 
       if (!/^[A-Z]{2}$/.test(trimmedCountry)) {
         return {
