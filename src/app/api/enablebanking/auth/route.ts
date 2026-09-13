@@ -4,12 +4,15 @@ import getEnableBankingToken from '@/utils/enablebanking/getToken'
 import getEnableBankingAuthLink from '@/utils/enablebanking/getAuthLink'
 import fetchEnableBankingSettings from '@/api/fetchEnableBankingSettings'
 import { getAuthenticatedUser } from '@/lib/pocketbaseServer'
+import getBaseUrl from '@/utils/getBaseUrl'
 
 export async function GET(request: NextRequest) {
+  const baseUrl = getBaseUrl(request)
+
   try {
     const { user, error: authError } = await getAuthenticatedUser()
     if (authError || !user) {
-      return NextResponse.redirect(new URL('/login', request.url))
+      return NextResponse.redirect(new URL('/login', baseUrl))
     }
 
     const { data: settings } = await fetchEnableBankingSettings()
@@ -19,19 +22,18 @@ export async function GET(request: NextRequest) {
 
     if (!isEnabled || !bankName || !country) {
       return NextResponse.redirect(
-        new URL('/enablebanking/transactions?error=not_configured', request.url)
+        new URL('/enablebanking/transactions?error=not_configured', baseUrl)
       )
     }
 
     const token = getEnableBankingToken()
     if (!token) {
       return NextResponse.redirect(
-        new URL('/enablebanking/transactions?error=auth_link_failed', request.url)
+        new URL('/enablebanking/transactions?error=auth_link_failed', baseUrl)
       )
     }
 
     const state = crypto.randomBytes(32).toString('hex')
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin
     const redirectUrl = `${baseUrl}/enablebanking/callback`
 
     const authUrl = await getEnableBankingAuthLink(
@@ -44,7 +46,7 @@ export async function GET(request: NextRequest) {
 
     if (!authUrl) {
       return NextResponse.redirect(
-        new URL('/enablebanking/transactions?error=auth_link_failed', request.url)
+        new URL('/enablebanking/transactions?error=auth_link_failed', baseUrl)
       )
     }
 
@@ -62,8 +64,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('[EnableBanking Auth] Error initiating auth flow:', error)
     return NextResponse.redirect(
-      new URL('/enablebanking/transactions?error=auth_init_failed', request.url)
+      new URL('/enablebanking/transactions?error=auth_init_failed', baseUrl)
     )
   }
 }
-
