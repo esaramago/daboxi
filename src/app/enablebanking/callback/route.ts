@@ -5,6 +5,7 @@ import getEnableBankingToken from '@/utils/enablebanking/getToken'
 import fetchEnableBankingSettings from '@/api/fetchEnableBankingSettings'
 import saveBankSession from '@/api/saveBankSession'
 import { getAuthenticatedUser } from '@/lib/pocketbaseServer'
+import getBaseUrl from '@/utils/getBaseUrl'
 
 function safeCompare(a: string, b: string): boolean {
   if (!a || !b) return false
@@ -15,6 +16,8 @@ function safeCompare(a: string, b: string): boolean {
 }
 
 export async function GET(request: NextRequest) {
+  const baseUrl = getBaseUrl(request)
+
   function redirectWithClearedState(url: URL) {
     const res = NextResponse.redirect(url)
     res.cookies.delete('eb_auth_state')
@@ -24,7 +27,7 @@ export async function GET(request: NextRequest) {
   try {
     const { user, error: authError } = await getAuthenticatedUser()
     if (authError || !user) {
-      return NextResponse.redirect(new URL('/login', request.url))
+      return NextResponse.redirect(new URL('/login', baseUrl))
     }
 
     const code = request.nextUrl.searchParams.get('code')
@@ -35,7 +38,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('[EnableBanking Callback] Error returned from bank:', error)
       return redirectWithClearedState(
-        new URL(`/enablebanking/transactions?error=${encodeURIComponent(error)}`, request.url)
+        new URL(`/enablebanking/transactions?error=${encodeURIComponent(error)}`, baseUrl)
       )
     }
 
@@ -43,14 +46,14 @@ export async function GET(request: NextRequest) {
     if (!state || !storedState || !safeCompare(state, storedState)) {
       console.error('[EnableBanking Callback] Invalid or missing CSRF state token')
       return redirectWithClearedState(
-        new URL('/enablebanking/transactions?error=invalid_state', request.url)
+        new URL('/enablebanking/transactions?error=invalid_state', baseUrl)
       )
     }
 
     // 2. Validação da existência do código de autorização
     if (!code) {
       return redirectWithClearedState(
-        new URL('/enablebanking/transactions?error=missing_code', request.url)
+        new URL('/enablebanking/transactions?error=missing_code', baseUrl)
       )
     }
 
@@ -61,7 +64,7 @@ export async function GET(request: NextRequest) {
 
     if (!bankName || !country) {
       return redirectWithClearedState(
-        new URL('/enablebanking/transactions?error=not_configured', request.url)
+        new URL('/enablebanking/transactions?error=not_configured', baseUrl)
       )
     }
 
@@ -71,7 +74,7 @@ export async function GET(request: NextRequest) {
 
     if (!sessionId) {
       return redirectWithClearedState(
-        new URL('/enablebanking/transactions?error=session_creation_failed', request.url)
+        new URL('/enablebanking/transactions?error=session_creation_failed', baseUrl)
       )
     }
 
@@ -83,12 +86,11 @@ export async function GET(request: NextRequest) {
       status: 'AUTHORIZED',
     })
 
-    return redirectWithClearedState(new URL('/enablebanking/transactions', request.url))
+    return redirectWithClearedState(new URL('/enablebanking/transactions', baseUrl))
   } catch (error) {
     console.error('[EnableBanking Callback] Exception handling callback:', error)
     return redirectWithClearedState(
-      new URL('/enablebanking/transactions?error=callback_exception', request.url)
+      new URL('/enablebanking/transactions?error=callback_exception', baseUrl)
     )
   }
 }
-
