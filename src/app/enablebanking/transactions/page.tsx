@@ -4,6 +4,7 @@ import getEnableBankingToken from '@/utils/enablebanking/getToken'
 import fetchActiveBankSession from '@/api/fetchActiveBankSession'
 import fetchExistingEnableBankingIds from '@/api/fetchExistingEnableBankingIds'
 import fetchEnableBankingSettings from '@/api/fetchEnableBankingSettings'
+import fetchEnableBankingBanks from '@/api/fetchEnableBankingBanks'
 import Date from '@/components/Date'
 import EnableBankingTransaction from '@/components/_pages/enablebanking/transactions/EnableBankingTransaction'
 import EnableBankingSettingsDialog from '@/components/_pages/enablebanking/transactions/EnableBankingSettingsDialog'
@@ -47,12 +48,16 @@ export default async function EnableBankingTransactions({
     }
   }
 
-  // 1. Obter configurações de banco e país do utilizador
-  const { data: settings } = await fetchEnableBankingSettings()
+  // 1. Obter configurações de banco e país do utilizador e lista de bancos
+  const [{ data: settings }, banksResult] = await Promise.all([
+    fetchEnableBankingSettings(),
+    fetchEnableBankingBanks(),
+  ])
   const bankName = settings?.bankName || null
   const country = settings?.country || null
   const isEnabled = settings?.enabled ?? false
   const isConfigured = Boolean(isEnabled && bankName && country)
+  const initialBanks = banksResult.data || []
 
   let sessionId: string | null = null
   let session: any = null
@@ -211,6 +216,7 @@ export default async function EnableBankingTransactions({
         initialBankName={bankName}
         initialCountry={country}
         initialEnabled={isEnabled}
+        initialBanks={initialBanks}
       />
     </>
   )

@@ -48,12 +48,13 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    const isHttps = baseUrl.startsWith('https://') || request.nextUrl.protocol === 'https:'
     const response = NextResponse.redirect(authUrl)
     response.cookies.set('eb_auth_state', state, {
       path: '/',
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: isHttps,
       maxAge: 60 * 15 // 15 minutos
     })
 
