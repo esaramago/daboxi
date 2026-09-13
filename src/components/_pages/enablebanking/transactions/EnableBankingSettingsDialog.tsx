@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect, useMemo, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import saveEnableBankingSettings from '@/api/saveEnableBankingSettings'
 import fetchEnableBankingBanks from '@/api/fetchEnableBankingBanks'
+import Loading from '@/components/Loading'
 import type { EnableBankingAspsp } from '@/utils/enablebanking/getAspsps'
 import type WaInputElement from '@webawesome/input/input.js'
 
@@ -38,6 +39,8 @@ export default function EnableBankingSettingsDialog({
 }: Props) {
   const router = useRouter()
   const dialogRef = useRef<any>(null)
+  const [isPending, startTransition] = useTransition()
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const defaultEnabled = initialEnabled ?? false
   const [enabled, setEnabled] = useState(defaultEnabled)
@@ -47,6 +50,21 @@ export default function EnableBankingSettingsDialog({
   const [error, setError] = useState<string | null>(null)
   const [banks, setBanks] = useState<EnableBankingAspsp[]>(initialBanks || [])
   const [loadingBanks, setLoadingBanks] = useState(false)
+
+  useEffect(() => {
+    if (!isPending && isRefreshing) {
+      setIsRefreshing(false)
+    }
+  }, [isPending, isRefreshing])
+
+  useEffect(() => {
+    if (isRefreshing) {
+      const timeout = setTimeout(() => {
+        setIsRefreshing(false)
+      }, 10000)
+      return () => clearTimeout(timeout)
+    }
+  }, [isRefreshing])
 
   useEffect(() => {
     setEnabled(initialEnabled ?? false)
@@ -180,7 +198,10 @@ export default function EnableBankingSettingsDialog({
       }
 
       handleClose()
-      router.refresh()
+      setIsRefreshing(true)
+      startTransition(() => {
+        router.refresh()
+      })
     } catch (err: any) {
       console.error(err)
       setError(err?.message || 'Erro inesperado ao guardar configurações')
@@ -190,108 +211,127 @@ export default function EnableBankingSettingsDialog({
   }
 
   return (
-    <WaDialog
-      id={id}
-      ref={dialogRef}
-      label="Configurações EnableBanking"
-      onWaShow={handleDialogShow}
-      onWaHide={handleDialogHide}
-    >
-      <div className="l-stack">
-        <WaSwitch
-          checked={enabled}
-          onChange={(e: any) => {
-            const isChecked = typeof e.target.checked === 'boolean' ? e.target.checked : !enabled
-            setEnabled(isChecked)
-            if (error) setError(null)
+    <>
+      <WaDialog
+        id={id}
+        ref={dialogRef}
+        label="Configurações EnableBanking"
+        onWaShow={handleDialogShow}
+        onWaHide={handleDialogHide}
+      >
+        <div className="l-stack">
+          <WaSwitch
+            checked={enabled}
+            onChange={(e: any) => {
+              const isChecked = typeof e.target.checked === 'boolean' ? e.target.checked : !enabled
+              setEnabled(isChecked)
+              if (error) setError(null)
+            }}
+          >
+            Ativar EnableBanking
+          </WaSwitch>
+
+          {enabled && (
+            <>
+              <WaInput
+                label="País (código)"
+                placeholder="Ex: PT, ES, GB"
+                value={country}
+                maxlength={2}
+                pattern="^[a-zA-Z]{2}$"
+                disabled={!enabled}
+                onInput={(event) => {
+                  setCountry((event.target as WaInputElement).value.toUpperCase())
+                  if (error) setError(null)
+                }}
+                onKeyDown={(e: any) => {
+                  if (e.key === 'Enter') handleSave(e)
+                }}
+                required={enabled}
+              ></WaInput>
+
+              <WaSelect
+                label="Nome do banco"
+                placeholder={loadingBanks ? 'A carregar bancos...' : 'Selecione o banco'}
+                value={bankName}
+                disabled={!enabled || loadingBanks}
+                required={enabled}
+                onWaShow={(e: any) => e.stopPropagation()}
+                onWaHide={(e: any) => e.stopPropagation()}
+                onChange={(e: any) => {
+                  setBankName(e.target.value)
+                  if (error) setError(null)
+                }}
+                onInput={(e: any) => {
+                  setBankName(e.target.value)
+                  if (error) setError(null)
+                }}
+              >
+                {bankName && !sortedBanks.some((b) => b.name === bankName) && (
+                  <WaOption value={bankName}>{bankName}</WaOption>
+                )}
+                {sortedBanks.map((bank) => (
+                  <WaOption key={bank.name} value={bank.name}>
+                    {bank.title || bank.name}
+                  </WaOption>
+                ))}
+                {sortedBanks.length === 0 && !loadingBanks && (
+                  <WaOption disabled value="">
+                    Nenhum banco encontrado para este país
+                  </WaOption>
+                )}
+              </WaSelect>
+
+              <p className="u-text-small">
+                {enabled
+                  ? 'Ao guardar estas alterações, a sessão bancária atual será terminada e será necessário voltar a autenticar.'
+                  : 'Ao desativar a integração, a sessão bancária atual será terminada.'}
+              </p>
+
+              {error && (
+                <p className="u-color-danger" role="alert" style={{ fontSize: 'var(--wa-font-size-s)' }}>
+                  {error}
+                </p>
+              )}
+            </>
+          )}
+        </div>
+
+        <div slot="footer" className="l-row l-row--small l-row--end">
+          <WaButton
+            appearance="outlined"
+            data-dialog="close"
+            onClick={handleClose}
+            disabled={loading}
+          >
+            Cancelar
+          </WaButton>
+          <WaButton
+            variant="brand"
+            onClick={handleSave}
+            loading={loading}
+          >
+            Guardar
+          </WaButton>
+        </div>
+      </WaDialog>
+
+      {(isRefreshing || isPending) && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 99999,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            backdropFilter: 'blur(2px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          Ativar EnableBanking
-        </WaSwitch>
-
-        {enabled && (
-          <>
-            <WaInput
-              label="País (código)"
-              placeholder="Ex: PT, ES, GB"
-              value={country}
-              maxlength={2}
-              pattern="^[a-zA-Z]{2}$"
-              disabled={!enabled}
-              onInput={(event) => {
-                setCountry((event.target as WaInputElement).value.toUpperCase())
-                if (error) setError(null)
-              }}
-              onKeyDown={(e: any) => {
-                if (e.key === 'Enter') handleSave(e)
-              }}
-              required={enabled}
-            ></WaInput>
-
-            <WaSelect
-              label="Nome do banco"
-              placeholder={loadingBanks ? 'A carregar bancos...' : 'Selecione o banco'}
-              value={bankName}
-              disabled={!enabled || loadingBanks}
-              required={enabled}
-              onWaShow={(e: any) => e.stopPropagation()}
-              onWaHide={(e: any) => e.stopPropagation()}
-              onChange={(e: any) => {
-                setBankName(e.target.value)
-                if (error) setError(null)
-              }}
-              onInput={(e: any) => {
-                setBankName(e.target.value)
-                if (error) setError(null)
-              }}
-            >
-              {bankName && !sortedBanks.some((b) => b.name === bankName) && (
-                <WaOption value={bankName}>{bankName}</WaOption>
-              )}
-              {sortedBanks.map((bank) => (
-                <WaOption key={bank.name} value={bank.name}>
-                  {bank.title || bank.name}
-                </WaOption>
-              ))}
-              {sortedBanks.length === 0 && !loadingBanks && (
-                <WaOption disabled value="">
-                  Nenhum banco encontrado para este país
-                </WaOption>
-              )}
-            </WaSelect>
-
-            <p className="u-text-small">
-              {enabled
-                ? 'Ao guardar estas alterações, a sessão bancária atual será terminada e será necessário voltar a autenticar.'
-                : 'Ao desativar a integração, a sessão bancária atual será terminada.'}
-            </p>
-
-            {error && (
-              <p className="u-color-danger" role="alert" style={{ fontSize: 'var(--wa-font-size-s)' }}>
-                {error}
-              </p>
-            )}
-          </>
-        )}
-      </div>
-
-      <div slot="footer" className="l-row l-row--small l-row--end">
-        <WaButton
-          appearance="outlined"
-          data-dialog="close"
-          onClick={handleClose}
-          disabled={loading}
-        >
-          Cancelar
-        </WaButton>
-        <WaButton
-          variant="brand"
-          onClick={handleSave}
-          loading={loading}
-        >
-          Guardar
-        </WaButton>
-      </div>
-    </WaDialog>
+          <Loading />
+        </div>
+      )}
+    </>
   )
 }
