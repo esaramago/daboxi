@@ -37,7 +37,7 @@ export default function ButtonTransaction(props: ButtonTransaction) {
           <>
             <Value value={props.value} style={{color: props.value > 0 ? 'var(--wa-color-success-50)' : ''}}></Value>
             {
-              (netValue != null) && <Value value={netValue} size="small"></Value>
+              (netValue != null) && <Value value={netValue} size="s"></Value>
             }
           </>
         }

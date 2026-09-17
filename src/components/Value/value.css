@@ -3,14 +3,14 @@
   font-weight: 600;
   white-space: nowrap;
 }
-.c-value--large {
+.c-value--l {
   font-size: var(--wa-font-size-xl);
 }
-.c-value--x-large {
+.c-value--xl {
   font-size: var(--wa-font-size-2xl);
   line-height: 1.1;
 }
-.c-value--small {
+.c-value--s {
   font-size: var(--wa-font-size-s);
   color: var(--wa-color-neutral-50);
 }

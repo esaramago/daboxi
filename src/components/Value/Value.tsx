@@ -1,6 +1,6 @@
 interface Props {
   value: number
-  size?: 'small' | 'large' | 'x-large',
+  size?: 's' | 'l' | 'xl',
   style?: Object
   sign?: boolean
 }
