@@ -10,7 +10,7 @@ export interface FetchTransactionsOptions {
   size?: number
 }
 
-export default async function fetchTransactions(options?: FetchTransactionsOptions) {
+export default async function fetchTransactions(options: FetchTransactionsOptions = {}) {
   await requireAuth()
 
   try {
