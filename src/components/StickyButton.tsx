@@ -14,7 +14,7 @@ export default function StickyButton(props: Props) {
 
   return (
     <div className="c-sticky-button">
-      <WaButton variant="brand" size="large">
+      <WaButton variant="brand" size="l">
         <WaIcon name={props.icon} label={props.label} style={{fontSize: 'var(--wa-font-size-2xl)'}}></WaIcon>
       </WaButton>
     </div>

@@ -7,6 +7,7 @@ import Date from '@/components/Date'
 import Loading from '@/components/Loading'
 import ButtonTransaction from '@/components/ButtonTransaction'
 import StickyButton from '@/components/StickyButton'
+import EmptyState from '@/components/EmptyState'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import fetchCategories from '@/api/fetchCategories'
@@ -21,21 +22,36 @@ import type { Transactions, Categories, SubCategories } from '@/types/pocketbase
 export default function Transactions() {
 
   const [transactions, setTransactions] = useState<Transactions[]>([])
-  const [transactionsByDate, setTransactionsByDate] = useState(null)
+  const [transactionsByDate, setTransactionsByDate] = useState<any[] | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const getTransactions = async () => {
-    const { data, error } = await fetchTransactions(300)
-    if (error) {
+  const getTransactions = async (categoryCode?: string, subCategoryCode?: string) => {
+    setIsLoading(true)
+    const { data, error } = await fetchTransactions({
+      category: categoryCode,
+      subCategory: subCategoryCode,
+    })
+    if (error || !data) {
       console.error(error)
+      setTransactions([])
+      setTransactionsByDate([])
+      setIsLoading(false)
       return null
     }
     setTransactions(data)
     getTransactionsByDate(data)
+    setIsLoading(false)
   }
+
   const getTransactionsByDate = async (transactions: Transactions[]) => {
+    if (!transactions || transactions.length === 0) {
+      setTransactionsByDate([])
+      return
+    }
     const groupedByDate = Map.groupBy(transactions, ({ date }) => date)
     setTransactionsByDate(Array.from(groupedByDate))
   }
+
   useEffect(() => {
     getCategories()
     getTransactions()
@@ -53,24 +69,27 @@ export default function Transactions() {
     }
     setCategories(data)
   }
-  const filterTransactionsByCategory = (category: string) => {
-    const filtered = transactions.filter((transaction) => transaction.subCategory?.category.code === category)
-    return filtered
-  }
 
-  const handleSelectCategory = (event) => {
+  const handleSelectCategory = (event: any) => {
     const categoryCode = event.currentTarget.dataset.category
 
     if (categoryCode) {
-      const transactions = filterTransactionsByCategory(categoryCode)
-      getTransactionsByDate(transactions)
-
-      const _category = categories.find((cat: Categories) => cat.code === categoryCode)
+      const _category = categories.find((cat: Categories) => cat.code === categoryCode) || null
       setCategory(_category)
-
       setSubCategory(null)
 
-      getSubCategories(_category.code)
+      if (_category) {
+        getSubCategories(_category.code)
+        getTransactions(_category.code)
+      } else {
+        setSubCategories([])
+        getTransactions()
+      }
+    } else {
+      setCategory(null)
+      setSubCategory(null)
+      setSubCategories([])
+      getTransactions()
     }
   }
   //#endregion
@@ -79,6 +98,7 @@ export default function Transactions() {
   //#region Filter SubCategory
   const [subCategories, setSubCategories] = useState<SubCategories[]>([])
   const [subCategory, setSubCategory] = useState<SubCategories | null>(null)
+
   const getSubCategories = async (categoryCode: string) => {
     const { data, error } = await fetchSubCategoriesByCategory(categoryCode)
     if (error) {
@@ -88,19 +108,16 @@ export default function Transactions() {
     setSubCategories(data)
   }
 
-  const filterTransactionsBySubCategory = (subCategoryCode: string) => {
-    const filtered = transactions.filter((transaction: Transactions) => transaction.subCategory?.code === subCategoryCode)
-    return filtered
-  }
-  const handleSelectSubCategory = (event) => {
+  const handleSelectSubCategory = (event: any) => {
     const subCategoryCode = event.currentTarget.dataset.subcategory
 
     if (subCategoryCode) {
-      const transactions = filterTransactionsBySubCategory(subCategoryCode)
-      getTransactionsByDate(transactions)
-
-      const subCategory = subCategories.find((subCat) => subCat.code === subCategoryCode)
-      setSubCategory(subCategory)
+      const _subCategory = subCategories.find((subCat) => subCat.code === subCategoryCode) || null
+      setSubCategory(_subCategory)
+      getTransactions(category?.code, subCategoryCode)
+    } else {
+      setSubCategory(null)
+      getTransactions(category?.code)
     }
   }
 
@@ -131,6 +148,16 @@ export default function Transactions() {
                   }
                   <WaIcon name="chevron-down" slot="end" />
                 </WaButton>
+                <WaDropdownItem
+                  key="all-categories"
+                  onClick={handleSelectCategory}
+                  data-category=""
+                >
+                  <div className="l-row l-row--x-small">
+                    <WaIcon name="list" />
+                    Todas as categorias
+                  </div>
+                </WaDropdownItem>
                 {
                   categories.map((category) => (
                     <WaDropdownItem
@@ -163,6 +190,16 @@ export default function Transactions() {
                   }
                   <WaIcon name="chevron-down" slot="end" />
                 </WaButton>
+                <WaDropdownItem
+                  key="all-subcategories"
+                  onClick={handleSelectSubCategory}
+                  data-subcategory=""
+                >
+                  <div className="l-row l-row--x-small">
+                    <WaIcon name="list" />
+                    Todas as subcategorias
+                  </div>
+                </WaDropdownItem>
                 {
                   subCategories.map((subCategory) => (
                     <WaDropdownItem
@@ -183,28 +220,34 @@ export default function Transactions() {
 
         </div>
         {
-          transactionsByDate ? transactionsByDate.map((date) => (
-            <div
-              key={date[0]}
-            >
-              <Date date={date[0]} sticky={true}></Date>
-              {
-                date[1].map((transaction) => (
-                  <ButtonTransaction
-                    key={transaction.$id}
-                    id={transaction.$id}
-                    value={transaction.value}
-                    netValue={transaction.netValue}
-                    variant={transaction.subCategory?.category?.type?.code}
-                    icon={transaction.subCategory?.icon}
-                    description={transaction.description}
-                    niceDescription={transaction.niceDescription}
-                    subCategoryDescription={transaction.subCategory?.description}
-                  ></ButtonTransaction>
-                ))
-              }
-            </div>
-          )) : <Loading></Loading>
+          isLoading ? (
+            <Loading></Loading>
+          ) : transactionsByDate && transactionsByDate.length > 0 ? (
+            transactionsByDate.map((date) => (
+              <div
+                key={date[0]}
+              >
+                <Date date={date[0]} sticky={true}></Date>
+                {
+                  date[1].map((transaction) => (
+                    <ButtonTransaction
+                      key={transaction.$id}
+                      id={transaction.$id}
+                      value={transaction.value}
+                      netValue={transaction.netValue}
+                      variant={transaction.subCategory?.category?.type?.code}
+                      icon={transaction.subCategory?.icon}
+                      description={transaction.description}
+                      niceDescription={transaction.niceDescription}
+                      subCategoryDescription={transaction.subCategory?.description}
+                    ></ButtonTransaction>
+                  ))
+                }
+              </div>
+            ))
+          ) : (
+            <EmptyState icon="receipt">Nenhum movimento encontrado.</EmptyState>
+          )
         }
 
         <Link href="/transactions/create">

@@ -350,7 +350,7 @@ export default function Transaction() {
                   </div>
                   <div>
                     <WaInput
-                      size="large"
+                      size="l"
                       className="c-ghost-input c-ghost-input--large"
                       onChange={handleChangeNiceDescription}
                       value={transaction.niceDescription}
@@ -371,7 +371,7 @@ export default function Transaction() {
                   </div>
                   <div>
                     <WaInput
-                      size="large"
+                      size="l"
                       className="c-ghost-input c-ghost-input--x-large"
                       onChange={handleChangeValue}
                       value={transaction.value.toFixed(2)}

@@ -88,7 +88,7 @@ export default function CategoryResume(props: Props) {
             <div className="l-stack l-stack--2x-small">
               <Value
                 value={total}
-                size="large"
+                size="l"
                 sign={false}
               />
             </div>
