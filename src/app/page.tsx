@@ -36,7 +36,7 @@ export default function Home() {
   const [ monthTransactions, setMonthTransactions ] = useState<Transactions[]>([])
 
   const getTransactionsByDate = async () => {
-    const { data, error } = await fetchTransactions(15)
+    const { data, error } = await fetchTransactions()
     if (error || !data) {
       console.error(error)
       return []
