@@ -83,7 +83,7 @@ Never ask to see `.env` file. Refer to [`.env.example`](./.env.example) for the 
 
 ## Coding rules
 - No Tailwind or other CSS frameworks.
-- Do not add inline styles.
+- NEVER add inline styles.
 - Use WebAwesome for elements whenever possible.
 - Do not write CSS or add unnecessary classes. I will write whatever CSS is needed.
 - The Header and Footer are separate components.

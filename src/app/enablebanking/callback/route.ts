@@ -70,9 +70,9 @@ export async function GET(request: NextRequest) {
 
     // 4. Trocar código por sessão na EnableBanking
     const token = getEnableBankingToken()
-    const sessionId = await createEnableBankingSession(code, token)
+    const session = await createEnableBankingSession(code, token)
 
-    if (!sessionId) {
+    if (!session?.sessionId) {
       return redirectWithClearedState(
         new URL('/enablebanking/transactions?error=session_creation_failed', baseUrl)
       )
@@ -80,10 +80,12 @@ export async function GET(request: NextRequest) {
 
     // 5. Guardar sessão autorizada
     await saveBankSession({
-      sessionId,
+      sessionId: session.sessionId,
       bankName,
       country,
-      status: 'AUTHORIZED',
+      accounts: session.accounts,
+      validUntil: session.validUntil,
+      status: session.status || 'AUTHORIZED',
     })
 
     return redirectWithClearedState(new URL('/enablebanking/transactions', baseUrl))

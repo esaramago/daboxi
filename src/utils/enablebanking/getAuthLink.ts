@@ -5,7 +5,8 @@ export default async function getEnableBankingAuthLink(
   token: string | null,
   bankName: string,
   country: string,
-  state: string
+  state: string,
+  psuType: string = 'personal'
 ) {
   if (!redirectUrl) {
     console.error('URL de redirecionamento não informada')
@@ -30,12 +31,15 @@ export default async function getEnableBankingAuthLink(
   const requestBody = {
     response_type: 'code',
     access: {
+      balances: true,
+      transactions: true,
       valid_until: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
     },
     aspsp: {
       name: bankName,
       country: country
     },
+    psu_type: psuType,
     redirect_url: redirectUrl,
     state
   }

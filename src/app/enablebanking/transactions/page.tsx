@@ -12,6 +12,7 @@ import EmptyState from '@/components/EmptyState'
 import '@webawesome/button'
 import '@webawesome/icon/icon.js'
 import '@webawesome/card/card.js'
+import { WaCallout } from '@awesome.me/webawesome/dist/react'
 
 const SETTINGS_DIALOG_ID = 'enablebanking-settings-dialog'
 
@@ -139,19 +140,12 @@ export default async function EnableBankingTransactions({
 
       <main className="l-container u-padding-block">
         {errorMessage && (
-          <div
-            style={{
-              padding: '0.75rem 1rem',
-              borderRadius: 'var(--wa-border-radius-m, 8px)',
-              backgroundColor: 'var(--wa-color-danger-50, #fef2f2)',
-              color: 'var(--wa-color-danger-800, #991b1b)',
-              border: '1px solid var(--wa-color-danger-200, #fecaca)',
-              marginBottom: '1rem',
-              fontSize: 'var(--wa-font-size-s, 0.875rem)',
-            }}
+          <WaCallout
+            variant="warning"
           >
+            <wa-icon slot="icon" name="triangle-exclamation"></wa-icon>
             {errorMessage}
-          </div>
+          </WaCallout>
         )}
 
         {filteredTransactions && filteredTransactions.length > 0 ? (
