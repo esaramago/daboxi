@@ -24,6 +24,7 @@ const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/
 const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
 const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), {ssr: false})
 const WaTextarea = dynamic(() => import('@awesome.me/webawesome/dist/react/textarea/index.js'), {ssr: false})
+const WaToast = dynamic(() => import('@awesome.me/webawesome/dist/react/toast/index.js'), {ssr: false})
 
 export default function Transaction() {
 
@@ -38,34 +39,15 @@ export default function Transaction() {
 
   const toastRef = useRef<any>(null)
 
-  useEffect(() => {
-    import('@awesome.me/webawesome/dist/components/toast/toast.js')
-  }, [])
-
-  const showSuccessNotification = async () => {
-    try {
-      if (typeof window === 'undefined') return
-      await import('@awesome.me/webawesome/dist/components/toast/toast.js')
-      if (typeof customElements !== 'undefined' && customElements.whenDefined) {
-        await customElements.whenDefined('wa-toast')
-      }
-
-      let toast = toastRef.current || (document.querySelector('wa-toast') as any)
-      if (!toast || typeof toast.create !== 'function') {
-        toast = document.createElement('wa-toast')
-        document.body.appendChild(toast)
-      }
-
-      if (toast && typeof toast.create === 'function') {
-        await toast.create('Guardado com sucesso', {
-          variant: 'success',
-          icon: 'check',
-          size: 's',
-          duration: 3000
-        })
-      }
-    } catch (error) {
-      console.error('[showSuccessNotification] Error:', error)
+  const showSuccessNotification = () => {
+    const toast = toastRef.current || document.querySelector('wa-toast')
+    if (toast && typeof toast.create === 'function') {
+      toast.create('Guardado com sucesso', {
+        variant: 'success',
+        icon: 'check',
+        size: 's',
+        duration: 3000
+      })
     }
   }
 
@@ -235,7 +217,7 @@ export default function Transaction() {
         console.error(error)
         return
       }
-      await showSuccessNotification()
+      showSuccessNotification()
       getTransaction() // re-render transaction
     } catch (error) {
       alert(`Não foi possível gravar a data`)
@@ -259,8 +241,7 @@ export default function Transaction() {
         console.error(error)
         return
       }
-      setTransaction((prev) => (prev ? { ...prev, niceDescription } : prev))
-      await showSuccessNotification()
+      showSuccessNotification()
     } catch (error) {
       alert(`Não foi possível gravar a descrição`)
       console.error(error.message)
@@ -278,8 +259,7 @@ export default function Transaction() {
         console.error(error)
         return
       }
-      setTransaction((prev) => (prev ? { ...prev, description } : prev))
-      await showSuccessNotification()
+      showSuccessNotification()
     } catch (error) {
       alert(`Não foi possível gravar a entidade`)
       console.error(error.message)
@@ -297,8 +277,7 @@ export default function Transaction() {
         console.error(error)
         return
       }
-      setTransaction((prev) => (prev ? { ...prev, notes: notes || null } : prev))
-      await showSuccessNotification()
+      showSuccessNotification()
     } catch (error) {
       alert(`Não foi possível gravar as notas`)
       console.error(error.message)
@@ -327,7 +306,7 @@ export default function Transaction() {
         console.error(error)
         return
       }
-      await showSuccessNotification()
+      showSuccessNotification()
       getTransaction() // re-render transaction
     } catch (error) {
       alert(`Não foi possível gravar o valor`)
@@ -422,21 +401,19 @@ export default function Transaction() {
                   </button>
                   <div className="is-visually-hidden">
                     <label htmlFor="date">Data</label>
-                    <input id="date" type="date" value={transaction.date ? transaction.date.split('T')[0].split(' ')[0] : ''} onChange={handleChangeDate} />
+                    <input id="date" type="date" value={transaction.date} onChange={handleChangeDate} />
                   </div>
                   <div>
                     <WaInput
                       size="l"
                       className="c-ghost-input c-ghost-input--large"
                       onChange={handleChangeNiceDescription}
-                      onKeyDown={(e) => { if (e.key === 'Enter') (e.currentTarget as any).blur() }}
                       value={transaction.niceDescription}
                       placeholder="Descrição"
                     />
                     <WaInput
                       className="c-ghost-input"
                       onChange={handleChangeDescription}
-                      onKeyDown={(e) => { if (e.key === 'Enter') (e.currentTarget as any).blur() }}
                       value={transaction.description}
                       placeholder="Sem entidade"
                     />
@@ -452,7 +429,6 @@ export default function Transaction() {
                       size="l"
                       className="c-ghost-input c-ghost-input--x-large"
                       onChange={handleChangeValue}
-                      onKeyDown={(e) => { if (e.key === 'Enter') (e.currentTarget as any).blur() }}
                       value={transaction.value.toFixed(2)}
                       placeholder="Valor"
                       inputmode="decimal"
@@ -558,7 +534,7 @@ export default function Transaction() {
             onSelect={handleChangeRefund}
           />
       }
-      <wa-toast ref={(el) => { toastRef.current = el }} />
+      <WaToast ref={toastRef} />
     </>
   )
   //#endregion
