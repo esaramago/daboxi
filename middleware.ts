@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { PB_COOKIE_NAME } from '@/lib/config'
+import { PB_COOKIE_NAME, POCKETBASE_URL } from '@/lib/config'
+
+// Cache verified token validity for up to 60 seconds to avoid repetitive backend calls on fast navigations
+const verifiedTokensCache = new Map<string, number>()
+const VERIFIED_TOKEN_TTL_MS = 60 * 1000
 
 function decodeBase64Url(str: string): string {
   let base64 = str.replace(/-/g, '+').replace(/_/g, '/')
@@ -22,7 +26,7 @@ function parsePocketBaseToken(cookieValue: string): string | null {
     try {
       val = decodeURIComponent(val)
     } catch {
-      // Ignora erro de decodificação e continua
+      // Ignore URI decode errors and proceed
     }
   }
 
@@ -33,7 +37,7 @@ function parsePocketBaseToken(cookieValue: string): string | null {
         return parsed.token
       }
     } catch {
-      // Ignora e tenta verificar se é token direto
+      // Ignore JSON parse errors and continue
     }
   }
 
@@ -44,39 +48,71 @@ function parsePocketBaseToken(cookieValue: string): string | null {
   return null
 }
 
-function isValidPocketBaseToken(token: string | null): boolean {
+async function isValidPocketBaseToken(token: string | null): Promise<boolean> {
   if (!token) return false
 
   const parts = token.split('.')
   if (parts.length !== 3) return false
 
+  const nowInSeconds = Math.floor(Date.now() / 1000)
+
+  // 1. Fast preliminary check: decode and inspect payload structure and expiration
   try {
     const payloadStr = decodeBase64Url(parts[1])
     const payload = JSON.parse(payloadStr)
 
-    if (typeof payload.exp !== 'number') {
-      return false
-    }
-
-    const nowInSeconds = Math.floor(Date.now() / 1000)
-    if (payload.exp <= nowInSeconds) {
+    if (typeof payload.exp !== 'number' || payload.exp <= nowInSeconds) {
       return false
     }
 
     if (!payload.id && !payload.userId && !payload.sub) {
       return false
     }
+  } catch {
+    return false
+  }
+
+  // 2. Check in-memory verification cache
+  const cachedExp = verifiedTokensCache.get(token)
+  if (cachedExp && Date.now() < cachedExp) {
+    return true
+  }
+
+  // 3. Cryptographically verify signature and active session with PocketBase
+  try {
+    const response = await fetch(`${POCKETBASE_URL}/api/collections/users/auth-refresh`, {
+      method: 'POST',
+      headers: {
+        Authorization: token,
+      },
+      cache: 'no-store',
+    })
+
+    if (!response.ok) {
+      verifiedTokensCache.delete(token)
+      return false
+    }
+
+    // Cache valid verification to minimize backend calls
+    if (verifiedTokensCache.size > 500) {
+      const now = Date.now()
+      for (const [key, exp] of verifiedTokensCache.entries()) {
+        if (now >= exp) verifiedTokensCache.delete(key)
+      }
+    }
+    verifiedTokensCache.set(token, Date.now() + VERIFIED_TOKEN_TTL_MS)
 
     return true
-  } catch {
+  } catch (error) {
+    console.error('[Middleware] Failed to verify token with PocketBase:', error)
     return false
   }
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Bloqueia tentativas de acesso a ficheiros PHP ou caminhos ocultos comuns
+  // Block access to PHP files or hidden paths
   if (pathname.endsWith('.php') || pathname.startsWith('/.git')) {
     return new NextResponse(null, { status: 404 })
   }
@@ -84,7 +120,7 @@ export function middleware(request: NextRequest) {
   const authCookie = request.cookies.get(PB_COOKIE_NAME || 'pb_auth')
   const rawValue = authCookie?.value
   const token = rawValue ? parsePocketBaseToken(rawValue) : null
-  const isAuthenticated = isValidPocketBaseToken(token)
+  const isAuthenticated = await isValidPocketBaseToken(token)
 
   const isAuthRoute = pathname === '/login' || pathname === '/forgot-password'
 
@@ -106,18 +142,17 @@ export function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-// Configurar quais rotas o middleware deve executar
+// Configure matched routes for middleware execution
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * Match all request paths except:
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - manifest.json (manifest)
      * - static files with common extensions
      */
-    '/((?!api|_next/static|_next/image|favicon\\.ico|manifest\\.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|json|css|js|woff|woff2|ttf|php)$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|manifest\\.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|json|css|js|woff|woff2|ttf|php)$).*)',
   ],
 }

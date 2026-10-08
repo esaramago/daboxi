@@ -78,8 +78,14 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    if (!session.accounts || session.accounts.length === 0) {
+      return redirectWithClearedState(
+        new URL('/enablebanking/transactions?error=account_not_authorized', baseUrl)
+      )
+    }
+
     // 5. Guardar sessão autorizada
-    await saveBankSession({
+    const saveResult = await saveBankSession({
       sessionId: session.sessionId,
       bankName,
       country,
@@ -87,6 +93,12 @@ export async function GET(request: NextRequest) {
       validUntil: session.validUntil,
       status: session.status || 'AUTHORIZED',
     })
+
+    if (saveResult?.error) {
+      return redirectWithClearedState(
+        new URL(`/enablebanking/transactions?error=${encodeURIComponent(saveResult.error)}`, baseUrl)
+      )
+    }
 
     return redirectWithClearedState(new URL('/enablebanking/transactions', baseUrl))
   } catch (error) {

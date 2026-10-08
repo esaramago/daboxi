@@ -29,10 +29,7 @@ export default async function getEnableBankingAuthLink(
   }
       
   const requestBody = {
-    response_type: 'code',
     access: {
-      balances: true,
-      transactions: true,
       valid_until: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
     },
     aspsp: {

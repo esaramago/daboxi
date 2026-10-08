@@ -5,6 +5,7 @@ import fetchActiveBankSession from '@/api/fetchActiveBankSession'
 import fetchExistingEnableBankingIds from '@/api/fetchExistingEnableBankingIds'
 import fetchEnableBankingSettings from '@/api/fetchEnableBankingSettings'
 import fetchEnableBankingBanks from '@/api/fetchEnableBankingBanks'
+import invalidateBankSession from '@/api/invalidateBankSession'
 import Date from '@/components/Date'
 import EnableBankingTransaction from '@/components/_pages/enablebanking/transactions/EnableBankingTransaction'
 import EnableBankingSettingsDialog from '@/components/_pages/enablebanking/transactions/EnableBankingSettingsDialog'
@@ -44,6 +45,9 @@ export default async function EnableBankingTransactions({
       case 'not_configured':
         errorMessage = 'Banco ou país não configurados.'
         break
+      case 'account_not_authorized':
+        errorMessage = 'A conta não é autorizada.'
+        break
       default:
         errorMessage = `Erro na autorização: ${decodeURIComponent(errorParam)}`
     }
@@ -72,6 +76,15 @@ export default async function EnableBankingTransactions({
     }
   }
 
+  // Handle sessions without authorized accounts
+  if (sessionId && (!session?.data?.accounts || session.data.accounts.length === 0)) {
+    if (!errorMessage) {
+      errorMessage = 'A conta não é autorizada.'
+    }
+    invalidateBankSession(sessionId).catch(() => {})
+    sessionId = null
+  }
+
   // 3. Buscar transações e IDs existentes em paralelo se tivermos uma sessão válida
   let existingIds = new Set<string>()
 
@@ -84,6 +97,9 @@ export default async function EnableBankingTransactions({
 
     if (transactionsData === null) {
       // Sessão no EnableBanking inválida ou expirada
+      if (sessionId) {
+        invalidateBankSession(sessionId).catch(() => {})
+      }
       sessionId = null
       transactions = []
     } else {
