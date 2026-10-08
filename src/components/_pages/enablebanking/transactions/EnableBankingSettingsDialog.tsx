@@ -7,7 +7,6 @@ import saveEnableBankingSettings from '@/api/saveEnableBankingSettings'
 import fetchEnableBankingBanks from '@/api/fetchEnableBankingBanks'
 import Loading from '@/components/Loading'
 import type { EnableBankingAspsp } from '@/utils/enablebanking/getAspsps'
-import type WaInputElement from '@webawesome/input/input.js'
 
 const WaDialog = dynamic(() => import('@awesome.me/webawesome/dist/react/dialog/index.js'), { ssr: false })
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), { ssr: false })
@@ -235,19 +234,12 @@ export default function EnableBankingSettingsDialog({
             <>
               <WaInput
                 label="País (código)"
-                placeholder="Ex: PT, ES, GB"
                 value={country}
                 maxlength={2}
                 pattern="^[a-zA-Z]{2}$"
-                disabled={!enabled}
-                onInput={(event) => {
-                  setCountry((event.target as WaInputElement).value.toUpperCase())
-                  if (error) setError(null)
-                }}
-                onKeyDown={(e: any) => {
-                  if (e.key === 'Enter') handleSave(e)
-                }}
+                disabled={true}
                 required={enabled}
+                hint="Apenas bancos portugueses são suportados"
               ></WaInput>
 
               <WaSelect

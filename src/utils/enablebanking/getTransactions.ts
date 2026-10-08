@@ -5,7 +5,7 @@ export default async function getEnableBankingTransactions(
   sessionId: string,
   token: string | null,
   knownAccountId?: string | null,
-  dateFrom: string = '2026-08-23'
+  dateFrom: string = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 ) {
   if (!sessionId) {
     console.error('ID da sessão não informada')
