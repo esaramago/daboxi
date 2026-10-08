@@ -17,28 +17,48 @@ const WaDropdown = dynamic(() => import('@awesome.me/webawesome/dist/react/dropd
 const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/index.js'), {ssr: false})
 const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
 const WaDropdownItem = dynamic(() => import('@awesome.me/webawesome/dist/react/dropdown-item/index.js'), {ssr: false})
+const WaPagination = dynamic(() => import('@awesome.me/webawesome/dist/react/pagination/index.js'), {ssr: false})
 import type { Transactions, Categories, SubCategories } from '@/types/pocketbase'
+
+const PAGE_SIZE = 50
 
 export default function Transactions() {
 
   const [transactionsByDate, setTransactionsByDate] = useState<any[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [page, setPage] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
 
-  const getTransactions = async (categoryCode?: string, subCategoryCode?: string) => {
+  const getTransactions = async (categoryCode?: string, subCategoryCode?: string, pageNumber: number = 1) => {
     setIsLoading(true)
-    const { data, error } = await fetchTransactions({
+    const { data, error, totalItems: count, totalPages: pages } = await fetchTransactions({
       category: categoryCode,
       subCategory: subCategoryCode,
-      size: 1000
+      size: PAGE_SIZE,
+      page: pageNumber,
     })
     if (error || !data) {
       console.error(error)
       setTransactionsByDate([])
+      setTotalItems(0)
+      setTotalPages(0)
       setIsLoading(false)
       return null
     }
+    setTotalItems(count ?? 0)
+    setTotalPages(pages ?? 0)
     getTransactionsByDate(data)
     setIsLoading(false)
+  }
+
+  const handlePageChange = (event: any) => {
+    const newPage = event.detail?.page ?? event.target?.page
+    if (newPage && newPage !== page) {
+      setPage(newPage)
+      getTransactions(category?.code, subCategory?.code, newPage)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
 
   const getTransactionsByDate = async (transactions: Transactions[]) => {
@@ -71,6 +91,7 @@ export default function Transactions() {
   const handleSelectCategory = (event: any) => {
     const categoryCode = event.currentTarget.dataset.category
 
+    setPage(1)
     if (categoryCode) {
       const _category = categories.find((cat: Categories) => cat.code === categoryCode) || null
       setCategory(_category)
@@ -78,16 +99,16 @@ export default function Transactions() {
 
       if (_category) {
         getSubCategories(_category.code)
-        getTransactions(_category.code)
+        getTransactions(_category.code, undefined, 1)
       } else {
         setSubCategories([])
-        getTransactions()
+        getTransactions(undefined, undefined, 1)
       }
     } else {
       setCategory(null)
       setSubCategory(null)
       setSubCategories([])
-      getTransactions()
+      getTransactions(undefined, undefined, 1)
     }
   }
   //#endregion
@@ -109,13 +130,14 @@ export default function Transactions() {
   const handleSelectSubCategory = (event: any) => {
     const subCategoryCode = event.currentTarget.dataset.subcategory
 
+    setPage(1)
     if (subCategoryCode) {
       const _subCategory = subCategories.find((subCat) => subCat.code === subCategoryCode) || null
       setSubCategory(_subCategory)
-      getTransactions(category?.code, subCategoryCode)
+      getTransactions(category?.code, subCategoryCode, 1)
     } else {
       setSubCategory(null)
-      getTransactions(category?.code)
+      getTransactions(category?.code, undefined, 1)
     }
   }
 
@@ -221,28 +243,40 @@ export default function Transactions() {
           isLoading ? (
             <Loading></Loading>
           ) : transactionsByDate && transactionsByDate.length > 0 ? (
-            transactionsByDate.map((date) => (
-              <div
-                key={date[0]}
-              >
-                <Date date={date[0]} sticky={true}></Date>
-                {
-                  date[1].map((transaction) => (
-                    <ButtonTransaction
-                      key={transaction.$id}
-                      id={transaction.$id}
-                      value={transaction.value}
-                      netValue={transaction.netValue}
-                      variant={transaction.subCategory?.category?.type?.code}
-                      icon={transaction.subCategory?.icon}
-                      description={transaction.description}
-                      niceDescription={transaction.niceDescription}
-                      subCategoryDescription={transaction.subCategory?.description}
-                    ></ButtonTransaction>
-                  ))
-                }
-              </div>
-            ))
+            <>
+              {transactionsByDate.map((date) => (
+                <div
+                  key={date[0]}
+                >
+                  <Date date={date[0]} sticky={true}></Date>
+                  {
+                    date[1].map((transaction) => (
+                      <ButtonTransaction
+                        key={transaction.$id}
+                        id={transaction.$id}
+                        value={transaction.value}
+                        netValue={transaction.netValue}
+                        variant={transaction.subCategory?.category?.type?.code}
+                        icon={transaction.subCategory?.icon}
+                        description={transaction.description}
+                        niceDescription={transaction.niceDescription}
+                        subCategoryDescription={transaction.subCategory?.description}
+                      ></ButtonTransaction>
+                    ))
+                  }
+                </div>
+              ))}
+              {
+                totalPages > 1 && (
+                  <WaPagination
+                    page={page}
+                    total={totalItems}
+                    pageSize={PAGE_SIZE}
+                    onWaPageChange={handlePageChange}
+                  />
+                )
+              }
+            </>
           ) : (
             <EmptyState icon="receipt">Nenhum movimento encontrado.</EmptyState>
           )
