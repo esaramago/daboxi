@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import fetchTransaction from '@/api/fetchTransaction'
 import fetchTransactionsByIds from '@/api/fetchTransactionsByIds'
@@ -24,6 +24,7 @@ const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/
 const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
 const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), {ssr: false})
 const WaTextarea = dynamic(() => import('@awesome.me/webawesome/dist/react/textarea/index.js'), {ssr: false})
+const WaToast = dynamic(() => import('@awesome.me/webawesome/dist/react/toast/index.js'), {ssr: false})
 
 export default function Transaction() {
 
@@ -35,6 +36,20 @@ export default function Transaction() {
   const [refunds, setRefunds] = useState([])
 
   const [netValue, setNetValue] = useState(null)
+
+  const toastRef = useRef<any>(null)
+
+  const showSuccessNotification = () => {
+    const toast = toastRef.current || document.querySelector('wa-toast')
+    if (toast && typeof toast.create === 'function') {
+      toast.create('Guardado com sucesso', {
+        variant: 'success',
+        icon: 'check',
+        size: 's',
+        duration: 3000
+      })
+    }
+  }
 
   useEffect(() => {
 
@@ -195,8 +210,19 @@ export default function Transaction() {
   const handleChangeDate = async (event) => {
     const rawDate = event.currentTarget.value
     const date = rawDate ? new globalThis.Date(`${rawDate.split('T')[0]}T00:00:00.000Z`) : null
-    await updateTransaction(transactionId, { date })
-    getTransaction() // re-render transaction
+    try {
+      const { error } = await updateTransaction(transactionId, { date })
+      if (error) {
+        alert(`Não foi possível gravar a data`)
+        console.error(error)
+        return
+      }
+      showSuccessNotification()
+      getTransaction() // re-render transaction
+    } catch (error) {
+      alert(`Não foi possível gravar a data`)
+      console.error(error?.message || error)
+    }
   }
   //#endregion Edit date
 
@@ -207,9 +233,15 @@ export default function Transaction() {
     if (!niceDescription) return
 
     try {
-      await updateTransaction(transactionId, {
+      const { error } = await updateTransaction(transactionId, {
         niceDescription
       })
+      if (error) {
+        alert(`Não foi possível gravar a descrição`)
+        console.error(error)
+        return
+      }
+      showSuccessNotification()
     } catch (error) {
       alert(`Não foi possível gravar a descrição`)
       console.error(error.message)
@@ -219,9 +251,15 @@ export default function Transaction() {
     const description = event.currentTarget.value
 
     try {
-      await updateTransaction(transactionId, {
+      const { error } = await updateTransaction(transactionId, {
         description
       })
+      if (error) {
+        alert(`Não foi possível gravar a entidade`)
+        console.error(error)
+        return
+      }
+      showSuccessNotification()
     } catch (error) {
       alert(`Não foi possível gravar a entidade`)
       console.error(error.message)
@@ -231,9 +269,15 @@ export default function Transaction() {
     const notes = event.currentTarget.value
 
     try {
-      await updateTransaction(transactionId, {
+      const { error } = await updateTransaction(transactionId, {
         notes: notes || null
       })
+      if (error) {
+        alert(`Não foi possível gravar as notas`)
+        console.error(error)
+        return
+      }
+      showSuccessNotification()
     } catch (error) {
       alert(`Não foi possível gravar as notas`)
       console.error(error.message)
@@ -255,8 +299,19 @@ export default function Transaction() {
       return
     }
 
-    await updateTransaction(transactionId, { value: valueNumber })
-    getTransaction() // re-render transaction
+    try {
+      const { error } = await updateTransaction(transactionId, { value: valueNumber })
+      if (error) {
+        alert(`Não foi possível gravar o valor`)
+        console.error(error)
+        return
+      }
+      showSuccessNotification()
+      getTransaction() // re-render transaction
+    } catch (error) {
+      alert(`Não foi possível gravar o valor`)
+      console.error(error?.message || error)
+    }
   }
   //#endregion Edit value
 
@@ -479,6 +534,7 @@ export default function Transaction() {
             onSelect={handleChangeRefund}
           />
       }
+      <WaToast ref={toastRef} />
     </>
   )
   //#endregion
