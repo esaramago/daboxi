@@ -1,20 +1,21 @@
 'use server'
 
 import { unstable_cache } from 'next/cache'
+import crypto from 'crypto'
 
 /**
- * Cache TTL: 1 semana (604800 segundos)
+ * Cache TTL: 1 week (604800 seconds)
  */
 const CACHE_TTL = 604800
 
 /**
- * Helper function para cachear dados usando unstable_cache do Next.js
- * Esta versão não aceita funções que usam cookies() ou outras fontes dinâmicas
+ * Helper function to cache data using Next.js unstable_cache.
+ * This version does not accept functions that read cookies() or other dynamic sources.
  * 
- * @param cacheKey - Chave única para o cache
- * @param fetchFn - Função que retorna os dados a serem cacheados (não pode usar cookies, headers, etc)
- * @param tags - Tags opcionais para invalidação de cache
- * @returns Dados cacheados ou resultado da função fetch
+ * @param cacheKey - Unique key for the cache
+ * @param fetchFn - Function returning the data to cache (cannot use cookies, headers, etc.)
+ * @param tags - Optional tags for cache invalidation
+ * @returns Cached data or result of fetchFn
  */
 export async function getCachedData<T>(
   cacheKey: string,
@@ -36,16 +37,16 @@ export async function getCachedData<T>(
 }
 
 /**
- * Helper function para cachear dados que precisam de session token
- * Obtém o session token fora do cache e cria uma função cacheada que fecha sobre o token
+ * Helper function to cache data requiring a session token.
+ * Retrieves the session token outside the cache and creates a cached closure over the token.
  * 
- * IMPORTANTE: Esta função cria um cache por token de sessão. Cada usuário terá seu próprio cache.
+ * Each user/session receives their own isolated cache entry based on a SHA-256 token digest.
  * 
- * @param cacheKey - Chave única para o cache (será combinada com hash do token)
- * @param fetchFn - Função que recebe sessionToken e retorna os dados
- * @param getSessionToken - Função que obtém o session token (chamada fora do cache)
- * @param tags - Tags opcionais para invalidação de cache
- * @returns Dados cacheados ou resultado da função fetch
+ * @param cacheKey - Base key for the cache (combined with cryptographic token hash)
+ * @param fetchFn - Function receiving sessionToken and returning data
+ * @param getSessionToken - Function obtaining the session token (called outside cache)
+ * @param tags - Optional tags for cache invalidation
+ * @returns Cached data or result of fetchFn
  */
 export async function getCachedDataWithSession<T>(
   cacheKey: string,
@@ -53,17 +54,14 @@ export async function getCachedDataWithSession<T>(
   getSessionToken: () => Promise<string>,
   tags?: string[]
 ): Promise<T> {
-  // Obter session token fora do cache
+  // Retrieve session token outside cache
   const sessionToken = await getSessionToken()
   
-  // Criar uma chave única baseada no cacheKey e no token
-  // Usamos um hash simples do token para criar uma chave estável e única
-  // Isso garante que cada usuário tenha seu próprio cache
-  const tokenHash = Buffer.from(sessionToken).toString('base64').substring(0, 16).replace(/[^a-zA-Z0-9]/g, '')
+  // Generate a SHA-256 cryptographic hash to guarantee collision-free cache keys across users
+  const tokenHash = crypto.createHash('sha256').update(sessionToken).digest('hex')
   const uniqueCacheKey = `${cacheKey}-${tokenHash}`
   
-  // Criar uma função que fecha sobre o token
-  // Esta função será estática para o mesmo token, permitindo cache eficiente
+  // Create a function that closes over the token
   const fetchWithToken = async () => {
     return await fetchFn(sessionToken)
   }
@@ -79,4 +77,5 @@ export async function getCachedDataWithSession<T>(
 
   return await cachedFn()
 }
+
 
