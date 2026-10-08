@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import fetchTransaction from '@/api/fetchTransaction'
 import fetchTransactionsByIds from '@/api/fetchTransactionsByIds'
@@ -35,6 +35,39 @@ export default function Transaction() {
   const [refunds, setRefunds] = useState([])
 
   const [netValue, setNetValue] = useState(null)
+
+  const toastRef = useRef<any>(null)
+
+  useEffect(() => {
+    import('@awesome.me/webawesome/dist/components/toast/toast.js')
+  }, [])
+
+  const showSuccessNotification = async () => {
+    try {
+      if (typeof window === 'undefined') return
+      await import('@awesome.me/webawesome/dist/components/toast/toast.js')
+      if (typeof customElements !== 'undefined' && customElements.whenDefined) {
+        await customElements.whenDefined('wa-toast')
+      }
+
+      let toast = toastRef.current || (document.querySelector('wa-toast') as any)
+      if (!toast || typeof toast.create !== 'function') {
+        toast = document.createElement('wa-toast')
+        document.body.appendChild(toast)
+      }
+
+      if (toast && typeof toast.create === 'function') {
+        await toast.create('Guardado com sucesso', {
+          variant: 'success',
+          icon: 'check',
+          size: 's',
+          duration: 3000
+        })
+      }
+    } catch (error) {
+      console.error('[showSuccessNotification] Error:', error)
+    }
+  }
 
   useEffect(() => {
 
@@ -195,8 +228,19 @@ export default function Transaction() {
   const handleChangeDate = async (event) => {
     const rawDate = event.currentTarget.value
     const date = rawDate ? new globalThis.Date(`${rawDate.split('T')[0]}T00:00:00.000Z`) : null
-    await updateTransaction(transactionId, { date })
-    getTransaction() // re-render transaction
+    try {
+      const { error } = await updateTransaction(transactionId, { date })
+      if (error) {
+        alert(`Não foi possível gravar a data`)
+        console.error(error)
+        return
+      }
+      await showSuccessNotification()
+      getTransaction() // re-render transaction
+    } catch (error) {
+      alert(`Não foi possível gravar a data`)
+      console.error(error?.message || error)
+    }
   }
   //#endregion Edit date
 
@@ -207,9 +251,16 @@ export default function Transaction() {
     if (!niceDescription) return
 
     try {
-      await updateTransaction(transactionId, {
+      const { error } = await updateTransaction(transactionId, {
         niceDescription
       })
+      if (error) {
+        alert(`Não foi possível gravar a descrição`)
+        console.error(error)
+        return
+      }
+      setTransaction((prev) => (prev ? { ...prev, niceDescription } : prev))
+      await showSuccessNotification()
     } catch (error) {
       alert(`Não foi possível gravar a descrição`)
       console.error(error.message)
@@ -219,9 +270,16 @@ export default function Transaction() {
     const description = event.currentTarget.value
 
     try {
-      await updateTransaction(transactionId, {
+      const { error } = await updateTransaction(transactionId, {
         description
       })
+      if (error) {
+        alert(`Não foi possível gravar a entidade`)
+        console.error(error)
+        return
+      }
+      setTransaction((prev) => (prev ? { ...prev, description } : prev))
+      await showSuccessNotification()
     } catch (error) {
       alert(`Não foi possível gravar a entidade`)
       console.error(error.message)
@@ -231,9 +289,16 @@ export default function Transaction() {
     const notes = event.currentTarget.value
 
     try {
-      await updateTransaction(transactionId, {
+      const { error } = await updateTransaction(transactionId, {
         notes: notes || null
       })
+      if (error) {
+        alert(`Não foi possível gravar as notas`)
+        console.error(error)
+        return
+      }
+      setTransaction((prev) => (prev ? { ...prev, notes: notes || null } : prev))
+      await showSuccessNotification()
     } catch (error) {
       alert(`Não foi possível gravar as notas`)
       console.error(error.message)
@@ -255,8 +320,19 @@ export default function Transaction() {
       return
     }
 
-    await updateTransaction(transactionId, { value: valueNumber })
-    getTransaction() // re-render transaction
+    try {
+      const { error } = await updateTransaction(transactionId, { value: valueNumber })
+      if (error) {
+        alert(`Não foi possível gravar o valor`)
+        console.error(error)
+        return
+      }
+      await showSuccessNotification()
+      getTransaction() // re-render transaction
+    } catch (error) {
+      alert(`Não foi possível gravar o valor`)
+      console.error(error?.message || error)
+    }
   }
   //#endregion Edit value
 
@@ -346,19 +422,21 @@ export default function Transaction() {
                   </button>
                   <div className="is-visually-hidden">
                     <label htmlFor="date">Data</label>
-                    <input id="date" type="date" value={transaction.date} onChange={handleChangeDate} />
+                    <input id="date" type="date" value={transaction.date ? transaction.date.split('T')[0].split(' ')[0] : ''} onChange={handleChangeDate} />
                   </div>
                   <div>
                     <WaInput
                       size="l"
                       className="c-ghost-input c-ghost-input--large"
                       onChange={handleChangeNiceDescription}
+                      onKeyDown={(e) => { if (e.key === 'Enter') (e.currentTarget as any).blur() }}
                       value={transaction.niceDescription}
                       placeholder="Descrição"
                     />
                     <WaInput
                       className="c-ghost-input"
                       onChange={handleChangeDescription}
+                      onKeyDown={(e) => { if (e.key === 'Enter') (e.currentTarget as any).blur() }}
                       value={transaction.description}
                       placeholder="Sem entidade"
                     />
@@ -374,6 +452,7 @@ export default function Transaction() {
                       size="l"
                       className="c-ghost-input c-ghost-input--x-large"
                       onChange={handleChangeValue}
+                      onKeyDown={(e) => { if (e.key === 'Enter') (e.currentTarget as any).blur() }}
                       value={transaction.value.toFixed(2)}
                       placeholder="Valor"
                       inputmode="decimal"
@@ -479,6 +558,7 @@ export default function Transaction() {
             onSelect={handleChangeRefund}
           />
       }
+      <wa-toast ref={(el) => { toastRef.current = el }} />
     </>
   )
   //#endregion
