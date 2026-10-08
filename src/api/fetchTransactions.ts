@@ -8,6 +8,7 @@ export interface FetchTransactionsOptions {
   category?: string
   subCategory?: string
   size?: number
+  page?: number
 }
 
 export default async function fetchTransactions(options: FetchTransactionsOptions = {}) {
@@ -16,7 +17,8 @@ export default async function fetchTransactions(options: FetchTransactionsOption
   try {
     const pb = await getPocketBase()
 
-    const size = options.size || 100
+    const size = options.size || 50
+    const page = options.page || 1
     const filterClauses: string[] = []
     const filterParams: Record<string, string> = {}
 
@@ -30,7 +32,7 @@ export default async function fetchTransactions(options: FetchTransactionsOption
 
     const filter = filterClauses.length > 0 ? pb.filter(filterClauses.join(' && '), filterParams) : undefined
 
-    const records = await pb.collection('transactions').getList(1, size, {
+    const records = await pb.collection('transactions').getList(page, size, {
       sort: '-date,-id',
       expand: 'subCategory.category.type',
       ...(filter ? { filter } : {}),

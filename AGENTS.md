@@ -4,7 +4,7 @@ Technical guide and conventions for AI agents and developers working on **Daboxi
 
 ---
 
-## 1. Project Overview
+## Project Overview
 
 **Daboxi** (`daboxi-next`) is a personal finance web application focused on simplicity and fast tracking of expenses, incomes, refunds, and monthly statistics, with Open Banking (EnableBanking) integration.
 
@@ -19,7 +19,7 @@ Technical guide and conventions for AI agents and developers working on **Daboxi
 
 ---
 
-## 2. Tech Stack
+## Tech Stack
 
 - **Framework**: Next.js 16+ (App Router, Turbopack, standalone output).
 - **Language**: TypeScript 5.6+ / React 19.
@@ -30,10 +30,10 @@ Technical guide and conventions for AI agents and developers working on **Daboxi
 
 ---
 
-## 3. Database & Data Model (PocketBase)
+## Database & Data Model (PocketBase)
 
 The database schema and TypeScript definitions are defined in:
-- TypeScript definitions: [`src/types/pocketbase.d.ts`](file:///home/emanuelsaramago/www/daboxi/src/types/pocketbase.d.ts) (also re-exported via [`src/appwrite.d.ts`](file:///home/emanuelsaramago/www/daboxi/src/appwrite.d.ts) for backward compatibility).
+- TypeScript definitions: [`src/types/pocketbase.d.ts`](/src/types/pocketbase.d.ts) (also re-exported via [`src/appwrite.d.ts`](/src/appwrite.d.ts) for backward compatibility).
 
 ### Collections
 - **`users`**: PocketBase Auth collection with custom fields for EnableBanking settings (`enablebanking_bank_name`, `enablebanking_country`, `enablebanking_enabled`).
@@ -46,7 +46,7 @@ The database schema and TypeScript definitions are defined in:
 
 ---
 
-## 4. Key Architecture & Coding Conventions
+## Key Architecture & Coding Conventions
 
 ### Server Actions & PocketBase SDK
 - All database mutations and queries reside in `src/api/` as Server Actions (`'use server'`).
@@ -64,7 +64,7 @@ The database schema and TypeScript definitions are defined in:
 
 ---
 
-## 5. Development & Deployment Commands
+## Development & Deployment Commands
 
 - `npm run dev`: Start Next.js local development server with Turbopack.
 - `npm run build`: Build production bundle.
@@ -76,7 +76,17 @@ The database schema and TypeScript definitions are defined in:
 
 ---
 
-## 6. Environment Variables
+## Environment Variables
 
 Never ask to see `.env` file. Refer to [`.env.example`](./.env.example) for the required environment variables:
 - `POCKETBASE_URL`: Internal PocketBase URL for server actions (e.g. `http://pocketbase:8090` in Docker or `http://127.0.0.1:8090` locally).
+
+## Coding rules
+- No Tailwind or other CSS frameworks.
+- Do not add inline styles.
+- Use WebAwesome for elements whenever possible.
+- Do not write CSS or add unnecessary classes. I will write whatever CSS is needed.
+- The Header and Footer are separate components.
+- Code comments must be in English.
+- README.md and AGENTS.md must be in English.
+- Do not commit any changes.
