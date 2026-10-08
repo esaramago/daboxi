@@ -17,7 +17,7 @@ export default async function fetchTransactions(options: FetchTransactionsOption
   try {
     const pb = await getPocketBase()
 
-    const size = options.size || 100
+    const size = options.size || 50
     const page = options.page || 1
     const filterClauses: string[] = []
     const filterParams: Record<string, string> = {}
