@@ -33,7 +33,7 @@ Technical guide and conventions for AI agents and developers working on **Daboxi
 ## 3. Database & Data Model (PocketBase)
 
 The database schema and TypeScript definitions are defined in:
-- TypeScript definitions: [`src/types/pocketbase.d.ts`](file:///home/emanuelsaramago/www/daboxi/src/types/pocketbase.d.ts) (also re-exported via [`src/appwrite.d.ts`](file:///home/emanuelsaramago/www/daboxi/src/appwrite.d.ts) for backward compatibility).
+- TypeScript definitions: [`src/types/pocketbase.d.ts`](/src/types/pocketbase.d.ts) (also re-exported via [`src/appwrite.d.ts`](/src/appwrite.d.ts) for backward compatibility).
 
 ### Collections
 - **`users`**: PocketBase Auth collection with custom fields for EnableBanking settings (`enablebanking_bank_name`, `enablebanking_country`, `enablebanking_enabled`).
