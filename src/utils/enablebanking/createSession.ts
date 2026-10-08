@@ -1,6 +1,16 @@
 const sessionEndpoint = 'https://api.enablebanking.com/sessions'
 
-export default async function createEnableBankingSession(authCode: string, token: string | null): Promise<string | null> {
+export interface EnableBankingSessionResponse {
+  sessionId: string
+  accounts: string[]
+  validUntil?: string
+  status?: string
+}
+
+export default async function createEnableBankingSession(
+  authCode: string,
+  token: string | null
+): Promise<EnableBankingSessionResponse | null> {
   if (!authCode) {
     console.error('Código de autorização não informado')
     return null
@@ -26,7 +36,18 @@ export default async function createEnableBankingSession(authCode: string, token
       return null
     }
 
-    return sessionData.session_id
+    const accounts = Array.isArray(sessionData.accounts)
+      ? sessionData.accounts
+          .map((acc: any) => (typeof acc === 'string' ? acc : acc?.uid || acc?.account_id || ''))
+          .filter(Boolean)
+      : []
+
+    return {
+      sessionId: sessionData.session_id,
+      accounts,
+      validUntil: sessionData.access?.valid_until,
+      status: sessionData.status || 'AUTHORIZED'
+    }
   } catch (error) {
     console.error('Falha ao efetuar o pedido à EnableBanking:', error)
     return null

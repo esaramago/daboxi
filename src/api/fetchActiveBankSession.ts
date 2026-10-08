@@ -13,7 +13,7 @@ export default async function fetchActiveBankSession(bankName?: string | null) {
 
     const records = await pb.collection('bank_sessions').getList(1, 10, {
       filter,
-      sort: '-id',
+      sort: '-created,-id',
     })
 
     if (!records.items || records.items.length === 0) {
