@@ -36,11 +36,41 @@ export default async function createEnableBankingSession(
       return null
     }
 
-    const accounts = Array.isArray(sessionData.accounts)
+    let accounts = Array.isArray(sessionData.accounts)
       ? sessionData.accounts
           .map((acc: any) => (typeof acc === 'string' ? acc : acc?.uid || acc?.account_id || ''))
           .filter(Boolean)
       : []
+
+    if (accounts.length === 0 && Array.isArray(sessionData.accounts_data)) {
+      accounts = sessionData.accounts_data
+        .map((acc: any) => (typeof acc === 'string' ? acc : acc?.uid || acc?.account_id?.iban || acc?.account_id || ''))
+        .filter(Boolean)
+    }
+
+    // If accounts array is still empty, fetch GET /sessions/:sessionId to resolve them
+    if (accounts.length === 0 && sessionData.session_id && token) {
+      try {
+        const detailRes = await fetch(`${sessionEndpoint}/${sessionData.session_id}`, {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        if (detailRes.ok) {
+          const detailData = await detailRes.json()
+          if (Array.isArray(detailData.accounts) && detailData.accounts.length > 0) {
+            accounts = detailData.accounts
+              .map((acc: any) => (typeof acc === 'string' ? acc : acc?.uid || acc?.account_id || ''))
+              .filter(Boolean)
+          } else if (Array.isArray(detailData.accounts_data) && detailData.accounts_data.length > 0) {
+            accounts = detailData.accounts_data
+              .map((acc: any) => (typeof acc === 'string' ? acc : acc?.uid || acc?.account_id?.iban || acc?.account_id || ''))
+              .filter(Boolean)
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao obter detalhes adicionais da sessão EnableBanking:', err)
+      }
+    }
 
     return {
       sessionId: sessionData.session_id,

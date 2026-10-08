@@ -11,9 +11,9 @@ export default async function fetchActiveBankSession(bankName?: string | null) {
     const pb = await getPocketBase()
     const filter = bankName ? pb.filter('bankName = {:bankName}', { bankName }) : ''
 
-    const records = await pb.collection('bank_sessions').getList(1, 10, {
+    const records = await pb.collection('bank_sessions').getList(1, 20, {
       filter,
-      sort: '-created,-id',
+      sort: '-id',
     })
 
     if (!records.items || records.items.length === 0) {
@@ -23,8 +23,7 @@ export default async function fetchActiveBankSession(bankName?: string | null) {
       }
     }
 
-    const session = records.items.find((s: any) => {
-      const bankSession = s as BankSessions
+    const validSessions = (records.items as BankSessions[]).filter((bankSession) => {
       if (bankSession.status === 'EXPIRED' || bankSession.status === 'REVOKED') {
         return false
       }
@@ -35,14 +34,17 @@ export default async function fetchActiveBankSession(bankName?: string | null) {
         return false
       }
       return true
-    }) as BankSessions | undefined
+    })
 
-    if (!session) {
+    if (validSessions.length === 0) {
       return {
         error: 'Nenhuma sessão ativa encontrada',
         data: null,
       }
     }
+
+    // Prefer sessions with accounts already configured, otherwise pick the first valid session
+    const session = validSessions.find((s) => Array.isArray(s.accounts) && s.accounts.length > 0) || validSessions[0]
 
     return {
       error: null,
