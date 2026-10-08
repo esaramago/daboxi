@@ -21,7 +21,6 @@ import type { Transactions, Categories, SubCategories } from '@/types/pocketbase
 
 export default function Transactions() {
 
-  const [transactions, setTransactions] = useState<Transactions[]>([])
   const [transactionsByDate, setTransactionsByDate] = useState<any[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -30,15 +29,14 @@ export default function Transactions() {
     const { data, error } = await fetchTransactions({
       category: categoryCode,
       subCategory: subCategoryCode,
+      size: 1000
     })
     if (error || !data) {
       console.error(error)
-      setTransactions([])
       setTransactionsByDate([])
       setIsLoading(false)
       return null
     }
-    setTransactions(data)
     getTransactionsByDate(data)
     setIsLoading(false)
   }
