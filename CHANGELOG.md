@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-10-08
+
+### Added
+- **Transaction Search**: Added search filtering to `fetchTransactions` API and `/transactions` UI to filter transactions by `description`, `niceDescription`, or `notes`.
+- **Save Feedback & Error Handling**: Integrated dynamic `WaToast` success notifications and error handling for inline field edits (date, description, nice description, notes, and value) on the transaction details page.
+- **Production Build Configuration**: Added `NODE_OPTIONS="--max-old-space-size=2048"` support in Dockerfile and Docker Compose to optimize Node.js memory during production builds.
+
+### Changed
+- **Environment Resolution**: Updated RootLayout to use `ENV` environment variable with fallback to `development`.
+- **Transactions Toolbar Layout**: Replaced row container with responsive `Grid` layout for transaction search and category dropdown filters.
+
+---
+
 ## [0.2.1] - 2026-10-08
 
 ### Added
