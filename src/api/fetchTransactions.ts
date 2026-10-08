@@ -7,6 +7,7 @@ import type { Transactions } from '@/types/pocketbase'
 export interface FetchTransactionsOptions {
   category?: string
   subCategory?: string
+  search?: string
   size?: number
   page?: number
 }
@@ -28,6 +29,11 @@ export default async function fetchTransactions(options: FetchTransactionsOption
     } else if (options.category && options.category.trim()) {
       filterParams.category = options.category.trim()
       filterClauses.push('subCategory.category.code = {:category}')
+    }
+
+    if (options.search && options.search.trim()) {
+      filterParams.search = options.search.trim()
+      filterClauses.push('(description ~ {:search} || niceDescription ~ {:search} || notes ~ {:search})')
     }
 
     const filter = filterClauses.length > 0 ? pb.filter(filterClauses.join(' && '), filterParams) : undefined

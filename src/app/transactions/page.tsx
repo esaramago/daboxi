@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import fetchTransactions from '@/api/fetchTransactions'
 import Header from '@/components/Header'
 import Date from '@/components/Date'
@@ -18,7 +18,9 @@ const WaButton = dynamic(() => import('@awesome.me/webawesome/dist/react/button/
 const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/index.js'), {ssr: false})
 const WaDropdownItem = dynamic(() => import('@awesome.me/webawesome/dist/react/dropdown-item/index.js'), {ssr: false})
 const WaPagination = dynamic(() => import('@awesome.me/webawesome/dist/react/pagination/index.js'), {ssr: false})
+const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), {ssr: false})
 import type { Transactions, Categories, SubCategories } from '@/types/pocketbase'
+import Grid from '@/components/Grid'
 
 const PAGE_SIZE = 50
 
@@ -29,12 +31,21 @@ export default function Transactions() {
   const [page, setPage] = useState(1)
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
+  const [search, setSearch] = useState('')
+  const [isMounted, setIsMounted] = useState(false)
+  const isInitialMount = useRef(true)
 
-  const getTransactions = async (categoryCode?: string, subCategoryCode?: string, pageNumber: number = 1) => {
+  const getTransactions = async (
+    categoryCode?: string,
+    subCategoryCode?: string,
+    pageNumber: number = 1,
+    searchQuery: string = search
+  ) => {
     setIsLoading(true)
     const { data, error, totalItems: count, totalPages: pages } = await fetchTransactions({
       category: categoryCode,
       subCategory: subCategoryCode,
+      search: searchQuery,
       size: PAGE_SIZE,
       page: pageNumber,
     })
@@ -56,7 +67,7 @@ export default function Transactions() {
     const newPage = event.detail?.page ?? event.target?.page
     if (newPage && newPage !== page) {
       setPage(newPage)
-      getTransactions(category?.code, subCategory?.code, newPage)
+      getTransactions(category?.code, subCategory?.code, newPage, search)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
@@ -71,9 +82,24 @@ export default function Transactions() {
   }
 
   useEffect(() => {
+    setIsMounted(true)
     getCategories()
     getTransactions()
   }, [])
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+
+    const timer = setTimeout(() => {
+      setPage(1)
+      getTransactions(category?.code, subCategory?.code, 1, search)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [search])
 
   //#region Filter Category
   const [categories, setCategories] = useState<Categories[]>([])
@@ -99,16 +125,16 @@ export default function Transactions() {
 
       if (_category) {
         getSubCategories(_category.code)
-        getTransactions(_category.code, undefined, 1)
+        getTransactions(_category.code, undefined, 1, search)
       } else {
         setSubCategories([])
-        getTransactions(undefined, undefined, 1)
+        getTransactions(undefined, undefined, 1, search)
       }
     } else {
       setCategory(null)
       setSubCategory(null)
       setSubCategories([])
-      getTransactions(undefined, undefined, 1)
+      getTransactions(undefined, undefined, 1, search)
     }
   }
   //#endregion
@@ -134,10 +160,10 @@ export default function Transactions() {
     if (subCategoryCode) {
       const _subCategory = subCategories.find((subCat) => subCat.code === subCategoryCode) || null
       setSubCategory(_subCategory)
-      getTransactions(category?.code, subCategoryCode, 1)
+      getTransactions(category?.code, subCategoryCode, 1, search)
     } else {
       setSubCategory(null)
-      getTransactions(category?.code, undefined, 1)
+      getTransactions(category?.code, undefined, 1, search)
     }
   }
 
@@ -152,93 +178,106 @@ export default function Transactions() {
 
       <main className="l-container l-stack u-padding-block">
 
-        <div className="l-row l-row--small">
-          {
-            categories && (
+        <Grid gap="s" break="mobile">
+          {isMounted && (
+            <WaInput
+              type="search"
+              placeholder="Pesquisar movimentos..."
+              value={search}
+              onInput={(event: any) => setSearch(event.target.value)}
+              onWaClear={() => setSearch('')}
+              withClear
+            >
+              <WaIcon slot="start" name="magnifying-glass" />
+            </WaInput>
+          )}
+          <Grid gap="s">
+            {
+              categories && (
 
-              <WaDropdown>
-                <WaButton slot="trigger">
+                <WaDropdown>
+                  <WaButton slot="trigger">
+                    {
+                      category ? (
+                        <span style={{color: getColorByVariant(category.type.code)}} className="l-row l-row--x-small u-semibold">
+                          <WaIcon name={category.icon} slot="start" />
+                          <strong style={{color: category.type.color}}>{category.description}</strong>
+                        </span>
+                      ) : 'Categoria'
+                    }
+                    <WaIcon name="chevron-down" slot="end" />
+                  </WaButton>
+                  <WaDropdownItem
+                    key="all-categories"
+                    onClick={handleSelectCategory}
+                    data-category=""
+                  >
+                    <div className="l-row l-row--x-small">
+                      <WaIcon name="list" />
+                      Todas as categorias
+                    </div>
+                  </WaDropdownItem>
                   {
-                    category ? (
-                      <span style={{color: getColorByVariant(category.type.code)}} className="l-row l-row--x-small u-semibold">
-                        <WaIcon name={category.icon} slot="start" />
-                        <strong style={{color: category.type.color}}>{category.description}</strong>
-                      </span>
-                    ) : 'Categoria'
+                    categories.map((category) => (
+                      <WaDropdownItem
+                        key={category.code}
+                        onClick={handleSelectCategory}
+                        data-category={category.code}
+                      >
+                        <div className="l-row l-row--x-small">
+                          <WaIcon name={category.icon} style={{color: category.type.color}} />
+                          {category.description}
+                        </div>
+                      </WaDropdownItem>
+                    ))
                   }
-                  <WaIcon name="chevron-down" slot="end" />
-                </WaButton>
-                <WaDropdownItem
-                  key="all-categories"
-                  onClick={handleSelectCategory}
-                  data-category=""
-                >
-                  <div className="l-row l-row--x-small">
-                    <WaIcon name="list" />
-                    Todas as categorias
-                  </div>
-                </WaDropdownItem>
-                {
-                  categories.map((category) => (
-                    <WaDropdownItem
-                      key={category.code}
-                      onClick={handleSelectCategory}
-                      data-category={category.code}
-                    >
-                      <div className="l-row l-row--x-small">
-                        <WaIcon name={category.icon} style={{color: category.type.color}} />
-                        {category.description}
-                      </div>
-                    </WaDropdownItem>
-                  ))
-                }
-              </WaDropdown>
-            )
-          }
-          {
-            category && subCategories && (
+                </WaDropdown>
+              )
+            }
+            {
+              category && subCategories && (
 
-              <WaDropdown>
-                <WaButton slot="trigger">
+                <WaDropdown>
+                  <WaButton slot="trigger">
+                    {
+                      subCategory ? (
+                        <span style={{color: getColorByVariant(category.type.code)}} className="l-row l-row--x-small u-semibold">
+                          <WaIcon name={subCategory.icon} slot="start" />
+                          <strong className="u-semibold">{subCategory.description}</strong>
+                        </span>
+                      ) : 'Sub categoria'
+                    }
+                    <WaIcon name="chevron-down" slot="end" />
+                  </WaButton>
+                  <WaDropdownItem
+                    key="all-subcategories"
+                    onClick={handleSelectSubCategory}
+                    data-subcategory=""
+                  >
+                    <div className="l-row l-row--x-small">
+                      <WaIcon name="list" />
+                      Todas as subcategorias
+                    </div>
+                  </WaDropdownItem>
                   {
-                    subCategory ? (
-                      <span style={{color: getColorByVariant(category.type.code)}} className="l-row l-row--x-small u-semibold">
-                        <WaIcon name={subCategory.icon} slot="start" />
-                        <strong className="u-semibold">{subCategory.description}</strong>
-                      </span>
-                    ) : 'Sub categoria'
+                    subCategories.map((subCategory) => (
+                      <WaDropdownItem
+                        key={subCategory.code}
+                        onClick={handleSelectSubCategory}
+                        data-subcategory={subCategory.code}
+                      >
+                        <div className="l-row l-row--x-small">
+                          <WaIcon name={subCategory.icon} style={{color: subCategory.color}} />
+                          {subCategory.description}
+                        </div>
+                      </WaDropdownItem>
+                    ))
                   }
-                  <WaIcon name="chevron-down" slot="end" />
-                </WaButton>
-                <WaDropdownItem
-                  key="all-subcategories"
-                  onClick={handleSelectSubCategory}
-                  data-subcategory=""
-                >
-                  <div className="l-row l-row--x-small">
-                    <WaIcon name="list" />
-                    Todas as subcategorias
-                  </div>
-                </WaDropdownItem>
-                {
-                  subCategories.map((subCategory) => (
-                    <WaDropdownItem
-                      key={subCategory.code}
-                      onClick={handleSelectSubCategory}
-                      data-subcategory={subCategory.code}
-                    >
-                      <div className="l-row l-row--x-small">
-                        <WaIcon name={subCategory.icon} style={{color: subCategory.color}} />
-                        {subCategory.description}
-                      </div>
-                    </WaDropdownItem>
-                  ))
-                }
-              </WaDropdown>
-            )
-          }
-
-        </div>
+                </WaDropdown>
+              )
+            }
+          </Grid>
+        </Grid>
         {
           isLoading ? (
             <Loading></Loading>
