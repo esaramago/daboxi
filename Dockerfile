@@ -19,16 +19,18 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 WORKDIR /app
 
-# Adicionar ARGs para variáveis de ambiente necessárias no build
+# Add ARGs for environment variables needed during build
 ARG POCKETBASE_URL
 ARG NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
 ARG SOURCE_COMMIT
+ARG NODE_OPTIONS="--max-old-space-size=2048"
 
-# Passar ARGs para ENVs para que o 'next build' as utilize
+# Pass ARGs to ENVs for 'next build'
 ENV POCKETBASE_URL=$POCKETBASE_URL
 ENV NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
 ENV SOURCE_COMMIT=$SOURCE_COMMIT
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_OPTIONS=$NODE_OPTIONS
 
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules

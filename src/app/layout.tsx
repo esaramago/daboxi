@@ -9,7 +9,7 @@ const montserrat = Montserrat({
   subsets: ['latin'],
 })
 
-const environment = process.env.NODE_ENV || 'development'
+const environment = process.env.ENV || 'development'
 
 export default function RootLayout({
   children,
