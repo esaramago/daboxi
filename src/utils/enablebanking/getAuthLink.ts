@@ -57,7 +57,7 @@ export default async function getEnableBankingAuthLink(
     const data = await response.json()
 
     if (response.ok) {
-      console.log('Redirecione o utilizador para este URL:\n', data.url)
+      console.log('[EnableBanking Auth] Link de autorização gerado:', data.url)
       return data.url
     } else {
       console.error('A API EnableBanking devolveu um erro:', data)
