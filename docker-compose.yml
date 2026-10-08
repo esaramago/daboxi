@@ -17,6 +17,7 @@ services:
         - POCKETBASE_URL=${POCKETBASE_URL:-http://pocketbase:8090}
         - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
         - SOURCE_COMMIT=${SOURCE_COMMIT:-}
+        - NODE_OPTIONS=${NODE_OPTIONS:---max-old-space-size=2048}
     restart: unless-stopped
     expose:
       - "3000"
@@ -30,11 +31,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'      # Limita a 1 CPU core
-          memory: 2G       # Limita a 2GB de RAM
+          cpus: '1.0'      # Limit to 1 CPU core
+          memory: 2G       # Limit to 2GB RAM
         reservations:
-          cpus: '0.5'      # Reserva mínima de 0.5 CPU
-          memory: 512M     # Reserva mínima de 512MB
+          cpus: '0.5'      # Minimum 0.5 CPU reservation
+          memory: 512M     # Minimum 512MB reservation
 
 volumes:
   pocketbase_data:
