@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-08
+
 ### Added
+- **ASPSP Caching & Deduplication**: Added in-memory caching (24h TTL) and concurrent request deduplication for EnableBanking ASPSPs in `getAspsps.ts`.
 - **Transactions Pagination**: Introduced pagination support in `fetchTransactions` API and UI with dynamic page size and navigation controls.
 - **Bank Selection**: Added `fetchEnableBankingBanks` API endpoint and dynamic bank selector dropdown in EnableBanking settings dialog.
 - **Password Recovery**: Implemented forgot password flow with email request and password confirmation endpoints.
@@ -15,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Base URL Utility**: Introduced `getBaseUrl` helper for consistent redirect URLs across authentication and Open Banking callbacks.
 
 ### Changed
+- **Package Metadata**: Renamed project package name to `daboxi` and added author details in `package.json`.
 - **Default Page Size**: Reduced default transaction fetch page size from 100 to 50 items for faster load times.
 - **EnableBanking Settings**: Enhanced settings dialog with transition states, loading indicators, and stricter bank name validation.
 - **Design & Assets**: Updated logo, brand icons, and improved UI contrast and theme colors across development and staging environments.
