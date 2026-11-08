@@ -60,24 +60,28 @@ export default function Login() {
               onSubmit={handleSubmitLogin}
               className="l-stack l-stack--large"
             >
-              <WaInput
-                onChange={handleInputChange}
-                value={formFields.email}
-                label="Email"
-                placeholder="Email"
-                type="email"
-                id="email"
-                name="email"
-              />
-              <WaInput
-                onChange={handleInputChange}
-                value={formFields.password}
-                placeholder="Palavra-passe"
-                type="password"
-                id="password"
-                name="password"
-                label="Palavra-passe"
-              />
+              <Grid direction="column" gap="xs">
+                <label htmlFor="email">Email</label>
+                <input
+                  onChange={handleInputChange}
+                  value={formFields.email}
+                  placeholder="example@domain.com"
+                  type="email"
+                  id="email"
+                  name="email"
+                />
+              </Grid>
+              <Grid direction="column" gap="xs">
+                <label htmlFor="password">Palavra-passe</label>
+                <input
+                  onChange={handleInputChange}
+                  value={formFields.password}
+                  placeholder="*********************"
+                  type="password"
+                  id="password"
+                  name="password"
+                />
+              </Grid>
               <Grid direction="column"  gap="s">
                 <WaButton type="submit" disabled={loading} variant="brand">
                   {loading ? 'A entrar...' : 'Entrar'}
