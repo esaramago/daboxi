@@ -88,6 +88,7 @@ export default function ForgotPassword() {
                 width={240}
                 height={50}
                 alt="Logo Daboxi"
+                loading="eager"
               />
             </Link>
           </div>
@@ -123,6 +124,7 @@ export default function ForgotPassword() {
                 width={240}
                 height={50}
                 alt="Logo Daboxi"
+                loading="eager"
               />
             </Link>
           </div>
@@ -193,6 +195,7 @@ export default function ForgotPassword() {
                 width={240}
                 height={50}
                 alt="Logo Daboxi"
+                loading="eager"
               />
             </Link>
           </div>
@@ -244,6 +247,7 @@ export default function ForgotPassword() {
               width={240}
               height={50}
               alt="Logo Daboxi"
+              loading="eager"
             />
           </Link>
         </div>
