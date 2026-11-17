@@ -31,10 +31,11 @@ export interface TransactionFormValues {
 
 interface TransactionFormProps {
   initialValues?: TransactionFormValues
+  initialSubCategory?: SubCategories
   redirectTo?: string
 }
 
-export default function TransactionForm({ initialValues, redirectTo = '/' }: TransactionFormProps) {
+export default function TransactionForm({ initialValues, initialSubCategory, redirectTo = '/' }: TransactionFormProps) {
   const router = useRouter()
 
   const [formFields, setFormFields] = useState({
@@ -66,7 +67,13 @@ export default function TransactionForm({ initialValues, redirectTo = '/' }: Tra
 
   //#region Categories
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false)
-  const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategories>()
+  const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategories | undefined>(initialSubCategory)
+
+  useEffect(() => {
+    if (initialSubCategory) {
+      setSelectedSubCategory(initialSubCategory)
+    }
+  }, [initialSubCategory])
 
   const openCategoriesDrawer = () => {
     setIsCategoriesOpen(true)

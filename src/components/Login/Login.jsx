@@ -52,6 +52,7 @@ export default function Login() {
             width={240}
             height={50}
             alt="Logo Daboxi"
+            loading="eager"
           />
           <p>Gere as tuas finanças de forma simples e segura.</p>
         </Grid>
