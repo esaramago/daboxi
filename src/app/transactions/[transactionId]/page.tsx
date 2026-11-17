@@ -25,6 +25,8 @@ const WaIcon = dynamic(() => import('@awesome.me/webawesome/dist/react/icon/inde
 const WaInput = dynamic(() => import('@awesome.me/webawesome/dist/react/input/index.js'), {ssr: false})
 const WaTextarea = dynamic(() => import('@awesome.me/webawesome/dist/react/textarea/index.js'), {ssr: false})
 const WaToast = dynamic(() => import('@awesome.me/webawesome/dist/react/toast/index.js'), {ssr: false})
+const WaDropdown = dynamic(() => import('@awesome.me/webawesome/dist/react/dropdown/index.js'), {ssr: false})
+const WaDropdownItem = dynamic(() => import('@awesome.me/webawesome/dist/react/dropdown-item/index.js'), {ssr: false})
 
 export default function Transaction() {
 
@@ -374,6 +376,12 @@ export default function Transaction() {
   //#endregion Category
 
 
+  //#region Duplicate
+  const handleDuplicateTransaction = () => {
+    router.push(`/transactions/create?duplicate=${transactionId}`)
+  }
+  //#endregion Duplicate
+
   //#region Render
   const variant = transaction?.subCategory?.category?.type?.code
   const backgroundColor = getColorByVariant(variant) || 'var(--wa-color-neutral-50)'
@@ -384,9 +392,23 @@ export default function Transaction() {
       <Header
         backgroundColor={backgroundColor}
         actions={
-          <WaButton appearance="plain" onClick={handleDeleteTransaction}>
-            <WaIcon name="trash" label="Apagar movimento"></WaIcon>
-          </WaButton>
+          <WaDropdown>
+            <WaButton appearance="plain" slot="trigger">
+              <WaIcon name="ellipsis-vertical" label="Ações"></WaIcon>
+            </WaButton>
+
+            {
+              transaction &&
+              <WaDropdownItem onClick={handleDuplicateTransaction}>
+                <WaIcon name="copy" label="Duplicar movimento"></WaIcon>
+                Duplicar movimento
+              </WaDropdownItem>
+            }
+            <WaDropdownItem onClick={handleDeleteTransaction}>
+              <WaIcon name="trash" label="Apagar movimento"></WaIcon>
+              Apagar movimento
+            </WaDropdownItem>
+          </WaDropdown>
         }
       >Movimento</Header>
       <main>

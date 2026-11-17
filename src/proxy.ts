@@ -104,12 +104,12 @@ async function isValidPocketBaseToken(token: string | null): Promise<boolean> {
 
     return true
   } catch (error) {
-    console.error('[Middleware] Failed to verify token with PocketBase:', error)
+    console.error('[Proxy] Failed to verify token with PocketBase:', error)
     return false
   }
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   // Block access to PHP files or hidden paths
@@ -142,7 +142,7 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-// Configure matched routes for middleware execution
+// Configure matched routes for proxy execution
 export const config = {
   matcher: [
     /*
